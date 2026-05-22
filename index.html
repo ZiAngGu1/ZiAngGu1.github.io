@@ -3,134 +3,148 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="谷子昂 / Ziang Gu - AI agent builder, product founder, and computer vision researcher." />
+  <meta name="description" content="谷子昂 / Ziang Gu - AI agent product engineer, founder, and computer vision researcher." />
   <title>谷子昂 / Ziang Gu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <header class="shell">
-    <a class="wordmark" href="#top"><span>ZG</span><b>谷子昂</b></a>
-    <nav aria-label="Sections">
-      <a href="#work" data-i18n="navWork">作品</a>
-      <a href="#papers" data-i18n="navPapers">论文</a>
-      <a href="#code" data-i18n="navCode">代码</a>
-      <a href="#archive" data-i18n="navArchive">档案</a>
+  <header class="site-header">
+    <a class="name" href="#top">谷子昂 <span>Ziang Gu</span></a>
+    <nav aria-label="Main navigation">
+      <a href="#about" data-i18n="navAbout">关于</a>
+      <a href="#work" data-i18n="navWork">做过的事</a>
+      <a href="#research" data-i18n="navResearch">研究</a>
+      <a href="#next" data-i18n="navNext">接下来</a>
     </nav>
     <button class="lang" type="button" aria-label="Switch language">中文</button>
   </header>
 
   <main id="top">
-    <section class="hero shell">
-      <div class="hero-main">
-        <p class="kicker" data-i18n="heroKicker">AI Agent Builder / Product Founder / Computer Vision Researcher</p>
-        <h1 data-i18n="heroTitle">我做能把混乱工作变成可验证产出的 AI 系统。</h1>
-        <p class="thesis" data-i18n="heroThesis">我关心的不是把模型包装成聊天框，而是把专业工作拆成可执行、可追踪、可审查、可交付的系统：agent workflow、source grounding、实时状态、human-in-the-loop，以及足够好的产品品味。</p>
-        <div class="links">
+    <section class="intro">
+      <div>
+        <p class="eyebrow" data-i18n="eyebrow">AI Agent 产品工程师 / Founder / Computer Vision Researcher</p>
+        <h1 data-i18n="headline">我是谷子昂。我做能进入真实工作的 AI agent 产品。</h1>
+        <p class="lead" data-i18n="lead">我最擅长的不是把模型包装成一个聊天框，而是把复杂、材料多、需要专业判断的任务拆成可以执行、追踪、验证和交付的系统。</p>
+        <div class="action-row">
           <a href="mailto:guziang@msu.edu">guziang@msu.edu</a>
           <a href="https://github.com/ZiAngGu1" target="_blank" rel="noreferrer">GitHub</a>
-          <a href="./assets/ziang-gu-resume.pdf" target="_blank" rel="noreferrer" data-i18n="resumeLink">Resume</a>
+          <a href="./assets/ziang-gu-resume.pdf" target="_blank" rel="noreferrer" data-i18n="resume">Resume</a>
         </div>
       </div>
-      <aside class="hero-side">
-        <img src="./assets/profile.jpeg" alt="Ziang Gu portrait" />
+      <aside>
+        <img src="./assets/profile.jpeg" alt="Portrait of Ziang Gu" />
         <dl>
-          <div><dt data-i18n="nowLabel">现在</dt><dd data-i18n="nowValue">Lawless Co-founder & CTO</dd></div>
-          <div><dt data-i18n="baseLabel">位置</dt><dd data-i18n="baseValue">上海 / 中国可入职</dd></div>
-          <div><dt data-i18n="focusLabel">主线</dt><dd>AI agents, CV, product systems</dd></div>
+          <div><dt data-i18n="now">现在</dt><dd data-i18n="nowText">Lawless Co-founder & CTO；MSU CSE 2026 届</dd></div>
+          <div><dt data-i18n="location">位置</dt><dd data-i18n="locationText">上海 / 中国可入职</dd></div>
+          <div><dt data-i18n="focus">方向</dt><dd data-i18n="focusText">AI agents, applied research, product engineering</dd></div>
         </dl>
       </aside>
     </section>
 
-    <section class="principles shell">
-      <article><span>01</span><h2 data-i18n="p1Title">Agents are workflow, not magic.</h2><p data-i18n="p1Body">好的 agent 产品需要 context、tools、memory、eval、failure recovery 和 review UX。模型能力只是底层燃料。</p></article>
-      <article><span>02</span><h2 data-i18n="p2Title">Evidence beats fluent answers.</h2><p data-i18n="p2Body">法律、合规、专利、企业知识里，答案不够。来源、引用、责任边界和下一步动作才是可交付价值。</p></article>
-      <article><span>03</span><h2 data-i18n="p3Title">Taste is execution power.</h2><p data-i18n="p3Body">我做过视觉生成和审美评估。产品好不好，不只看模型分数，也看用户能不能更快得到更好的判断。</p></article>
-    </section>
-
-    <section id="work" class="section shell">
-      <div class="section-head">
-        <p class="kicker">Selected Work</p>
-        <h2 data-i18n="workTitle">我想被记住的不是职位，而是这些问题。</h2>
-      </div>
-      <div class="work-list">
-        <article class="work-item major">
-          <div class="meta">2025-Now / Lawless</div>
-          <h3 data-i18n="lawlessTitle">Enterprise legal AI agents that do work, not just answer questions.</h3>
-          <p data-i18n="lawlessBody">作为 Co-founder & CTO，我把法律问答推进为企业法律工作助手：材料摄取、检索、任务拆解、工具调用、source grounding、citation verification、人审确认、交付跟踪。场景包括跨境合规、公司法务、TRO/资金冻结、专利检索和专业服务自动化。</p>
-          <ul><li>$3M ARR pipeline</li><li>PwC pilot conversations</li><li>90% demo time saved</li><li>RAG / MCP / agent workflows</li></ul>
-        </article>
-        <article class="work-item">
-          <div class="meta">2025 / 1shanai</div>
-          <h3 data-i18n="shanTitle">Aesthetic generation as a product system.</h3>
-          <p data-i18n="shanBody">在广州全职带 7 人团队，从 0 到 1 做服装灵感、活动 T 恤和视觉物料生成产品。核心不是“出图”，而是 prompt 控制、风格一致性、商业可用性、对比测试和用户反馈闭环。</p>
-          <ul><li>100+ beta users</li><li>visual eval loops</li><li>fashion x generative AI</li></ul>
-        </article>
-        <article class="work-item">
-          <div class="meta">2023-2024 / MSU CVLab</div>
-          <h3 data-i18n="researchTitle">From 3D humans to interactive 3D scene generation.</h3>
-          <p data-i18n="researchBody">在 MSU Computer Vision Lab 做 paid RA，研究 3D/4D generation、semantic visual tokenization、long-term person re-ID 和 LLM scene priors。这个底盘让我更习惯把模糊问题拆成数据、表示、约束和评测。</p>
-          <ul><li>ICCV 2023</li><li>20,000+ images</li><li>text-to-3D scenes</li></ul>
-        </article>
+    <section id="about" class="section two-col">
+      <h2 data-i18n="aboutTitle">我是什么样的人</h2>
+      <div class="prose">
+        <p data-i18n="aboutP1">我是一个偏 builder 的 AI 产品工程师：能写代码、能拆 workflow、能和真实用户聊需求，也能把 demo 推到试点和商业机会里。</p>
+        <p data-i18n="aboutP2">我的背景横跨三件事：法律 AI agent 产品、视觉生成创业、计算机视觉研究。这三件事看起来不同，但共同点是把不稳定的智能能力变成用户能信任、能检查、能继续使用的系统。</p>
       </div>
     </section>
 
-    <section id="papers" class="section shell">
-      <div class="section-head">
-        <p class="kicker">Publications</p>
-        <h2 data-i18n="paperTitle">论文不是装饰，是我怎么形成工程判断的证据。</h2>
+    <section id="work" class="section">
+      <div class="section-title">
+        <h2 data-i18n="workTitle">我做过的事</h2>
+        <p data-i18n="workIntro">下面不是职位列表，而是我真正投入过的问题。</p>
       </div>
-      <div class="paper-list">
-        <article class="paper">
-          <div class="venue">ICCV 2023</div>
+      <div class="entries">
+        <article class="entry">
+          <div class="entry-meta">2025-Now</div>
+          <div>
+            <h3>Lawless</h3>
+            <p class="role" data-i18n="lawlessRole">Co-founder & CTO · 企业级法律 AI Agent 平台</p>
+            <p data-i18n="lawlessText">我负责把 Lawless 从法律问答推进成可交付的法律工作助手：材料摄取、检索、任务拆解、工具调用、source grounding、citation verification、人审确认和交付跟踪。场景包括跨境合规、公司法务、TRO/资金冻结案件、专利检索和专业服务自动化。</p>
+            <ul>
+              <li>$3M ARR pipeline</li>
+              <li>PwC / enterprise pilot conversations</li>
+              <li>RAG, MCP, tool use, agent workflow</li>
+            </ul>
+          </div>
+        </article>
+        <article class="entry">
+          <div class="entry-meta">2025</div>
+          <div>
+            <h3>1shanai</h3>
+            <p class="role" data-i18n="shanRole">Co-founder & CEO · 生成式视觉产品</p>
+            <p data-i18n="shanText">我在广州全职带 7 人团队，从 0 到 1 做服装灵感、活动 T 恤和视觉物料生成产品。重点不是“让模型出图”，而是 prompt 控制、风格一致性、商业可用性、对比测试和用户反馈闭环。</p>
+            <ul>
+              <li>100+ beta users</li>
+              <li>aesthetic evaluation</li>
+              <li>fashion x generative AI</li>
+            </ul>
+          </div>
+        </article>
+        <article class="entry">
+          <div class="entry-meta">2023-2024</div>
+          <div>
+            <h3>MSU Computer Vision Lab</h3>
+            <p class="role" data-i18n="labRole">Paid Research Assistant · 3D/4D, generation, visual representation</p>
+            <p data-i18n="labText">我做过 text-to-3D scene generation、semantic visual tokenization、4D traffic simulation 和 long-term person re-ID。研究经历让我习惯把模糊问题拆成数据、表示、约束、实验和评测。</p>
+            <ul>
+              <li>ICCV 2023</li>
+              <li>PhysiBuilder preprint</li>
+              <li>20,000+ image dataset</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="research" class="section">
+      <div class="section-title">
+        <h2 data-i18n="researchTitle">研究与论文</h2>
+        <p data-i18n="researchIntro">这些经历支撑了我对 agent 产品的判断：智能系统必须能被表示、约束和评测。</p>
+      </div>
+      <div class="papers">
+        <article>
+          <span>ICCV 2023</span>
           <h3>Learning Clothing and Pose Invariant 3D Shape Representation for Long-Term Person Re-Identification</h3>
           <p>Feng Liu, Minchul Kim, <strong>ZiAng Gu</strong>, Anil Jain, Xiaoming Liu</p>
-          <p data-i18n="paperOne">把长期人物再识别从“同衣服行人匹配”推进到更真实的衣服变化、姿态变化和长期活动场景；通过 3D shape representation 分离身份与非身份因素。</p>
-          <div class="links compact"><a href="https://arxiv.org/abs/2308.10658" target="_blank" rel="noreferrer">arXiv</a><a href="https://cvlab.cse.msu.edu/learning-clothing-and-pose-invariant-3d-shape-representation-for-long-term-person-re-identification-source-code.html" target="_blank" rel="noreferrer">Project / Code</a></div>
+          <p data-i18n="paperOne">研究长期人物再识别中衣服变化、姿态变化和真实活动场景下的身份表示问题；通过 3D shape representation 分离身份因素和非身份因素。</p>
+          <div class="mini-links">
+            <a href="https://arxiv.org/abs/2308.10658" target="_blank" rel="noreferrer">arXiv</a>
+            <a href="https://cvlab.cse.msu.edu/learning-clothing-and-pose-invariant-3d-shape-representation-for-long-term-person-re-identification-source-code.html" target="_blank" rel="noreferrer">Project / Code</a>
+          </div>
         </article>
-        <article class="paper">
-          <div class="venue">Preprint 2024</div>
+        <article>
+          <span>Preprint 2024</span>
           <h3>PhysiBuilder: Physics-Informed Prompt Learning for Interactive 3D Scene Generation and Editing</h3>
           <p><strong>ZiAng Gu</strong>, Zhiyuan Ren, Feng Liu, Tianlong Chen, Xiaoming Liu</p>
-          <p data-i18n="paperTwo">探索把 LLM scene priors 和 2D diffusion backbone 结合到 text-to-3D scene generation，让用户用自然语言交互式编辑 3D 场景，并让物理约束进入生成过程。</p>
+          <p data-i18n="paperTwo">研究如何把 LLM scene priors 和 2D diffusion backbone 结合到 text-to-3D scene generation，让用户用自然语言交互式编辑 3D 场景，并把物理约束引入生成过程。</p>
         </article>
       </div>
     </section>
 
-    <section id="code" class="section shell">
-      <div class="section-head">
-        <p class="kicker">Open Code / Artifacts</p>
-        <h2 data-i18n="codeTitle">能公开看的东西放这里；不能公开的产品，用结构讲清楚。</h2>
+    <section id="code" class="section">
+      <div class="section-title">
+        <h2 data-i18n="codeTitle">公开代码与材料</h2>
+        <p data-i18n="codeIntro">不是所有产品代码都能公开；能公开的部分放在这里。</p>
       </div>
-      <div class="code-grid">
-        <a class="repo" href="https://github.com/ZiAngGu1/urban-planning-diffusion-pytorch" target="_blank" rel="noreferrer"><span>Python</span><b>urban-planning-diffusion-pytorch</b><p data-i18n="repoOne">Video diffusion / DDPM implementation adapted toward urban planning and generative modeling experiments.</p></a>
-        <a class="repo" href="https://github.com/ZiAngGu1/CSE434-honors-option" target="_blank" rel="noreferrer"><span>Python</span><b>CSE434-honors-option</b><p data-i18n="repoTwo">Public coursework/research artifact showing machine learning and systems implementation work.</p></a>
-        <a class="repo" href="https://github.com/ZiAngGu1/ZiAngGu1.github.io" target="_blank" rel="noreferrer"><span>HTML</span><b>ZiAngGu1.github.io</b><p data-i18n="repoThree">This site: a public, editable record of research, product thinking, and selected work.</p></a>
+      <div class="cards">
+        <a href="https://github.com/ZiAngGu1/urban-planning-diffusion-pytorch" target="_blank" rel="noreferrer"><b>urban-planning-diffusion-pytorch</b><span>Python · diffusion models</span></a>
+        <a href="https://github.com/ZiAngGu1/CSE434-honors-option" target="_blank" rel="noreferrer"><b>CSE434-honors-option</b><span>Python · ML coursework/research artifact</span></a>
+        <a href="https://github.com/ZiAngGu1/ZiAngGu1.github.io" target="_blank" rel="noreferrer"><b>ZiAngGu1.github.io</b><span>HTML · this website</span></a>
       </div>
     </section>
 
-    <section id="archive" class="section shell archive">
-      <div class="section-head">
-        <p class="kicker">Archive</p>
-        <h2 data-i18n="archiveTitle">轨迹。</h2>
+    <section id="next" class="section two-col final">
+      <h2 data-i18n="nextTitle">接下来我想做什么</h2>
+      <div class="prose">
+        <p data-i18n="nextP1">我在找的是能让我继续做真实 AI agent 落地的机会：agent platform、AI-native workflow、应用研究、产品工程、企业知识工作流、或者能把模型能力变成可靠工具的团队。</p>
+        <p data-i18n="nextP2">我不想只做一个功能点。我想负责一块系统，从用户问题、产品结构、工程实现到验证指标都能闭环。</p>
+        <div class="action-row"><a href="mailto:guziang@msu.edu">Email me</a><a href="./assets/ziang-gu-resume.pdf" target="_blank" rel="noreferrer" data-i18n="resumeAgain">Resume</a></div>
       </div>
-      <ol>
-        <li><time>2026</time><span data-i18n="a1">Michigan State University Honors College, B.S. Computer Science and Engineering, GPA 3.7/4.0.</span></li>
-        <li><time>2025</time><span data-i18n="a2">Co-founder & CTO, Lawless: enterprise legal AI agent platform.</span></li>
-        <li><time>2025</time><span data-i18n="a3">Co-founder & CEO, 1shanai: generative visual product, aesthetics evaluation, early team management.</span></li>
-        <li><time>2024</time><span data-i18n="a4">PhysiBuilder preprint on interactive physics-informed 3D scene generation and editing.</span></li>
-        <li><time>2023</time><span data-i18n="a5">ICCV 2023 publication on clothing and pose invariant 3D shape representation for long-term person re-ID.</span></li>
-        <li><time>2023</time><span data-i18n="a6">MSU Spartan Hack Best Use of Generative AI, first place among 106 teams.</span></li>
-      </ol>
     </section>
-
-    <footer class="shell footer">
-      <h2 data-i18n="footerTitle">I am looking for serious AI agent work, not permission.</h2>
-      <p data-i18n="footerBody">如果你在做真实的 agent 产品、AI-native workflow、应用研究或高强度产品工程，我愿意聊。</p>
-      <div class="links"><a href="mailto:guziang@msu.edu">Email</a><a href="https://github.com/ZiAngGu1" target="_blank" rel="noreferrer">GitHub</a><a href="https://ZiAngGu1.github.io">Website</a></div>
-    </footer>
   </main>
   <script src="./script.js"></script>
 </body>
