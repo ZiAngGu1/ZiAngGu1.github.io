@@ -1,8 +1,83 @@
-const copy={zh:{navWork:"工作台",navSignal:"信号",navNotes:"札记",navContact:"联系",heroEyebrow:"AI Agent 产品工程师 / Founder / Research Builder",heroLede:"我把复杂、模糊、需要专业判断的工作，拆成可以被 AI Agent 执行、追踪、校验并交付的真实 workflow。",heroEmail:"联系我",heroResume:"简历 PDF",portraitCaption:"Builder mode",workbenchTitle:"不是简历复述，而是我实际在搭的系统。",workbenchIntro:"这些模块展示的是简历里不容易展开的部分：我怎样理解 agent 产品、怎样把研究能力变成产品判断、怎样在早期团队里把事情往前推。",workLegalTitle:"法律 AI Agent 工作台",workLegalBody:"从法律问答走向可交付的工作助手：材料摄取、检索、任务规划、来源校验、人审确认和交付跟踪必须在同一个产品回路里闭合。",workTasteTitle:"审美生成与评估",workTasteBody:"在广州带 7 人团队做 1shanai 时，我学到的不是“生成图片”，而是把审美、风格一致性、用户反馈和商业可用性变成可迭代指标。",workResearchTitle:"视觉研究底盘",workResearchBody:"3D/4D generation、visual tokenization 和 long-term person re-ID 的研究经历，让我更习惯把模糊问题拆成数据、表示和评测。",signalTitle:"招聘方能快速读到的强信号。",signalIntro:"我希望这个网站比一页 PDF 更直接地回答：这个人能不能把 agent 产品做成真实业务结果？",metricPipeline:"来自企业法律 AI demo 与试点沟通的 ARR pipeline。",metricTime:"在检索、核对、归纳和初稿生成 demo 中节省的时间。",metricHackathon:"MSU Spartan Hack Best Use of Generative AI。",metricBilingual:"覆盖美国研究、创业实践和中国招聘语境的中英文技术沟通。",notesTitle:"简历放不下，但面试时很重要的东西。",notesIntro:"这些是我想让招聘方感受到的工作方式：对产品品味敏感，对工程边界诚实，对验证和交付有执念。",noteOneTitle:"我喜欢拆 workflow，不喜欢只包装 prompt。",noteOneBody:"真正有用的 agent 产品通常不是一个更聪明的输入框，而是一套能保存上下文、展示进度、允许失败恢复、让用户判断证据质量的系统。",noteTwoTitle:"我会把审美当成产品能力。",noteTwoBody:"在视觉生成产品里，用户经常不能准确说出想要什么；产品需要通过对比、约束、风格记忆和反馈路径，让非专业用户也能迭代到好结果。",noteThreeTitle:"我更相信可检查的智能。",noteThreeBody:"在法律、合规、专利和企业知识场景里，答案本身不够；来源、证据、责任边界、下一步动作和人工确认都应该被设计出来。",artifactTitle:"可打开的材料。",artifactIntro:"网站负责呈现我怎么思考和构建；简历负责压缩经历；GitHub 负责给出公开代码线索。",artifactResume:"打开简历",contactEyebrow:"Open to AI Agent / Product Engineering roles",contactTitle:"如果团队在做真实 agent 落地，我会很快进入状态。"},en:{navWork:"Workbench",navSignal:"Signals",navNotes:"Notes",navContact:"Contact",heroEyebrow:"AI Agent Product Engineer / Founder / Research Builder",heroLede:"I turn messy, judgment-heavy professional work into AI-agent workflows that can be executed, tracked, verified, and delivered.",heroEmail:"Email me",heroResume:"Resume PDF",portraitCaption:"Builder mode",workbenchTitle:"Not a resume repeat. This is the system I keep building.",workbenchIntro:"The site fills the space a PDF cannot: how I think about agent products, how research becomes product judgment, and how I move early teams forward.",workLegalTitle:"Legal AI Agent Workbench",workLegalBody:"The shift from legal Q&A to deliverable work requires one closed loop: material ingestion, retrieval, task planning, source verification, human review, and delivery tracking.",workTasteTitle:"Taste Generation and Evaluation",workTasteBody:"While leading a 7-person 1shanai team in Guangzhou, I learned that image generation is really about turning taste, consistency, feedback, and commercial utility into iteration loops.",workResearchTitle:"Computer Vision Foundation",workResearchBody:"Research in 3D/4D generation, visual tokenization, and long-term person re-ID trained me to turn ambiguous problems into data, representations, and evaluations.",signalTitle:"High-signal proof for hiring teams.",signalIntro:"This website should answer faster than a one-page PDF: can this person turn agent capability into a real product outcome?",metricPipeline:"ARR pipeline from enterprise legal AI demos and pilot conversations.",metricTime:"time saved in retrieval, verification, synthesis, and draft-generation demos.",metricHackathon:"MSU Spartan Hack Best Use of Generative AI.",metricBilingual:"technical communication across US research, startup building, and China-facing hiring.",notesTitle:"What matters in interviews, but rarely fits on a resume.",notesIntro:"I want hiring teams to feel the operating style: sensitive product taste, honest engineering boundaries, and a bias toward verification and delivery.",noteOneTitle:"I prefer workflow decomposition over prompt packaging.",noteOneBody:"Useful agent products are rarely just smarter input boxes. They preserve context, show progress, recover from failure, and help users judge evidence quality.",noteTwoTitle:"I treat taste as a product capability.",noteTwoBody:"In visual generation, users often cannot state what they want. Products need comparison, constraints, style memory, and feedback paths so non-designers can still reach good outcomes.",noteThreeTitle:"I trust inspectable intelligence.",noteThreeBody:"In legal, compliance, patent, and enterprise knowledge work, the answer is not enough. Sources, evidence, responsibility boundaries, next actions, and human confirmation must be designed.",artifactTitle:"Openable artifacts.",artifactIntro:"The website shows how I think and build. The resume compresses experience. GitHub provides public code traces.",artifactResume:"Open resume",contactEyebrow:"Open to AI Agent / Product Engineering roles",contactTitle:"If a team is shipping real-world agents, I can get useful fast."}};
-let currentLang=localStorage.getItem("zg-lang")||"zh";const toggle=document.querySelector(".language-toggle");const label=document.querySelector("[data-lang-label]");
-function setLanguage(lang){currentLang=lang;document.documentElement.lang=lang==="zh"?"zh-CN":"en";document.body.dataset.lang=lang;document.querySelectorAll("[data-i18n]").forEach(node=>{const key=node.dataset.i18n;if(copy[lang][key])node.textContent=copy[lang][key]});label.textContent=lang==="zh"?"中文":"EN";localStorage.setItem("zg-lang",lang)}
-toggle.addEventListener("click",()=>setLanguage(currentLang==="zh"?"en":"zh"));
-const revealObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("is-visible");revealObserver.unobserve(entry.target)}})},{threshold:.12});
-document.querySelectorAll("[data-reveal]").forEach((node,index)=>{node.style.transitionDelay=`${Math.min(index*45,260)}ms`;revealObserver.observe(node)});
-const ticker=document.querySelector(".ticker div");if(ticker)ticker.innerHTML=`${ticker.innerHTML}${ticker.innerHTML}`;
-setLanguage(currentLang);
+const text = {
+  zh: {
+    navWork: "作品", navPapers: "论文", navCode: "代码", navArchive: "档案",
+    heroKicker: "AI Agent Builder / Product Founder / Computer Vision Researcher",
+    heroTitle: "我做能把混乱工作变成可验证产出的 AI 系统。",
+    heroThesis: "我关心的不是把模型包装成聊天框，而是把专业工作拆成可执行、可追踪、可审查、可交付的系统：agent workflow、source grounding、实时状态、human-in-the-loop，以及足够好的产品品味。",
+    resumeLink: "简历", nowLabel: "现在", nowValue: "Lawless Co-founder & CTO", baseLabel: "位置", baseValue: "上海 / 中国可入职", focusLabel: "主线",
+    p1Title: "Agents are workflow, not magic.", p1Body: "好的 agent 产品需要 context、tools、memory、eval、failure recovery 和 review UX。模型能力只是底层燃料。",
+    p2Title: "Evidence beats fluent answers.", p2Body: "法律、合规、专利、企业知识里，答案不够。来源、引用、责任边界和下一步动作才是可交付价值。",
+    p3Title: "Taste is execution power.", p3Body: "我做过视觉生成和审美评估。产品好不好，不只看模型分数，也看用户能不能更快得到更好的判断。",
+    workTitle: "我想被记住的不是职位，而是这些问题。",
+    lawlessTitle: "Enterprise legal AI agents that do work, not just answer questions.",
+    lawlessBody: "作为 Co-founder & CTO，我把法律问答推进为企业法律工作助手：材料摄取、检索、任务拆解、工具调用、source grounding、citation verification、人审确认、交付跟踪。场景包括跨境合规、公司法务、TRO/资金冻结、专利检索和专业服务自动化。",
+    shanTitle: "Aesthetic generation as a product system.",
+    shanBody: "在广州全职带 7 人团队，从 0 到 1 做服装灵感、活动 T 恤和视觉物料生成产品。核心不是“出图”，而是 prompt 控制、风格一致性、商业可用性、对比测试和用户反馈闭环。",
+    researchTitle: "From 3D humans to interactive 3D scene generation.",
+    researchBody: "在 MSU Computer Vision Lab 做 paid RA，研究 3D/4D generation、semantic visual tokenization、long-term person re-ID 和 LLM scene priors。这个底盘让我更习惯把模糊问题拆成数据、表示、约束和评测。",
+    paperTitle: "论文不是装饰，是我怎么形成工程判断的证据。",
+    paperOne: "把长期人物再识别从“同衣服行人匹配”推进到更真实的衣服变化、姿态变化和长期活动场景；通过 3D shape representation 分离身份与非身份因素。",
+    paperTwo: "探索把 LLM scene priors 和 2D diffusion backbone 结合到 text-to-3D scene generation，让用户用自然语言交互式编辑 3D 场景，并让物理约束进入生成过程。",
+    codeTitle: "能公开看的东西放这里；不能公开的产品，用结构讲清楚。",
+    repoOne: "Video diffusion / DDPM implementation adapted toward urban planning and generative modeling experiments.",
+    repoTwo: "公开课程/研究代码，展示机器学习和系统实现能力。",
+    repoThree: "这个网站：一个可公开编辑的研究、产品判断和作品索引。",
+    archiveTitle: "轨迹。",
+    a1: "Michigan State University Honors College, B.S. Computer Science and Engineering, GPA 3.7/4.0.",
+    a2: "Co-founder & CTO, Lawless: enterprise legal AI agent platform.",
+    a3: "Co-founder & CEO, 1shanai: generative visual product, aesthetics evaluation, early team management.",
+    a4: "PhysiBuilder preprint on interactive physics-informed 3D scene generation and editing.",
+    a5: "ICCV 2023 publication on clothing and pose invariant 3D shape representation for long-term person re-ID.",
+    a6: "MSU Spartan Hack Best Use of Generative AI, first place among 106 teams.",
+    footerTitle: "I am looking for serious AI agent work, not permission.",
+    footerBody: "如果你在做真实的 agent 产品、AI-native workflow、应用研究或高强度产品工程，我愿意聊。"
+  },
+  en: {
+    navWork: "Work", navPapers: "Papers", navCode: "Code", navArchive: "Archive",
+    heroKicker: "AI Agent Builder / Product Founder / Computer Vision Researcher",
+    heroTitle: "I build AI systems that turn messy work into verifiable output.",
+    heroThesis: "I care less about wrapping models in chat boxes and more about systems that make professional work executable, traceable, reviewable, and deliverable: agent workflows, source grounding, live state, human-in-the-loop review, and product taste.",
+    resumeLink: "Resume", nowLabel: "Now", nowValue: "Lawless Co-founder & CTO", baseLabel: "Base", baseValue: "Shanghai / China-ready", focusLabel: "Focus",
+    p1Title: "Agents are workflow, not magic.", p1Body: "Good agent products need context, tools, memory, evals, failure recovery, and review UX. Model capability is only the fuel.",
+    p2Title: "Evidence beats fluent answers.", p2Body: "In legal, compliance, patent, and enterprise knowledge work, answers are not enough. Sources, citations, boundaries, and next actions create value.",
+    p3Title: "Taste is execution power.", p3Body: "I have built in visual generation and aesthetic evaluation. Product quality is not only model score; it is whether users reach better judgment faster.",
+    workTitle: "I do not want to be remembered by titles. I want to be remembered by the problems.",
+    lawlessTitle: "Enterprise legal AI agents that do work, not just answer questions.",
+    lawlessBody: "As Co-founder & CTO, I push legal AI from Q&A into enterprise work systems: material ingestion, retrieval, task decomposition, tool use, source grounding, citation verification, human review, and delivery tracking across compliance, legal ops, TRO/frozen-funds cases, patent search, and professional-service automation.",
+    shanTitle: "Aesthetic generation as a product system.",
+    shanBody: "In Guangzhou, I led a 7-person team building generative products for fashion inspiration, event T-shirts, and visual materials. The hard part was not image generation; it was prompt control, style consistency, commercial usability, comparative testing, and feedback loops.",
+    researchTitle: "From 3D humans to interactive 3D scene generation.",
+    researchBody: "As a paid RA at MSU CVLab, I worked on 3D/4D generation, semantic visual tokenization, long-term person re-ID, and LLM scene priors. This trained me to turn ambiguity into data, representations, constraints, and evaluation.",
+    paperTitle: "Papers are not decoration. They are evidence for how I form engineering judgment.",
+    paperOne: "Extends long-term person re-identification toward realistic clothing changes, pose variation, and diverse long-horizon activities; uses 3D shape representation to separate identity from non-identity factors.",
+    paperTwo: "Explores combining LLM scene priors and 2D diffusion backbones for text-to-3D scene generation, enabling natural-language interactive scene editing with physics-aware constraints.",
+    codeTitle: "Public artifacts go here. Private products are explained through structure.",
+    repoOne: "Video diffusion / DDPM implementation adapted toward urban planning and generative modeling experiments.",
+    repoTwo: "Public coursework/research artifact showing machine learning and systems implementation work.",
+    repoThree: "This site: a public, editable index of research, product judgment, and selected work.",
+    archiveTitle: "Trajectory.",
+    a1: "Michigan State University Honors College, B.S. Computer Science and Engineering, GPA 3.7/4.0.",
+    a2: "Co-founder & CTO, Lawless: enterprise legal AI agent platform.",
+    a3: "Co-founder & CEO, 1shanai: generative visual product, aesthetics evaluation, early team management.",
+    a4: "PhysiBuilder preprint on interactive physics-informed 3D scene generation and editing.",
+    a5: "ICCV 2023 publication on clothing and pose invariant 3D shape representation for long-term person re-ID.",
+    a6: "MSU Spartan Hack Best Use of Generative AI, first place among 106 teams.",
+    footerTitle: "I am looking for serious AI agent work, not permission.",
+    footerBody: "If you are building real agent products, AI-native workflows, applied research, or high-intensity product engineering, I am interested."
+  }
+};
+
+const button = document.querySelector(".lang");
+let lang = localStorage.getItem("zg-site-lang") || "zh";
+function applyLang(next) {
+  lang = next;
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    const value = text[lang][node.dataset.i18n];
+    if (value) node.textContent = value;
+  });
+  button.textContent = lang === "zh" ? "中文" : "EN";
+  localStorage.setItem("zg-site-lang", lang);
+}
+button.addEventListener("click", () => applyLang(lang === "zh" ? "en" : "zh"));
+applyLang(lang);
