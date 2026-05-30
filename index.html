@@ -21,62 +21,53 @@
     <a class="pill" href="mailto:guziang@msu.edu">联系</a>
   </header>
   <main><section class="home-hero">
-      <div>
-        <p class="eyebrow">AI Agent 工程师</p>
-        <h1>我做 AI 工作系统，把模型输出变成可复核的交付物。</h1>
-        <p class="lead">我正在找 AI Agent 工程师方向的工作：把模型能力接进真实任务、harness、workspace、artifact、eval 和人工复核边界，做出能被真实用户接手的工作系统。</p>
+      <div class="hero-copy">
+        <p class="eyebrow">Ziang Gu / AI work systems</p>
+        <h1>把 agent 做成能交付的工作系统。</h1>
+        <p class="lead">我关注模型输出之后的部分：证据怎样被保存，草稿怎样被复核，失败怎样进入下一轮 eval，用户怎样拿到一个可以继续工作的 artifact。</p>
         <div class="action-row">
           <a href="./lawless-agent-system.html">看主案例</a>
-          <a href="./project-reports.html">看项目入口</a>
+          <a href="./project-reports.html">全部项目</a>
           <a href="./assets/ziang-gu-resume.pdf" target="_blank" rel="noreferrer">简历 PDF</a>
-          <a href="https://github.com/ZiAngGu1" target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </div>
-      <aside class="profile-panel">
-        <img src="./assets/profile.jpeg" alt="Ziang Gu portrait" />
-        <dl>
-          <div><dt>现在</dt><dd>Lawless Co-founder</dd></div>
-          <div><dt>主线</dt><dd>AI work systems, artifact, eval, human review</dd></div>
-          <div><dt>背景</dt><dd>产品交付、研究系统、数据评测</dd></div>
-        </dl>
+      <aside class="hero-visual">
+        <figure>
+          <img src="./assets/lawless-web-patent-workspace.png" alt="Lawless patent workspace with source and artifact panels" />
+          <figcaption>Lawless workspace: source evidence, case progress, and artifact review in one surface.</figcaption>
+        </figure>
       </aside>
     </section>
 
     <section class="reader-strip" id="fit">
-      <article><span>我是谁</span><p>一个能在产品判断、工程实现、验证和小团队执行之间来回推进的 AI builder。</p></article>
-      <article><span>最强证据</span><p>Lawless：法律/税务 agent workspace，把 case state、source evidence、artifact、approval gate 和 eval trace 放进同一个工作系统。</p></article>
-      <article><span>面试主线</span><p>我能解释一个 AI 系统怎样从用户材料出发，经过 agent run、可复核 artifact、人类审批和下一轮 eval 继续变好。</p></article>
-    </section>
-
-    <section class="metric-strip">
-      <article><span>2 个工作台</span><p>本地 desktop assistant + 云端 case workspace，对应企业税务和跨境卖家两类真实边界。</p></article>
-      <article><span>30-40 分钟 -> 2-3 分钟</span><p>税务邮件研究/起草在内部 workflow test 中压缩为专家复核工作，不写成自动替代专家。</p></article>
-      <article><span>约 10% -> 约 90%</span><p>专利内部风险样例 top-k recall 通过 skill/search strategy 迭代提升，边界是内部 candidate recovery。</p></article>
-      <article><span>40-50 件实物衣服</span><p>1shanai 从 AI 生成设计推进到小批量打样和交付，作为早期产品闭环证据。</p></article>
+      <article><span>主线</span><p>AI work systems: workspace, artifact, eval, human review。</p></article>
+      <article><span>最强证据</span><p>Lawless 把法律/税务任务推进到 case state、source evidence、draft 和 approval gate。</p></article>
+      <article><span>边界</span><p>系统准备证据和草稿，最终专业判断仍由人负责。</p></article>
     </section>
 
     <section class="section main-case">
       <div class="section-head">
-        <p class="eyebrow">主 case study</p>
-        <h2>如果只看一个项目，看 Lawless：一个把 AI 输出推进到可复核工作包的法律/税务 agent system。</h2>
+        <p class="eyebrow">Main case study</p>
+        <h2>Lawless 是这个网站的主叙事：一个把法律/税务 AI 做成可复核工作包的 agent system。</h2>
       </div>
       <a class="case-feature" href="./lawless-agent-system.html">
         <figure><img src="./assets/lawless-workspace-hero.png" alt="Lawless agent workspace concept" /></figure>
         <div>
           <span>Lawless / Legal and Tax AI</span>
-          <h3>从 messy client material 到 case facts、source evidence、draft、approval gate 和 eval trace。</h3>
-          <p>这个案例展示了我如何把真实专业服务任务拆成可运行的系统：本地 desktop assistant 处理企业税务边界，cloud workspace 处理卖家案件入口，patent eval loop 处理可测迭代。关键边界也很清楚：系统准备证据和草稿，法律/税务判断仍由专家负责。</p>
-          <div class="card-chips"><b>主能力：AI work system</b><b>证据：workspace + eval</b><b>边界：expert review</b></div>
+          <h3>从混乱材料到可审阅的工作包。</h3>
+          <p>本地 desktop assistant 处理企业税务边界，cloud workspace 处理卖家案件入口，patent eval loop 处理可测迭代。重点不是让模型说得更像专家，而是让来源、草稿、审批和失败恢复都留在系统里。</p>
+          <div class="card-chips"><b>workspace + eval</b><b>expert review required</b></div>
         </div>
       </a>
     </section>
 
     <section class="section" id="work">
       <div class="section-head">
-        <p class="eyebrow">Lawless 深入页</p>
-        <h2>Lawless 的四个证据面：企业本地边界、云端案件工作台、专利 evidence recovery、以及可回滚的 eval loop。</h2>
+        <p class="eyebrow">Selected work</p>
+        <h2>把少数有证据的项目放在前面，让读者先记住能力，再进入细节。</h2>
       </div>
       <div class="project-grid"><a class="project-card flagship" href="./lawless-agent-system.html">
+    <div class="card-media"><img src="./assets/lawless-workspace-hero.png" alt="Lawless agent workspace concept diagram" /></div>
     <span>01 / Legal AI</span>
     <h3>Lawless: 把法律和税务 AI 做成可交付的 agent workspace</h3>
     <p>主 case study。它说明我如何把法律/税务 AI 做成可复核的工作包，而不是一次聊天回复。</p>
@@ -86,27 +77,8 @@
       <b>边界：专家最终判断</b>
     </div>
     <div class="tag-row"><b>legal AI</b><b>harness</b><b>evidence</b><b>approval</b><b>eval</b></div>
-  </a><a class="project-card medium" href="./lawless-desktop-assistant.html">
-    <span>02 / Desktop</span>
-    <h3>Lawless Desktop Assistant: 本地优先的企业法律/税务 agent</h3>
-    <p>它说明我能处理企业场景里的本地授权、后台任务、artifact runtime 和动作审批。</p>
-    <p class="proof-line">desktop agent、Outlook/M365、scheduled task、ActionGate。</p>
-    <div class="card-chips">
-      <b>证明：本地边界</b>
-      <b>边界：不自动发送</b>
-    </div>
-    <div class="tag-row"><b>desktop</b><b>Outlook</b><b>ActionGate</b><b>scheduled task</b><b>review</b></div>
-  </a><a class="project-card medium" href="./lawless-cloud-workspace.html">
-    <span>03 / Cloud</span>
-    <h3>Lawless Cloud Workspace: 面向跨境卖家的远程 agent 工作台</h3>
-    <p>它说明我能把复杂案件流程做成低配置用户也能进入的 cloud workspace。</p>
-    <p class="proof-line">case workspace、file sync、SSE streaming、artifact rail。</p>
-    <div class="card-chips">
-      <b>证明：产品化入口</b>
-      <b>边界：TRO eval 待补强</b>
-    </div>
-    <div class="tag-row"><b>cloud workspace</b><b>seller workflow</b><b>SSE</b><b>artifact rail</b><b>case restore</b></div>
   </a><a class="project-card flagship" href="./lawless-patent-search.html">
+    <div class="card-media"><img src="./assets/patent-lawless-workbench.png" alt="Patent Lawless workbench" /></div>
     <span>04 / Patent</span>
     <h3>Patent Search Skill: 从商品风险恢复到 claim/status/evidence matrix</h3>
     <p>它说明我能把 AI 搜索任务变成可测试、可回滚、可解释的 evidence recovery loop。</p>
@@ -116,17 +88,8 @@
       <b>边界：不是法律意见</b>
     </div>
     <div class="tag-row"><b>patent search</b><b>claim matrix</b><b>recall</b><b>parser</b><b>grader</b></div>
-  </a><a class="project-card medium" href="./lawless-tro-response.html">
-    <span>05 / TRO</span>
-    <h3>TRO Response Skill: 冻结案件的交互式 case response</h3>
-    <p>它说明我能把高压用户场景拆成 case state、证据缺口、路径选择和 review draft。</p>
-    <p class="proof-line">case brief、money exposure、path cards、review workflow。</p>
-    <div class="card-chips">
-      <b>证明：案件状态机</b>
-      <b>边界：专项评测较薄</b>
-    </div>
-    <div class="tag-row"><b>TRO</b><b>case state</b><b>seller</b><b>evidence checklist</b><b>draft review</b></div>
   </a><a class="project-card flagship" href="./lawless-heuristic-eval.html">
+    <div class="card-media"><img src="./assets/heuristic-learning-loop.png" alt="Heuristic learning loop diagram" /></div>
     <span>06 / Eval</span>
     <h3>Heuristic Eval Loop: 让 agent skill 像软件系统一样被测试和改进</h3>
     <p>它说明我能让 agent failure 进入可回放、可评分、可回滚的改进循环。</p>
@@ -136,25 +99,8 @@
       <b>边界：改 skill 非训权重</b>
     </div>
     <div class="tag-row"><b>heuristic learning</b><b>grader</b><b>ledger</b><b>rollback</b><b>holdout</b></div>
-  </a></div>
-    </section>
-
-    <section class="section" id="research">
-      <div class="section-head">
-        <p class="eyebrow">Supporting projects</p>
-        <h2>支撑项目展示同一种能力在不同场景里的延伸：从生成结果到实物，从自然语言到 3D scene，从数据设计到评测边界。</h2>
-      </div>
-      <div class="project-grid"><a class="project-card medium" href="./shanai-ai-apparel.html">
-    <span>07 / Apparel</span>
-    <h3>1shanai: 把 AI 服装生成推进到实物交付</h3>
-    <p>它补充证明我做过从生成结果到实物打样、用户反馈和小团队交付的闭环。</p>
-    <p class="proof-line">用户反馈、FLUX LoRA、正反面图、打样和交付协调。</p>
-    <div class="card-chips">
-      <b>证明：实物交付</b>
-      <b>边界：小批量 beta</b>
-    </div>
-    <div class="tag-row"><b>AI apparel</b><b>LoRA</b><b>preference</b><b>sampling</b><b>production</b></div>
   </a><a class="project-card flagship" href="./physibuilder.html">
+    <div class="card-media"><img src="./assets/physibuilder-figure2.png" alt="PhysiBuilder framework overview" /></div>
     <span>08 / 3D Vision</span>
     <h3>PhysiBuilder: Physics-Informed Prompt Learning for Interactive 3D Scene Generation and Editing</h3>
     <p>它补充证明我有研究型系统经验：先建立可检查的 scene prior，再做 3D 生成。</p>
@@ -165,6 +111,7 @@
     </div>
     <div class="tag-row"><b>text-to-3D</b><b>scene prior</b><b>NeRF</b><b>LLM planning</b><b>editing</b></div>
   </a><a class="project-card flagship" href="./long-term-reid.html">
+    <div class="card-media"><img src="./assets/iccv2023-title-page.png" alt="ICCV 2023 ReID paper title page" /></div>
     <span>09 / ICCV 2023</span>
     <h3>Long-Term Person ReID: 跨服装、跨活动人体图像数据基础</h3>
     <p>它补充证明我理解数据集如何约束模型捷径，并能参与长期视觉评测问题。</p>
@@ -174,59 +121,42 @@
       <b>边界：贡献需限界</b>
     </div>
     <div class="tag-row"><b>ReID</b><b>dataset</b><b>3D shape</b><b>shortcut</b><b>ICCV</b></div>
+  </a><a class="project-card medium" href="./shanai-ai-apparel.html">
+    <div class="card-media"><img src="./assets/shanai-workflow-diagram.png" alt="1shanai apparel workflow diagram" /></div>
+    <span>07 / Apparel</span>
+    <h3>1shanai: 把 AI 服装生成推进到实物交付</h3>
+    <p>它补充证明我做过从生成结果到实物打样、用户反馈和小团队交付的闭环。</p>
+    <p class="proof-line">用户反馈、FLUX LoRA、正反面图、打样和交付协调。</p>
+    <div class="card-chips">
+      <b>证明：实物交付</b>
+      <b>边界：小批量 beta</b>
+    </div>
+    <div class="tag-row"><b>AI apparel</b><b>LoRA</b><b>preference</b><b>sampling</b><b>production</b></div>
   </a></div>
+      <div class="section-action"><a href="./project-reports.html">看完整项目入口</a></div>
     </section>
 
-    <section class="section quieter-section">
+    <section class="section evidence-gallery" id="research">
       <div class="section-head">
-        <p class="eyebrow">Earlier work</p>
-        <h2>更早的工程和生成式视觉探索说明我的技术背景，但主叙事仍然回到可交付的 AI 工作系统。</h2>
+        <p class="eyebrow">Visual evidence</p>
+        <h2>页面用真实截图和论文图支撑判断，不让项目只停在概念词上。</h2>
       </div>
-      <div class="project-grid compact-grid"><a class="project-card note" href="./cse434-robotics.html">
-    <span>10 / Robotics</span>
-    <h3>CSE434 Robotics: Webots + ROS 2 自动车仿真工程化整理</h3>
-    <p>它作为早期工程证据，说明我重视可运行状态、部署边界和 blocker 透明度。</p>
-    <p class="proof-line">Webots、ROS 2、pure pursuit、LiDAR obstacle logic。</p>
-    <div class="card-chips">
-      <b>证明：系统复现</b>
-      <b>边界：partial deployment</b>
-    </div>
-    <div class="tag-row"><b>Webots</b><b>ROS 2</b><b>pure pursuit</b><b>LiDAR</b><b>deployment</b></div>
-  </a><a class="project-card note" href="./urban-diffusion.html">
-    <span>11 / Diffusion</span>
-    <h3>Video Diffusion Artifact: 早期生成式视觉代码备份</h3>
-    <p>它作为早期生成式视觉背景，说明我接触过 diffusion code，但不把它夸成完整研究成果。</p>
-    <p class="proof-line">3D U-Net、GaussianDiffusion、sampling pipeline。</p>
-    <div class="card-chips">
-      <b>证明：早期探索</b>
-      <b>边界：证据较薄</b>
-    </div>
-    <div class="tag-row"><b>video diffusion</b><b>3D U-Net</b><b>sampling</b><b>spatial generation</b></div>
-  </a></div>
+      <div class="media-grid">
+        <figure><img src="./assets/lawless-desktop-chat-live.png" alt="Lawless desktop chat" /><figcaption>Desktop assistant with live work state.</figcaption></figure>
+        <figure><img src="./assets/physibuilder-figure2.png" alt="PhysiBuilder framework" /><figcaption>PhysiBuilder scene-prior pipeline.</figcaption></figure>
+        <figure><img src="./assets/shanai-workflow-diagram.png" alt="1shanai workflow" /><figcaption>1shanai preference to physical feedback loop.</figcaption></figure>
+      </div>
     </section>
 
     <section class="section resume-contact">
       <div class="section-head">
         <p class="eyebrow">Resume / Contact</p>
-        <h2>下一步很简单：看主案例，打开简历，或者直接联系我。</h2>
+        <h2>如果这个方向对你的团队有用，可以从主案例或简历继续看。</h2>
       </div>
       <div class="contact-grid-site">
         <a href="./assets/ziang-gu-resume.pdf" target="_blank" rel="noreferrer"><span>简历 PDF</span><p>一页版经历、项目和联系方式。</p></a>
         <a href="mailto:guziang@msu.edu"><span>Email</span><p>guziang@msu.edu</p></a>
         <a href="https://github.com/ZiAngGu1" target="_blank" rel="noreferrer"><span>GitHub</span><p>代码、论文和公开项目入口。</p></a>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <p class="eyebrow">Visual evidence</p>
-        <h2>截图和论文图把系统形态放到读者眼前：工作台、artifact、3D scene prior 和实物交付闭环。</h2>
-      </div>
-      <div class="media-grid">
-        <figure><img src="./assets/lawless-desktop-chat-live.png" alt="Lawless desktop chat" /><figcaption>Lawless desktop assistant 的实时工作界面。</figcaption></figure>
-        <figure><img src="./assets/lawless-web-patent-workspace.png" alt="Lawless patent workspace" /><figcaption>Cloud patent workspace：材料、进度和 artifact 同屏。</figcaption></figure>
-        <figure><img src="./assets/physibuilder-figure2.png" alt="PhysiBuilder framework" /><figcaption>PhysiBuilder 的 scene prior 到 3D generation 框架。</figcaption></figure>
-        <figure><img src="./assets/shanai-workflow-diagram.png" alt="1shanai workflow" /><figcaption>1shanai 从偏好输入到实物反馈的闭环。</figcaption></figure>
       </div>
     </section></main>
 </body>
