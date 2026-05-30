@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Patent Search 的 harness 让高风险专利能被 recall-first 地找回，同时防止弱相关结果污染法律复核。" />
+  <title>Patent Search Skill: 从商品风险恢复到 claim/status/evidence matrix / Ziang Gu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="paper-page">
+  <header class="site-header">
+    <a class="brand" href="./index.html"><span>谷子昂</span><small>Ziang Gu</small></a>
+    <nav>
+      <a href="./index.html#fit">定位</a>
+      <a href="./lawless-agent-system.html">主案例</a>
+      <a href="./project-reports.html">项目</a>
+      <a href="./index.html#research">研究</a>
+      <a href="./assets/ziang-gu-resume.pdf" target="_blank" rel="noreferrer">简历</a>
+    </nav>
+    <a class="pill" href="mailto:guziang@msu.edu">联系</a>
+  </header>
+  <main><article class="paper">
+      <header class="paper-hero">
+        <div>
+          <p class="eyebrow">04 / Patent</p>
+          <h1>Patent Search Skill: 从商品风险恢复到 claim/status/evidence matrix</h1>
+          <p class="dek">Patent Search 的 harness 让高风险专利能被 recall-first 地找回，同时防止弱相关结果污染法律复核。</p>
+          <div class="tag-row hero-tags"><b>patent search</b><b>claim matrix</b><b>recall</b><b>parser</b><b>grader</b></div>
+          
+        </div>
+        <figure class="paper-figure">
+    <img src="./assets/patent-lawless-workbench.png" alt="Patent Lawless workbench" />
+    <figcaption>Figure 1. Patent workbench。agent 需要把商品特征、品牌、专利来源和 report artifact 连接起来。</figcaption>
+  </figure>
+      </header>
+
+      <section class="case-brief" aria-label="Case study brief">
+    <article>
+          <span>真实任务</span>
+          <p>跨境卖家需要判断商品是否触发 design/utility patent 风险，最怕漏掉真正高风险专利。</p>
+        </article><article>
+          <span>核心做法</span>
+          <p>query packs、Google Patents parser、claim/status/evidence matrix、bucket contract 和 answer-blind eval。</p>
+        </article><article>
+          <span>结果边界</span>
+          <p>约 100 个内部风险样例 top-k recall 从约 10% 到约 90%；指标衡量召回和证据恢复，最终侵权意见仍需律师复核。</p>
+        </article>
+  </section>
+
+      <aside class="toc">
+        <a href="#s1">1. 为什么做：专利检索同时怕漏召回和乱报高风险</a><a href="#s2">2. 怎么做：把搜索策略、parser 和输出 contract 拆开</a><a href="#s3">3. 结果是什么：检索策略可以被测试和回滚</a><a href="#s4">4. 边界：recall-first 仍要控制噪声</a>
+        
+        <a href="#references">参考材料</a>
+      </aside>
+
+      <div class="figure-grid"><figure class="paper-figure">
+    <img src="./assets/patent-lawless-report.png" alt="Patent Lawless report" />
+    <figcaption>Figure 2. Patent report。输出包含高风险/相关专利、claim/status/evidence matrix 和后续任务。</figcaption>
+  </figure></div>
+      <section class="paper-section" id="s1">
+    <h2>1. 为什么做：专利检索同时怕漏召回和乱报高风险</h2>
+    <p>专利风险检索的第一风险是漏掉关键专利，第二风险是把弱相关结果包装成高风险。design patent 依赖外观、图片和整体视觉相似性；utility patent 依赖 claim element、功能结构和法律状态。一个品牌关键词或统一相似度分数无法覆盖这两种判断。</p>
+<p>对卖家来说，输出需要超过链接列表。律师或运营需要看到专利号、来源、法律状态、claim/description excerpt、商品特征对照、risk bucket 和为什么需要复核。Patent Search Skill 把检索结果组织成证据矩阵，让复核从结构化材料开始。</p>
+  </section>
+<section class="paper-section" id="s2">
+    <h2>2. 怎么做：把搜索策略、parser 和输出 contract 拆开</h2>
+    <p>agent 先从商品材料抽取 brand、visual features、functional elements、marketplace clues 和 patent hypotheses，再生成多组 query pack：品牌、外观、功能、竞品、权利人、平台线索和 Google Patents 语法。这样系统不会在第一批结果里过早收敛。</p>
+<p>检索结果先进入 parser 和 matrix。Google Patents parser 提取 claim windows、mechanism terms 和 status 信息；claim_risk_matrix 根据 overlap score、jurisdiction、legal status 和 feature match 给出 HIGH_RISK_REVIEW / RELATED_REVIEW。patent contract 防止分析段落里的背景专利号污染 high-risk bucket。</p>
+<p>失败样例会回到 harness。answer-blind runner 不能读答案，先独立完成报告；grader 再检查 high-risk recall、target recall、source support 和 evidence matrix。失败原因可能是 query pack 太窄、source policy 过早停止、parser 漏 claim、ranking helper 压低非品牌 assignee，或者 verifier rubric 没惩罚弱证据。</p>
+  </section>
+<section class="paper-section" id="s3">
+    <h2>3. 结果是什么：检索策略可以被测试和回滚</h2>
+    <p>约 100 个内部标注风险样例上，top-k recall 从约 10% 提升到约 90%。这个提升来自 skill/search strategy、source policy、ranking helper、query rewrite 和 verifier rubric 的迭代。</p>
+<p>这个数字的边界同样重要。top-k recall 表示目标高风险专利是否进入候选集合和结构化证据矩阵；律师最终侵权判断、jurisdiction 覆盖和公开市场通用准确率不在这个指标里。它证明专利检索 harness 在内部样例上能持续改进。</p>
+  </section>
+<section class="paper-section" id="s4">
+    <h2>4. 边界：recall-first 仍要控制噪声</h2>
+    <p>系统必须在 recall 和证据质量之间保持张力。扩大 query pack 可能提高 train recall，却让 heldout 出现大量弱相关专利；过宽的 source policy 可能污染 HIGH_RISK bucket。answer-blind eval、bucket contract 和 heldout review 的作用，就是让 skill 不会靠堆噪声显得更努力。</p>
+  </section>
+      <section class="paper-section" id="references">
+        <h2>参考材料</h2>
+        <ol class="reference-list"><li>patent-lawless/web/api/patent-search.js</li><li>patent-lawless/web/lib/patent-contract.js</li><li>patent-lawless/scripts/google_patents_parser.py</li><li>patent-lawless/scripts/claim_risk_matrix.py</li><li>patent-lawless/scripts/score-patent-eval.mjs</li><li>Jiayi Weng, Learning Beyond Gradients, 2026.</li></ol>
+      </section>
+    </article></main>
+</body>
+</html>

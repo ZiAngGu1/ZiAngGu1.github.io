@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="这个项目从用户偏好出发，把 AI 服装设计推进到正反面平面图、筛选、打样、下单和交付。" />
+  <title>1shanai: 把 AI 服装生成推进到实物交付 / Ziang Gu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="paper-page">
+  <header class="site-header">
+    <a class="brand" href="./index.html"><span>谷子昂</span><small>Ziang Gu</small></a>
+    <nav>
+      <a href="./index.html#fit">定位</a>
+      <a href="./lawless-agent-system.html">主案例</a>
+      <a href="./project-reports.html">项目</a>
+      <a href="./index.html#research">研究</a>
+      <a href="./assets/ziang-gu-resume.pdf" target="_blank" rel="noreferrer">简历</a>
+    </nav>
+    <a class="pill" href="mailto:guziang@msu.edu">联系</a>
+  </header>
+  <main><article class="paper">
+      <header class="paper-hero">
+        <div>
+          <p class="eyebrow">07 / Apparel</p>
+          <h1>1shanai: 把 AI 服装生成推进到实物交付</h1>
+          <p class="dek">这个项目从用户偏好出发，把 AI 服装设计推进到正反面平面图、筛选、打样、下单和交付。</p>
+          <div class="tag-row hero-tags"><b>AI apparel</b><b>LoRA</b><b>preference</b><b>sampling</b><b>production</b></div>
+          
+        </div>
+        <figure class="paper-figure">
+    <img src="./assets/shanai-workflow-diagram.png" alt="1shanai apparel workflow diagram" />
+    <figcaption>Figure 1. 1shanai 的闭环：偏好输入、FLUX LoRA、正反面图、用户选择、打样和交付。</figcaption>
+  </figure>
+      </header>
+
+      <section class="case-brief" aria-label="Case study brief">
+    <article>
+          <span>为什么重要</span>
+          <p>它补充证明我做过从生成结果到实物打样、用户反馈和小团队交付的闭环。</p>
+        </article><article>
+          <span>证明什么</span>
+          <p>用户反馈、FLUX LoRA、正反面图、打样和交付协调。</p>
+        </article><article>
+          <span>结果 / 边界</span>
+          <p>证明：实物交付；边界：小批量 beta。</p>
+        </article>
+  </section>
+
+      <aside class="toc">
+        <a href="#s1">项目概览</a><a href="#s2">1. 问题： 服装 AI 的难点在生成之后</a><a href="#s3">2. 方法： 偏好反馈驱动生成</a><a href="#s4">3. 实现细节</a><a href="#s5">4. 评测</a><a href="#s6">和普通 AI 服装生成 demo 的区别</a><a href="#s7">5. 技术补充： front/back consistency</a><a href="#s8">6. 交付补充： 小团队如何推进真实交付</a><a href="#s9">7. 产品补充： 为什么从 T-shirt 开始</a><a href="#s10">8. 评测补充： preference eval 不是论文 A/B test</a><a href="#s11">9. 补充说明： 从生成系统到商品系统</a><a href="#s12">10. 补充说明： 后续应该测什么</a><a href="#s13">11. 补充说明： 不确定性下的小团队推进</a><a href="#s14">12. 结论</a>
+        
+        <a href="#references">参考材料</a>
+      </aside>
+
+      
+      <section class="paper-section" id="s1">
+    <h2>项目概览</h2>
+    <p>1shanai 是一次从生成模型走向小规模实物交付的产品实验。我们没有从复杂打版、尺码系统或全品类服装开始，而是从 T-shirt 切入，把 AI 生成设计、用户反馈、正反面平面图、下单、打样和交付连成一个能运转的闭环。</p>
+<p>作为 Co-founder，我带 7 人暑期团队推进早期产品、生成流程和用户反馈闭环。基于 100+ beta 用户反馈，团队生产了约 40-50 件实体衣服。这个项目验证的是生成式视觉如何进入真实供应链边界，而不是停留在 prompt demo。</p>
+  </section>
+<section class="paper-section" id="s2">
+    <h2>1. 问题： 服装 AI 的难点在生成之后</h2>
+    <p>一张单面的 AI 服装图很容易令人兴奋，但用户真正要买的是能生产的衣服。图案要落在可印刷区域，前后面要语义一致，用户修改意见要能回流，供应链需要明确文件和下单信息。生成图和实物之间有很多断点。</p>
+<p>我们选择 T-shirt 是为了把最大的不确定性先降下来。T-shirt 不需要复杂版型建模，用户理解成本低，打样周期短，更适合验证用户是否愿意为 AI 设计付费或至少认真反馈。</p>
+  </section>
+<section class="paper-section" id="s3">
+    <h2>2. 方法： 偏好反馈驱动生成</h2>
+    <p>流程从用户偏好和需求开始，不直接把 prompt 丢给模型。用户的选择、拒绝、修改意见和风格偏好会回流到 prompt control、style consistency 和下一轮候选筛选。我们训练 FLUX LoRA，并建立 front/back consistency 数据流程，让同一设计语义可以生成正反面平面图。</p>
+<p>1shanai 的新点不只是“merge 功能”，而是把用户偏好、生成候选、正反面一致性和实物反馈接成一个循环。用户不是一次性挑图，而是在候选、修改、确认和打样之间不断收窄设计。</p>
+  </section>
+<section class="paper-section" id="s4">
+    <h2>3. 实现细节</h2>
+    <p>模型侧重点是 LoRA 数据、prompt 模板、风格一致性和候选筛选；产品侧重点是把设计确认、下单信息和打样流程组织清楚。每一轮用户选择不只是 UI 行为，而是下一轮生成策略的输入。</p>
+<p>团队管理上，我把 7 人暑期团队拆成用户反馈、生成流程、前后面图、下单打样和交付跟进几条线。这个项目很早期，但它训练了我后来做 agent workspace 时很重要的判断：模型能力只有进入真实交付链路，才会暴露真正的问题。</p>
+  </section>
+<section class="paper-section" id="s5">
+    <h2>4. 评测</h2>
+    <p>结果边界很清楚：100+ beta 用户反馈，约 40-50 件实体衣服，小批量打样和交付验证。它证明了从生成到实物交付的闭环，但不等于成熟供应链、大规模销售或完整服装平台。</p>
+<p>1shanai 的价值在于产品闭环能力：从用户需求到生成系统，从生成系统到生产文件，从生产文件到实物交付，再把反馈回流到下一轮。它和 Lawless 的共同点是都没有停在 demo，而是把 AI 放进真实 workflow。</p>
+  </section>
+<section class="paper-section" id="s6">
+    <h2>和普通 AI 服装生成 demo 的区别</h2>
+    <p>普通 AI apparel demo 展示的是好看的单张图。1shanai 的不同点是把生成结果接到用户偏好和实物交付：用户选择、拒绝、修改意见会回流到 prompt control、LoRA 数据筛选和风格一致性规则，最后进入正反面图、打样、下单和交付。</p>
+<p>它没有把复杂版型和供应链问题一次性吃下，而是从 T-shirt 切入，用较短链路验证用户是否愿意确认设计、等待打样并对实物反馈。这个选择让项目更像产品实验，而不是视觉效果演示。</p>
+<p>更准确地说，区别不在于 front/back render 本身。到 2025-2026，AI fashion tools 已经在宣传 front/back visuals、3D preview、tech-pack output 和 concept-to-production workflow。1shanai 更值得写的是 physical closed loop：100+ 用户反馈和约 40-50 件实体样衣反馈被接回下一轮 prompt、LoRA 数据筛选和风格规则。</p>
+  </section>
+<section class="paper-section" id="s7">
+    <h2>5. 技术补充： front/back consistency</h2>
+    <p>服装生成里的正反面一致性不是简单复制图案。用户看到的是同一件衣服的两个生产视角：前后图案应该保持同一设计语义，颜色和风格要一致，位置要符合 T-shirt 的可印刷区域，同时不能让背面图像像另一个 prompt 生成出的无关设计。</p>
+<p>我们用数据流程约束这一点：把同一设计意图拆成 front/back 两个视图，生成候选后让用户选择和反馈，再把被接受和被拒绝的样例回流到 prompt control、style consistency 和下一轮筛选。LoRA 提供风格和主题上的收敛，产品流程提供用户选择上的收敛。</p>
+<p>这个能力最后要服务下单和打样。只有当正反面图、设计确认和生产文件能对上，AI 服装才算走出了生成图阶段。否则再好看的单图也只是灵感板。</p>
+  </section>
+<section class="paper-section" id="s8">
+    <h2>6. 交付补充： 小团队如何推进真实交付</h2>
+    <p>7 人团队的难点不是每个人都写模型，而是把工作拆到能交付：有人负责用户反馈和需求整理，有人负责生成候选和风格控制，有人负责正反面图，有人负责下单打样，有人跟进实物交付。AI 项目一旦碰到实物，就会出现大量非模型问题：文件格式、印刷效果、颜色偏差、用户确认、交付周期。</p>
+<p>这段经历对后来的 Lawless 也有帮助。无论是衣服还是法律报告，模型输出都只是交付链路中的一段。真正的产品能力是把用户输入、生成结果、人类确认和最终交付连接起来。</p>
+  </section>
+<section class="paper-section" id="s9">
+    <h2>7. 产品补充： 为什么从 T-shirt 开始</h2>
+    <p>从 T-shirt 开始不是因为它最炫，而是因为它最适合验证闭环。T-shirt 的版型稳定，用户对正反面图的理解成本低，打样链路相对短，交付结果容易和生成图对比。复杂服装会把版型、尺码、面料、缝制工艺和供应链问题全部引入，太早进入会让团队无法判断问题到底来自模型、产品还是生产。</p>
+<p>这也是一个典型的 0 到 1 产品选择：先找最短路径证明用户愿意表达偏好、确认设计、等待打样，并对实物结果给反馈。只有这一点成立，后续才值得扩展品类或增加更复杂的设计工具。</p>
+  </section>
+<section class="paper-section" id="s10">
+    <h2>8. 评测补充： preference eval 不是论文 A/B test</h2>
+    <p>这里的 preference evaluation 更接近产品反馈，不是严格论文实验。用户在候选图之间选择、拒绝、要求修改，团队把这些选择回流到 prompt、LoRA 数据筛选和风格规则。它的价值在于把“用户觉得好看”变成下一轮生成的约束，而不是只记录一个投票结果。</p>
+<p>这种经验后来影响了我做 Lawless reviewer controls。无论是衣服设计还是法律 artifact，用户反馈都不应该只停在评论区。它要进入系统状态，改变下一轮生成、检索或复核的行为。</p>
+  </section>
+<section class="paper-section" id="s11">
+    <h2>9. 补充说明： 从生成系统到商品系统</h2>
+    <p>1shanai 的技术难点不只在模型输出质量，还在于把模型输出转成商品系统可以消费的对象。商品系统需要 SKU、正反面图、尺寸/颜色选择、下单状态、打样反馈和交付记录；生成系统习惯输出一张或一组候选图。两者之间需要一个翻译层，把创意结果变成可确认、可生产、可追踪的订单材料。</p>
+<p>用户交互也不是简单 prompt 输入。很多用户不会准确描述自己想要的图案，但他们会在候选之间做选择，会指出“不喜欢这个颜色”“背面不要这么复杂”“这个元素可以保留”。这些反馈比原始 prompt 更有价值，因为它们来自真实选择。系统要记录这些选择，把它们变成下一轮生成约束。</p>
+<p>1shanai 的核心不是 AI apparel 概念，而是 workflow：我们验证的是生成模型如何通过用户偏好、候选筛选、正反面一致性和打样交付进入真实消费场景。40-50 件实体衣服的意义就在这里，它们不是销售规模，而是 workflow 是否能穿过物理世界的一次压力测试。</p>
+  </section>
+<section class="paper-section" id="s12">
+    <h2>10. 补充说明： 后续应该测什么</h2>
+    <p>如果把 1shanai 继续做成更严肃的产品评测，我会看四类指标。第一是生成质量：用户是否愿意从候选中选出可购买设计。第二是一致性：正反面是否保持同一语义和风格。第三是交付质量：打样成品和用户确认图之间的差距。第四是反馈效率：一次用户反馈能否明显缩小下一轮候选空间。</p>
+<p>这些指标比单纯“生成了多少张图”更接近产品真实价值。生成图数量通常很容易堆，但用户真正需要的是更少、更接近偏好的候选，以及能被生产和交付的设计文件。这个判断后来也迁移到了 Lawless：不是生成更多法律文本，而是生成更少但更可复核、更能推进任务的 artifact。</p>
+  </section>
+<section class="paper-section" id="s13">
+    <h2>11. 补充说明： 不确定性下的小团队推进</h2>
+    <p>早期团队最难的是不确定性分配。模型能不能生成、用户喜不喜欢、工厂能不能打样、交付周期是否稳定，这些问题同时存在。作为 Co-founder，我需要把它们拆成不同节奏的工作：当天能改的 prompt、每周能复盘的用户反馈、需要打样周期才能验证的生产问题。</p>
+<p>这段经历训练的是产品判断和执行节奏。技术项目常常不是等所有问题想清楚再开始，而是在保持边界诚实的前提下，把一个可测试闭环先跑起来。</p>
+  </section>
+<section class="paper-section" id="s14">
+    <h2>12. 结论</h2>
+    <p>1shanai 最值得保留的叙事不是“我们做 AI 服装”，而是“我们把生成模型接进用户偏好和实物交付”。它训练了我对 AI 产品闭环的判断：模型输出只是开始，真正难的是让用户能选择、能确认、能修改、能收到东西，并让反馈回到下一轮系统行为。</p>
+  </section>
+      <section class="paper-section" id="references">
+        <h2>参考材料</h2>
+        <ol class="reference-list"><li>resume/project-section-drafts-20260526/fact-bank.md</li><li>resume/iterations/project-wording-20260526-iterative-review/final-recommended-project-wording.md</li><li>Skema3D AI apparel design platform: https://www.skema3d.com/</li><li>Make the Dot fashion design platform: https://makethedot.webflow.io/</li></ol>
+      </section>
+    </article></main>
+</body>
+</html>

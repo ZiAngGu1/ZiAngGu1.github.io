@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="法律/税务 AI 的核心工程，是把专家原本分散在邮件、材料、来源、草稿和审批里的工作，压成一套可输入、可检索、可验证、可审批的 harness。" />
+  <title>Lawless: 把法律和税务 AI 做成可交付的 agent workspace / Ziang Gu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="paper-page">
+  <header class="site-header">
+    <a class="brand" href="./index.html"><span>谷子昂</span><small>Ziang Gu</small></a>
+    <nav>
+      <a href="./index.html#fit">定位</a>
+      <a href="./lawless-agent-system.html">主案例</a>
+      <a href="./project-reports.html">项目</a>
+      <a href="./index.html#research">研究</a>
+      <a href="./assets/ziang-gu-resume.pdf" target="_blank" rel="noreferrer">简历</a>
+    </nav>
+    <a class="pill" href="mailto:guziang@msu.edu">联系</a>
+  </header>
+  <main><article class="paper">
+      <header class="paper-hero">
+        <div>
+          <p class="eyebrow">01 / Legal AI</p>
+          <h1>Lawless: 把法律和税务 AI 做成可交付的 agent workspace</h1>
+          <p class="dek">法律/税务 AI 的核心工程，是把专家原本分散在邮件、材料、来源、草稿和审批里的工作，压成一套可输入、可检索、可验证、可审批的 harness。</p>
+          <div class="tag-row hero-tags"><b>legal AI</b><b>harness</b><b>evidence</b><b>approval</b><b>eval</b></div>
+          
+        </div>
+        <figure class="paper-figure">
+    <img src="./assets/lawless-workspace-hero.png" alt="Lawless agent workspace concept diagram" />
+    <figcaption>Figure 1. Lawless 的产品抽象：assistant 在案件、来源、artifact、review queue 和外部动作之间推进任务。</figcaption>
+  </figure>
+      </header>
+
+      <section class="case-brief" aria-label="Case study brief">
+    <article>
+          <span>真实任务</span>
+          <p>税务邮件研究、专利风险检索、TRO 冻结响应，三类任务都需要把低结构材料转成专家可复核的工作包。</p>
+        </article><article>
+          <span>核心做法</span>
+          <p>把 intake、source extraction、evidence matrix、citation preflight、draft review 和 approval gate 做成系统流程。</p>
+        </article><article>
+          <span>结果边界</span>
+          <p>税务邮件内部流程从 30-40 分钟压到约 2-3 分钟 reviewer workflow；专利内部样例 top-k recall 从约 10% 到约 90%。</p>
+        </article>
+  </section>
+
+      <aside class="toc">
+        <a href="#s1">1. 为什么做：专家时间要回到判断上</a><a href="#s2">2. 怎么做：把专家工作拆成可运行的 harness</a><a href="#s3">3. 结果是什么：机械整理被压缩，专家判断被保留</a><a href="#s4">4. 边界：法律判断仍然属于专家</a>
+        
+        <a href="#references">参考材料</a>
+      </aside>
+
+      <div class="figure-grid"><figure class="paper-figure">
+    <img src="./assets/lawless-web-workspaces.png" alt="Lawless cloud workspace list" />
+    <figcaption>Figure 2. 云端 workspace 入口。用户不需要本地配置，只要登录后进入对应 case。</figcaption>
+  </figure></div>
+      <section class="paper-section" id="s1">
+    <h2>1. 为什么做：专家时间要回到判断上</h2>
+    <p>法律和税务工作里，最费时间的部分通常是把材料整理到可以判断的状态。税务专家要从旧邮件、客户背景、内部资料和法规来源里恢复上下文；专利顾问要从商品图片、网页、品牌、权利要求和法律状态里判断哪些专利值得复核；TRO 团队要从冻结通知、法院文件、平台截图和卖家描述里确定案件来源、资金暴露、证据缺口和下一步路径。</p>
+<p>这些任务需要先把事实归位，再生成可复核文本。Lawless 产品化的是专家工作前面的 harness：让材料进入固定入口，让证据被拆成可检查对象，让草稿引用真实来源，让高风险动作在人工审批之后才发生。律师和税务专家因此接手的是已整理的工作包，无需重新收拾 agent 输出。</p>
+  </section>
+<section class="paper-section" id="s2">
+    <h2>2. 怎么做：把专家工作拆成可运行的 harness</h2>
+    <p>Lawless 的工作流从 intake 开始。用户上传邮件、商品页面、冻结通知或法院材料后，系统先抽取 case facts：客户是谁、任务类型是什么、已有材料有哪些、缺哪些证据、哪些来源需要引用。随后 skill routing 把任务送到税务研究、patent-find 或 ecommerce-tro-settlement，让不同法律任务进入各自的输入和输出约束。</p>
+<p>检索和写作之间有一层 evidence harness。专利任务会形成 HIGH_RISK / RELATED bucket、claim/status/evidence matrix 和 source list；TRO 任务会形成 case brief、money exposure、evidence checklist、path cards 和 draft email；税务任务会形成 source-backed 中英文草稿和 reviewer checklist。citation preflight 检查链接、source id、正文引用和结构化 bucket，让专家把时间放在判断本身，减少先修格式和找链接的机械工作。</p>
+<p>审批层把 agent 能做什么和系统允许做什么分开。assistant 可以读授权材料、检索来源、整理证据、生成草稿和提交 artifact；发送邮件、对外沟通、删除归档、法律承诺和最终意见必须进入 human review。每个动作都按风险级别进入不同出口，这是 harness 的一部分。</p>
+  </section>
+<section class="paper-section" id="s3">
+    <h2>3. 结果是什么：机械整理被压缩，专家判断被保留</h2>
+    <p>在企业税务场景，内部 workflow test 中，原本约 30-40 分钟的邮件研究和起草流程，被压缩成约 2-3 分钟的 reviewer workflow。专家打开任务时已经有客户上下文、来源、双语草稿和不确定点，可以直接判断、修改和批准。</p>
+<p>在专利场景，约 100 个内部标注风险样例上，answer-blind eval 让 agent 先在不知道答案的情况下检索和报告，再由 grader 检查 high-risk recall、source support 和 evidence matrix。经过 skill/search strategy、source policy、ranking helper 和 verifier rubric 的迭代，top-k recall 从约 10% 提升到约 90%。这个结果证明 harness 能推动检索策略变好；最终法律意见仍由专家给出。</p>
+  </section>
+<section class="paper-section" id="s4">
+    <h2>4. 边界：法律判断仍然属于专家</h2>
+    <p>Lawless 的边界必须写清楚。系统能让材料更快进入可复核状态，能检查引用和结构化证据，能让草稿进入审批流，但不能把法律判断伪装成最终意见，也不能绕过律师、税务专家或运营的批准。TRO 的 shared workspace 和 case artifact 已经能展示方向，但 TRO-specific eval 仍薄于 patent search，需要继续补材料缺口识别、路径建议一致性和 draft review 质量评测。</p>
+<p>这套工作真正特殊的地方，是把法律/税务专家每天要做的证据整理、来源核验、草稿审阅和动作审批变成可测试的工程表面。agent 输出因此变成可以被专家接手的工作包。</p>
+  </section>
+      <section class="paper-section" id="references">
+        <h2>参考材料</h2>
+        <ol class="reference-list"><li>lawless-desktop-agent-foundry: EngineAdapter、artifact-store、scheduler、ActionGate 相关实现。</li><li>lawless-web-app: CaseWorkspace、/api/chat streaming、citationExtraction、workspace artifact tabs。</li><li>patent-lawless: patent search contract、claim matrix、answer-blind eval loop。</li><li>lawless-heuristic-sdk: snapshot/restore、ledger、verifier、train/holdout loop。</li><li>Jiayi Weng, Learning Beyond Gradients, 2026.</li></ol>
+      </section>
+    </article></main>
+</body>
+</html>

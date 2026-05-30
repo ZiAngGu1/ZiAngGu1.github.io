@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Cloud Workspace 解决的是跨境卖家没有本地配置能力的问题：用户只上传材料，系统把专利或 TRO 案件推进成可下载、可复核、可继续补证的 case artifact。" />
+  <title>Lawless Cloud Workspace: 面向跨境卖家的远程 agent 工作台 / Ziang Gu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="paper-page">
+  <header class="site-header">
+    <a class="brand" href="./index.html"><span>谷子昂</span><small>Ziang Gu</small></a>
+    <nav>
+      <a href="./index.html#fit">定位</a>
+      <a href="./lawless-agent-system.html">主案例</a>
+      <a href="./project-reports.html">项目</a>
+      <a href="./index.html#research">研究</a>
+      <a href="./assets/ziang-gu-resume.pdf" target="_blank" rel="noreferrer">简历</a>
+    </nav>
+    <a class="pill" href="mailto:guziang@msu.edu">联系</a>
+  </header>
+  <main><article class="paper">
+      <header class="paper-hero">
+        <div>
+          <p class="eyebrow">03 / Cloud</p>
+          <h1>Lawless Cloud Workspace: 面向跨境卖家的远程 agent 工作台</h1>
+          <p class="dek">Cloud Workspace 解决的是跨境卖家没有本地配置能力的问题：用户只上传材料，系统把专利或 TRO 案件推进成可下载、可复核、可继续补证的 case artifact。</p>
+          <div class="tag-row hero-tags"><b>cloud workspace</b><b>seller workflow</b><b>SSE</b><b>artifact rail</b><b>case restore</b></div>
+          
+        </div>
+        <figure class="paper-figure">
+    <img src="./assets/lawless-web-patent-workspace.png" alt="Lawless web patent workspace" />
+    <figcaption>Figure 1. Patent search workspace。用户上传材料后，assistant 以 streaming 方式推进检索和 artifact 生成。</figcaption>
+  </figure>
+      </header>
+
+      <section class="case-brief" aria-label="Case study brief">
+    <article>
+          <span>真实任务</span>
+          <p>卖家上传商品、投诉、冻结通知、截图或法院材料，需要快速知道风险、缺口和下一步。</p>
+        </article><article>
+          <span>核心做法</span>
+          <p>caseType routing、file sync、SSE streaming、artifact rail、citation extraction 和 session reload 组成云端 harness。</p>
+        </article><article>
+          <span>结果边界</span>
+          <p>patent/TRO 共用工作台，但 skill 输出不同；TRO 基础 workspace 已验证，专属 eval 仍在补强。</p>
+        </article>
+  </section>
+
+      <aside class="toc">
+        <a href="#s1">1. 为什么做：卖家需要能持续补证的案件工作台</a><a href="#s2">2. 怎么做：把上传、流式运行和 artifact 放在同一条链路</a><a href="#s3">3. 结果是什么：低配置用户也能进入可复核流程</a><a href="#s4">4. 边界：共享工作台仍需要场景评测</a>
+        
+        <a href="#references">参考材料</a>
+      </aside>
+
+      <div class="figure-grid"><figure class="paper-figure">
+    <img src="./assets/lawless-web-patent-report.png" alt="Lawless patent report artifact" />
+    <figcaption>Figure 2. Report artifact。右侧 artifact rail 保留结果、引用和下载入口。</figcaption>
+  </figure></div>
+      <section class="paper-section" id="s1">
+    <h2>1. 为什么做：卖家需要能持续补证的案件工作台</h2>
+    <p>跨境卖家遇到专利投诉或 TRO 冻结时，手里通常是低结构材料：商品链接、平台截图、法院文件、律所邮件、冻结金额、销售记录和自己的描述。用户需要的是持续可补证的案件工作台：现在缺什么、哪些证据有来源、下一步可以走哪条路径、后续补材料后能不能接着推进。</p>
+<p>云端版本因此把目标定为 case workspace：登录后进入案件，上传材料，看到 agent 处理进度，得到 artifact，并能在下一轮继续补证。用户不需要理解 runner、MCP 或本地环境，法律/运营团队也不需要从散乱聊天记录里重新整理事实。</p>
+  </section>
+<section class="paper-section" id="s2">
+    <h2>2. 怎么做：把上传、流式运行和 artifact 放在同一条链路</h2>
+    <p>CaseWorkspaceConfig 定义 patent-search 和 TRO 两类任务入口。它们共享文件上传、session reload、activity trail 和 artifact preview，但 skillName、questionnaire、artifact path 和初始任务不同。共享的是案件工作台，不共享错误的任务定义。</p>
+<p>一次 cloud workspace 回合从 file sync 开始：上传材料进入 agent workspace，questionnaire 或自由输入被转成 structured request，/api/chat 通过 SSE 返回 checkpoint、tool activity、text delta 和 artifact event。前端持续更新 activity trail 和右侧 artifact rail，让用户知道系统是在检索、抽取、生成还是验证。</p>
+<p>artifact rail 是聊天的另一半。最终报告进入右侧区域前，citationExtraction 解析 markdown link、raw URL、numbered references 和 Lawless reference lines；UI 显示预览、引用和下载入口。刷新页面后，loadAgentSessionDetail 恢复 prior messages、uploaded files、artifacts、running state 和 activity trail。</p>
+  </section>
+<section class="paper-section" id="s3">
+    <h2>3. 结果是什么：低配置用户也能进入可复核流程</h2>
+    <p>Cloud Workspace 的结果是把 patent search 和 TRO response 从技术配置问题变成可进入的案件流程。用户只需要提供材料，系统负责把材料同步、运行 agent、生成 artifact、保留来源、展示进度和支持下一轮补证。</p>
+<p>web 侧 citationExtraction.test 覆盖 markdown links、raw URL、numbered references、Lawless reference lines、非 http link 忽略和 deterministic limit。Patent workflow verification 覆盖 workspace route、modal、context state、file refresh、artifact export、report preview 和 layout no-overlap。</p>
+  </section>
+<section class="paper-section" id="s4">
+    <h2>4. 边界：共享工作台仍需要场景评测</h2>
+    <p>Patent search 的检索和评测链路更完整；TRO 目前主要证明 shared workspace、route/config、questionnaire、skill binding 和 artifact path。后续还需要 TRO-specific eval：材料缺口识别、path card 一致性、draft email 是否引用案件事实、用户能否推进到 review 阶段。</p>
+  </section>
+      <section class="paper-section" id="references">
+        <h2>参考材料</h2>
+        <ol class="reference-list"><li>lawless-web-app/src/products/shared/case-workspace/caseWorkspaceConfig.ts</li><li>lawless-web-app/src/products/shared/case-workspace/ui/CaseWorkspaceDesigns.tsx</li><li>lawless-web-app/src/app/api/chat/route.ts</li><li>lawless-web-app/src/products/shared/service/citationExtraction.ts</li><li>lawless-web-app/tests/citationExtraction.test.mjs</li></ol>
+      </section>
+    </article></main>
+</body>
+</html>

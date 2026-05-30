@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="ICCV 2023 论文 3DInvarReID 的核心是让身份表示尽量摆脱 clothing / pose / texture 干扰。我在其中负责数据集设计与整理支持。" />
+  <title>Long-Term Person ReID: 跨服装、跨活动人体图像数据基础 / Ziang Gu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="paper-page">
+  <header class="site-header">
+    <a class="brand" href="./index.html"><span>谷子昂</span><small>Ziang Gu</small></a>
+    <nav>
+      <a href="./index.html#fit">定位</a>
+      <a href="./lawless-agent-system.html">主案例</a>
+      <a href="./project-reports.html">项目</a>
+      <a href="./index.html#research">研究</a>
+      <a href="./assets/ziang-gu-resume.pdf" target="_blank" rel="noreferrer">简历</a>
+    </nav>
+    <a class="pill" href="mailto:guziang@msu.edu">联系</a>
+  </header>
+  <main><article class="paper">
+      <header class="paper-hero">
+        <div>
+          <p class="eyebrow">09 / ICCV 2023</p>
+          <h1>Long-Term Person ReID: 跨服装、跨活动人体图像数据基础</h1>
+          <p class="dek">ICCV 2023 论文 3DInvarReID 的核心是让身份表示尽量摆脱 clothing / pose / texture 干扰。我在其中负责数据集设计与整理支持。</p>
+          <div class="tag-row hero-tags"><b>ReID</b><b>dataset</b><b>3D shape</b><b>shortcut</b><b>ICCV</b></div>
+          <div class="action-row"><a href="./assets/iccv2023-reid-paper.pdf" target="_blank" rel="noreferrer">Open local PDF</a><a href="https://arxiv.org/abs/2308.10658" target="_blank" rel="noreferrer">Open arXiv</a></div>
+        </div>
+        <figure class="paper-figure">
+    <img src="./assets/iccv2023-title-page.png" alt="ICCV 2023 ReID paper title page" />
+    <figcaption>Figure 1. ICCV 2023 paper title page: Learning Clothing and Pose Invariant 3D Shape Representation for Long-Term Person Re-Identification.</figcaption>
+  </figure>
+      </header>
+
+      <section class="case-brief" aria-label="Case study brief">
+    <article>
+          <span>为什么重要</span>
+          <p>它补充证明我理解数据集如何约束模型捷径，并能参与长期视觉评测问题。</p>
+        </article><article>
+          <span>证明什么</span>
+          <p>跨服装 ReID、数据设计、ICCV 2023 research context。</p>
+        </article><article>
+          <span>结果 / 边界</span>
+          <p>证明：数据与评测；边界：贡献需限界。</p>
+        </article>
+  </section>
+
+      <aside class="toc">
+        <a href="#s1">项目概览</a><a href="#s2">1. 问题： 衣服不是身份</a><a href="#s3">2. My Role: 数据边界和实验口径</a><a href="#s4">3. Paper Context</a><a href="#s5">4. Connection to Later Work</a><a href="#s6">和普通 ReID 数据工作的区别</a><a href="#s7">5. 技术补充： 数据集为什么是方法的一部分</a><a href="#s8">6. 如何理解结果</a><a href="#s9">7. 数据补充： 从图像收集到任务定义</a><a href="#s10">8. 补充说明： 从 ReID 到 agent eval 的迁移</a><a href="#s11">9. 补充说明： 研究训练如何迁移到产品</a><a href="#s12">10. 结论</a>
+        
+        <a href="#references">参考材料</a>
+      </aside>
+
+      
+      <section class="paper-section" id="s1">
+    <h2>项目概览</h2>
+    <p>Long-Term Person Re-Identification 的难点在于真实世界不会保持同一套衣服、姿态和活动。传统 ReID 常假设短时间、衣服不变；cloth-changing ReID 又常局限在 walking / standing。长期 ReID 更接近现实：同一个人可能换衣服、换活动、换视角，外观相似的人也可能造成混淆。</p>
+<p>ICCV 2023 论文提出 3DInvarReID，用 joint two-layer implicit model 分离 identity、pose、clothed shape 和 texture，同时学习 naked body shape feature。我在 2023 暑期 Paid RA 中负责 long-term person ReID 数据集设计与整理，组织 20,000+ 跨服装/跨活动人体图像，为 3D shape representation 和论文实验提供数据基础。</p>
+  </section>
+<section class="paper-section" id="s2">
+    <h2>1. 问题： 衣服不是身份</h2>
+    <p>许多 ReID 模型会无意中把衣服纹理当成身份捷径。短期监控场景里这个捷径有时有效，但长期场景下同一个人会换衣服，不同人也可能穿相似服装。只靠 appearance feature 会导致模型在真实时间跨度里失效。</p>
+<p>3DInvarReID 的思路是把身份线索转向更稳定的人体形状表示，同时显式建模 clothed shape 和 texture。这个方向要求数据本身覆盖足够多的活动和服装变化，否则评测仍会被简单外观模式支配。</p>
+  </section>
+<section class="paper-section" id="s3">
+    <h2>2. My Role: 数据边界和实验口径</h2>
+    <p>我的工作不是主导模型方法，而是支持数据基础：设计和整理 long-term ReID 数据，组织 20,000+ 跨服装/跨活动人体图像。这里的关键不是简单收集更多图片，而是控制哪些变化属于身份无关因素、哪些场景会让模型过拟合、哪些图像能构成有效 query / gallery。</p>
+<p>这段经历训练了我对 eval 的敏感度。后来做 patent search 和 agent eval 时，我同样关注 answer-blind、heldout、failure mode 和 rubric，因为没有清晰数据边界，任何“准确率提升”都可能只是口径变化。</p>
+  </section>
+<section class="paper-section" id="s4">
+    <h2>3. Paper Context</h2>
+    <p>论文构建了 CCDA dataset，并在 Celeb-reID、PRCC、LTCC、CCVID、Market-1501、MSMT17 和 HBW reconstruction 等数据上评估。CCDA 包含 100 subjects、1,555 images，并区分 normal / challenging query。</p>
+<p>论文报告中，3DInvarReID 在 CCDA 上达到 mAP 21.7、Rank1 11.1、Rank5 30.5，高于 ReIDCaps 和 CAL；ablation 显示 full model Rank1 36.3，w/o 3D 为 28.4，w/o pre-training 为 29.3，w/o 3D clothing 为 32.1。HBW reconstruction CD-L2 0.610，优于 LVD 和 SHAPY。</p>
+  </section>
+<section class="paper-section" id="s5">
+    <h2>4. Connection to Later Work</h2>
+    <p>这不是 agent 项目，但它解释了我为什么在 Lawless 里强调 eval loop。无论是 ReID 还是 legal AI，系统都可能学会错误捷径：ReID 可能学衣服，patent search 可能学品牌关键词，TRO assistant 可能学固定模板。真正的工程工作是设计数据和评测，让系统必须面对目标任务本身。</p>
+  </section>
+<section class="paper-section" id="s6">
+    <h2>和普通 ReID 数据工作的区别</h2>
+    <p>普通 ReID 很容易在短时间、同服装、同场景上取得好指标，但长期身份识别真正困难的是衣服、姿态、活动和视角变化。这个项目的区别在于围绕 long-term identity problem 组织数据，避免模型只学衣服纹理或背景捷径。</p>
+<p>我的贡献边界是数据集设计与整理，而不是夸大成方法主导。它的价值在于支持 3D shape representation 这类更稳定身份线索的评估，也训练了我后续做 agent eval 时对 dataset split、failure mode 和 shortcut 的敏感度。</p>
+<p>这里的 20,000+ 指 RA 阶段参与整理/筛选的跨服装、跨活动候选图像基础；论文公开的 CCDA 版本保留 100 subjects / 1,555 images。这个边界要写清楚，否则读者会把 raw curation scale 和 published dataset size 混在一起。</p>
+  </section>
+<section class="paper-section" id="s7">
+    <h2>5. 技术补充： 数据集为什么是方法的一部分</h2>
+    <p>在 Long-Term ReID 里，数据集不是附属材料，而是定义任务本身。若 query/gallery 只覆盖同一服装，模型学衣服也能拿高分；若活动太单一，模型可能学姿态或场景；若同一人样本太少，3D shape representation 很难被稳定评估。</p>
+<p>因此整理 20,000+ 跨服装/跨活动人体图像时，重点是让变化因素足够丰富，同时保持身份标注和实验口径可用。哪些图像属于同一身份、哪些变化应该被视为身份无关、哪些条件构成 challenging query，这些决定了模型是否真的面对 long-term identity problem。</p>
+<p>这类数据工作看起来不如模型名字显眼，但它常常决定论文实验是否有意义。对我来说，它也是后来设计 agent eval 的基础训练：先定义任务，再定义数据，再看系统是否真的解决了这个任务。</p>
+  </section>
+<section class="paper-section" id="s8">
+    <h2>6. 如何理解结果</h2>
+    <p>3DInvarReID 的结果不能只读成一个 Rank1 数字。它的关键是把 clothing/pose/texture 等非身份因素从 identity shape feature 中分离，让长期匹配不再过度依赖外观。ablation 里去掉 3D 或 pre-training 后性能下降，说明 3D 表示和训练流程都在贡献。</p>
+<p>这个项目也提醒我：模型要泛化，必须避免容易但错误的 shortcut。Lawless patent search 里的 brand-only shortcut、TRO 里的模板化回复，本质上是同一类问题。系统要被设计到不能靠捷径拿分。</p>
+  </section>
+<section class="paper-section" id="s9">
+    <h2>7. 数据补充： 从图像收集到任务定义</h2>
+    <p>20,000+ 图像的整理工作可以进一步拆成几类判断：同一身份是否跨越足够多服装和活动；图像质量是否足够支持 3D shape 或人体特征分析；query/gallery 的设置是否会让模型靠背景或衣服取巧；不同数据来源之间是否存在标注和分布差异。</p>
+<p>这些问题在论文里通常被压缩成 dataset construction，但对实际研究很关键。数据集如果没有覆盖目标变化，模型再复杂也只是在错误任务上优化。长期 ReID 的价值恰好在于迫使模型面对“身份不等于衣服”这个事实。</p>
+  </section>
+<section class="paper-section" id="s10">
+    <h2>8. 补充说明： 从 ReID 到 agent eval 的迁移</h2>
+    <p>ReID 数据集工作给我的一个长期影响是：评测口径本身就是产品的一部分。一个系统在错误数据上拿高分，可能比低分更危险，因为它会让团队以为问题已经解决。长期 ReID 里，如果衣服、背景或姿态泄漏身份，模型就会学到错误捷径；法律 agent 里，如果 benchmark 只检查是否写了流畅报告，agent 就会学会写得像专家但不一定召回关键来源。</p>
+<p>因此我在 Lawless 里很强调 answer-blind runner、heldout cases、grader rubric 和 failure taxonomy。它们和视觉研究里的 dataset split、ablation、metric design 是同一类工程判断。区别只是对象从图像模型变成了 agent skill。</p>
+<p>这段经历的贡献边界很清楚：我不是 3DInvarReID 的一作或方法主导，而是参与数据基础。这个边界让项目表达更可信，也更接近真实研究分工。</p>
+  </section>
+<section class="paper-section" id="s11">
+    <h2>9. 补充说明： 研究训练如何迁移到产品</h2>
+    <p>ReID 展示了研究训练和产品训练之间的连续性。Lawless 强调 evidence、eval 和 failure mode；这些不是凭空出现的产品词，而是来自更早的视觉研究经验。做数据集时要问“模型会不会学错东西”，做法律 agent 时也要问“agent 会不会靠流畅文本掩盖漏召回”。</p>
+<p>它也补充了一个维度：我不只是会做产品页面，也做过严肃计算机视觉研究，理解论文里的 ablation、metric、dataset 和 limitation 如何构成一个可信论证。这个能力迁移到 agent 产品上，就是把系统输出写成可验证报告，而不是营销文案。</p>
+  </section>
+<section class="paper-section" id="s12">
+    <h2>10. 结论</h2>
+    <p>Long-Term ReID 的贡献边界很克制：我强调数据集设计与整理，而不是把整篇 ICCV 方法都据为己有。但这段经历仍然是核心背景，因为它让我理解严肃技术项目如何通过数据、metric、ablation 和 limitation 建立可信度。</p>
+  </section>
+      <section class="paper-section" id="references">
+        <h2>参考材料</h2>
+        <ol class="reference-list"><li>Feng Liu, Minchul Kim, ZiAng Gu, Anil Jain, Xiaoming Liu. Learning Clothing and Pose Invariant 3D Shape Representation for Long-Term Person Re-Identification. ICCV 2023.</li><li>CVF Open Access: https://openaccess.thecvf.com/content/ICCV2023/html/Liu_Learning_Clothing_and_Pose_Invariant_3D_Shape_Representation_for_Long-Term_ICCV_2023_paper.html</li><li>arXiv: https://arxiv.org/abs/2308.10658</li><li>Published CCDA details are cited separately from the broader 20,000+ raw RA-stage curation work.</li></ol>
+      </section>
+    </article></main>
+</body>
+</html>
