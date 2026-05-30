@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Cloud Workspace 解决的是跨境卖家没有本地配置能力的问题：用户只上传材料，系统把专利或 TRO 案件推进成可下载、可复核、可继续补证的 case artifact。" />
-  <title>Lawless Cloud Workspace: 面向跨境卖家的远程 agent 工作台 / Ziang Gu</title>
+  <meta name="description" content="云端工作台让卖家无需本地配置，就能上传材料、看到智能体进度、恢复会话，并审阅可保存的专利或 TRO 交付物。" />
+  <title>把混乱的卖家材料整理成可审阅案件文件 / Ziang Gu</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -23,60 +23,118 @@
   <main><article class="paper">
       <header class="paper-hero">
         <div>
-          <p class="eyebrow">03 / Cloud</p>
-          <h1>Lawless Cloud Workspace: 面向跨境卖家的远程 agent 工作台</h1>
-          <p class="dek">Cloud Workspace 解决的是跨境卖家没有本地配置能力的问题：用户只上传材料，系统把专利或 TRO 案件推进成可下载、可复核、可继续补证的 case artifact。</p>
-          <div class="tag-row hero-tags"><b>cloud workspace</b><b>seller workflow</b><b>SSE</b><b>artifact rail</b><b>case restore</b></div>
+          <p class="eyebrow">03 / 云端</p>
+          <h1>把混乱的卖家材料整理成可审阅案件文件</h1>
+          <p class="dek">云端工作台让卖家无需本地配置，就能上传材料、看到智能体进度、恢复会话，并审阅可保存的专利或 TRO 交付物。</p>
+          <div class="tag-row hero-tags"><b>云端工作台</b><b>卖家流程</b><b>SSE</b><b>交付物栏</b><b>案件恢复</b></div>
           
         </div>
         <figure class="paper-figure">
-    <img src="./assets/lawless-web-patent-workspace.png" alt="Lawless web patent workspace" />
-    <figcaption>Figure 1. Patent search workspace。用户上传材料后，assistant 以 streaming 方式推进检索和 artifact 生成。</figcaption>
+    <img src="./assets/lawless-web-patent-workspace.png" alt="Lawless 网页专利工作台" />
+    <figcaption>图 1. 专利检索工作台。用户上传材料后，助手以流式方式推进检索和交付物生成。</figcaption>
   </figure>
       </header>
 
       <section class="case-brief" aria-label="Case study brief">
     <article>
-          <span>真实任务</span>
-          <p>卖家上传商品、投诉、冻结通知、截图或法院材料，需要快速知道风险、缺口和下一步。</p>
+          <span>为什么重要</span>
+          <p>跨境卖家不会配置本地智能体；他们需要把材料交进去，并能看到案件如何被推进到可下载的工作产物。</p>
         </article><article>
-          <span>核心做法</span>
-          <p>caseType routing、file sync、SSE streaming、artifact rail、citation extraction 和 session reload 组成云端 harness。</p>
+          <span>怎么做</span>
+          <p>CaseWorkspace 统一上传、问卷、流式进度、会话恢复、交付物预览和 caseType 技能路由。</p>
         </article><article>
-          <span>结果边界</span>
-          <p>patent/TRO 共用工作台，但 skill 输出不同；TRO 基础 workspace 已验证，专属 eval 仍在补强。</p>
+          <span>结果 / 边界</span>
+          <p>Patent 和 TRO 共用工作台但保持任务边界；TRO 专项评测仍薄于 patent search。</p>
         </article>
   </section>
 
       <aside class="toc">
-        <a href="#s1">1. 为什么做：卖家需要能持续补证的案件工作台</a><a href="#s2">2. 怎么做：把上传、流式运行和 artifact 放在同一条链路</a><a href="#s3">3. 结果是什么：低配置用户也能进入可复核流程</a><a href="#s4">4. 边界：共享工作台仍需要场景评测</a>
+        <a href="#s1">Core Claim</a><a href="#s2">核心循环：从材料到案件状态</a><a href="#s3">为什么旧形态会坏掉</a><a href="#s4">上传不是基础设施，它是法律产品的一部分</a><a href="#s5">进度流应该有用，而不是表演</a><a href="#s6">交付物栏是聊天的另一半</a><a href="#s7">会话恢复是产品的记忆</a><a href="#s8">TRO 路径：先形成案件状态，再谈邮件</a><a href="#s9">专利路径：证据链更成熟</a><a href="#s10">这套结构带来的价值</a><a href="#s11">证据边界</a>
         
         <a href="#references">参考材料</a>
       </aside>
 
       <div class="figure-grid"><figure class="paper-figure">
-    <img src="./assets/lawless-web-patent-report.png" alt="Lawless patent report artifact" />
-    <figcaption>Figure 2. Report artifact。右侧 artifact rail 保留结果、引用和下载入口。</figcaption>
+    <img src="./assets/lawless-web-patent-report.png" alt="Lawless 专利报告交付物" />
+    <figcaption>图 2. 报告交付物。右侧交付物栏保留结果、引用和下载入口。</figcaption>
   </figure></div>
       <section class="paper-section" id="s1">
-    <h2>1. 为什么做：卖家需要能持续补证的案件工作台</h2>
-    <p>跨境卖家遇到专利投诉或 TRO 冻结时，手里通常是低结构材料：商品链接、平台截图、法院文件、律所邮件、冻结金额、销售记录和自己的描述。用户需要的是持续可补证的案件工作台：现在缺什么、哪些证据有来源、下一步可以走哪条路径、后续补材料后能不能接着推进。</p>
-<p>云端版本因此把目标定为 case workspace：登录后进入案件，上传材料，看到 agent 处理进度，得到 artifact，并能在下一轮继续补证。用户不需要理解 runner、MCP 或本地环境，法律/运营团队也不需要从散乱聊天记录里重新整理事实。</p>
+    <h2>Core Claim</h2>
+    <p>跨境电商卖家遇到平台冻结、TRO 或专利风险时，通常不会带着一个干净的法律问题进入产品。他们带来的往往是碎片：Amazon 或 Temu 的冻结通知、律所邮件、法院文件、商品截图、销售表、货源证明、一个从页面上复制下来的专利号，外加一句“我的资金被冻结了，现在怎么办？”</p>
+<p>这种输入形态决定了产品不能只是一个聊天框。聊天框可以承接情绪和补充问题，但它很难成为案件记录；传统表单可以收集字段，但它要求用户在系统还没读材料之前，就先把法律事实分门别类。Lawless Cloud Workspace 的产品判断是：卖家侧法律 AI 的第一对象应该是案件工作区，而不是提示词。用户应该能把混乱材料放进去，看到系统如何组织它们，并在之后补充证据时继续同一个案件。</p>
+<p>因此，这个项目最重要的实现不是某个炫目的模型回复，而是围绕文件、会话、进度、来源和交付物建立的可恢复工作区。智能体只有在这些上下文能保存、能预览、能恢复、能被人审查时，才真的对卖家和复核人有用。</p>
   </section>
 <section class="paper-section" id="s2">
-    <h2>2. 怎么做：把上传、流式运行和 artifact 放在同一条链路</h2>
-    <p>CaseWorkspaceConfig 定义 patent-search 和 TRO 两类任务入口。它们共享文件上传、session reload、activity trail 和 artifact preview，但 skillName、questionnaire、artifact path 和初始任务不同。共享的是案件工作台，不共享错误的任务定义。</p>
-<p>一次 cloud workspace 回合从 file sync 开始：上传材料进入 agent workspace，questionnaire 或自由输入被转成 structured request，/api/chat 通过 SSE 返回 checkpoint、tool activity、text delta 和 artifact event。前端持续更新 activity trail 和右侧 artifact rail，让用户知道系统是在检索、抽取、生成还是验证。</p>
-<p>artifact rail 是聊天的另一半。最终报告进入右侧区域前，citationExtraction 解析 markdown link、raw URL、numbered references 和 Lawless reference lines；UI 显示预览、引用和下载入口。刷新页面后，loadAgentSessionDetail 恢复 prior messages、uploaded files、artifacts、running state 和 activity trail。</p>
+    <h2>核心循环：从材料到案件状态</h2>
+    <p>这个 workspace 的用户循环可以概括为：</p>
+<pre class="code-block"><code>杂乱材料
+  -&gt; 同步到案件输入
+  -&gt; 启动受边界约束的智能体运行
+  -&gt; 显示可理解的进度
+  -&gt; 生成来源和交付物预览
+  -&gt; 形成可复核报告
+  -&gt; 恢复同一会话，继续补证</code></pre>
+<p>这个循环比通用编码智能体更窄，但比固定法律问卷更能容纳真实输入。卖家不需要理解背后的工具、技能、模型或运行时；复核人则需要相反的东西：必须能看见用户上传了什么，系统生成了什么，来源轨迹在哪里，哪些结论还不应该被信任。</p>
+<p>项目目前有两个主要 caseType：patent-search 和 tro。它们共用同一个工作区外壳，但任务合同不同。patent-search 侧更像证据检索和主张比对：产品材料、已知专利、数据库范围、报告模式会影响输出。TRO 侧更像冻结账户后的案件响应：通知来源、法院和案号、平台资金、涉案销售、毛利、缺失证据、路径选择和外发草稿都要被区分。</p>
+<p>这个分层很关键。共享 UI 如果不小心，很容易把所有法律工作压平成“案件分析”。Lawless 的共享层只负责工作区机制；具体 caseType 负责技能、问卷、兜底提示词、交付物路径和报告完成标准。这样既能复用产品体验，又不会把不同法律任务混成一个模糊流程。</p>
   </section>
 <section class="paper-section" id="s3">
-    <h2>3. 结果是什么：低配置用户也能进入可复核流程</h2>
-    <p>Cloud Workspace 的结果是把 patent search 和 TRO response 从技术配置问题变成可进入的案件流程。用户只需要提供材料，系统负责把材料同步、运行 agent、生成 artifact、保留来源、展示进度和支持下一轮补证。</p>
-<p>web 侧 citationExtraction.test 覆盖 markdown links、raw URL、numbered references、Lawless reference lines、非 http link 忽略和 deterministic limit。Patent workflow verification 覆盖 workspace route、modal、context state、file refresh、artifact export、report preview 和 layout no-overlap。</p>
+    <h2>为什么旧形态会坏掉</h2>
+    <p>这个问题的难点不只是法律推理，而是连续性。</p>
+<p>TRO 案件里，少一个事实就可能改变实际路径：冻结金额、涉案商品销售额、毛利、是否向管辖州销售、是否收到 complaint、送达是否有效、原告律所、案号、货源授权证据，都会影响和解邮件、证据请求和律师复核的方向。专利风险也是一样：一张产品截图如果没有技术特征说明，风险判断会很弱；一个专利号如果没有和商品特征映射，也只是半条线索。</p>
+<p>所以“生成报告”按钮太脆。一键报告会让系统看起来已经完成，但证据可能很薄。大问卷则在另一个方向上太硬：它要求用户先理解法律事实，再把事实填入字段。纯聊天虽然灵活，却不是好的案件档案；附件、引用、生成文件、缺失事实和追问会散在不同轮对话里。</p>
+<p>Cloud Workspace 的做法是让每次运行都绑定到会话和案件目录。文件作为输入进入工作区，报告作为交付物返回，进度成为活动轨迹，右侧交付物栏显示当前交付物，用户不需要在聊天历史里翻找正式结果。</p>
   </section>
 <section class="paper-section" id="s4">
-    <h2>4. 边界：共享工作台仍需要场景评测</h2>
-    <p>Patent search 的检索和评测链路更完整；TRO 目前主要证明 shared workspace、route/config、questionnaire、skill binding 和 artifact path。后续还需要 TRO-specific eval：材料缺口识别、path card 一致性、draft email 是否引用案件事实、用户能否推进到 review 阶段。</p>
+    <h2>上传不是基础设施，它是法律产品的一部分</h2>
+    <p>文件上传看起来像基础设施，但在这个产品里，它直接影响法律工作质量。卖家的截图、平台通知、PDF、DOCX、CSV、商品图片和销售导出，常常就是最好的证据。</p>
+<p>当前上传路径支持分片，因为部署环境对请求体大小有约束。客户端把文件切成小块，服务端在 /home/user/case/inputs 里重新组装，并把这些文件写入案件输入目录。产品设置了单文件上限，并区分可搜索文件和可预览文本。用户看到的是 queued、uploading、uploaded、indexing、sync failed 这样的状态；案件记录里保存的是文件名、路径、大小、MIME 类型、是否可搜索、时间戳和索引状态。</p>
+<p>这样做比把文件内容直接粘进提示词更可靠。系统可以区分用户可见消息和文件清单；复核人可以看到材料列表；交付物面板可以把输入、输出、来源和正式报告分开。对法律工作来说，这个边界本身就是产品价值。</p>
+  </section>
+<section class="paper-section" id="s5">
+    <h2>进度流应该有用，而不是表演</h2>
+    <p>Workspace 通过 SSE 式事件流展示运行过程：文本增量、推理更新、工具开始、工具输入、工具结果、沙箱就绪、交付物事件、引用、问题、完成和错误。产品没有把这些原始事件直接丢给卖家，而是把它们压缩成可理解的活动轨迹：准备工作区、上传证据、读取案件材料、搜索来源、更新工作区、准备报告、报告就绪、需要更多信息、需要注意。</p>
+<p>这件事很重要，因为法律 AI 的信任常常被误解成“展示越多内部命令越可信”。但对非技术卖家来说，内部命令不等于可复核；对法律运营人员来说，真正需要的是交付物、来源和未解决问题。Lawless 把进度当作方向提示，而不是表演。用户应该知道系统是在读文件、找来源、等回答还是写报告；复核人应该能打开报告和来源；两者都不应该被迫阅读底层工具载荷。</p>
+<p>产品还会过滤部分内部细节。路径、提供方、令牌、命令和低层执行词不会成为主体验。这个边界不是美化，而是把用户注意力留给案件工作。</p>
+  </section>
+<section class="paper-section" id="s6">
+    <h2>交付物栏是聊天的另一半</h2>
+    <p>右侧交付物栏让这个项目不只是聊天演示。生成的报告、上传证据、来源文件、JSON、CSV、HTML、Markdown、PDF、DOCX 和图片都会被分类成可预览交付物。报告排在输出、输入、来源和二进制文件之前；文本类交付物可以按 Markdown、HTML、JSON、CSV、代码或纯文本预览；图片、PDF、DOCX 在可能时走自己的预览类别。</p>
+<p>这个模型改变了用户阅读结果的方式。智能体消息可以总结发生了什么，但报告交付物才是可恢复、可审查、可下载的正式工作成果。当智能体写出配置里的报告路径时，UI 会把报告标为 ready，并在工作区打开。如果运行没有产生预期报告，UI 可以显示消息和文件清单，但不能假装正式交付物已经存在。</p>
+<p>来源预览也遵循同样原则。引用可以来自事件流，也可以从报告 Markdown 里抽取。抽取逻辑处理 Markdown 链接、裸 URL、编号引用和 Lawless 风格参考行，然后按 URL 去重并分配稳定编号。如果来源能嵌入，工作区就内嵌打开；如果 Google 或 Google Patents 这类站点阻止 iframe，UI 会说明预览不可用，并保留外部链接。</p>
+<p>这是一条小但重要的诚实边界。来源打不开时，不应该显示空白面板，也不应该让用户以为系统已经验证过它。产品必须告诉复核人：预览不可用，但链接仍然可检查。</p>
+  </section>
+<section class="paper-section" id="s7">
+    <h2>会话恢复是产品的记忆</h2>
+    <p>判断一个页面是不是工作区，最好的测试是刷新之后发生什么。</p>
+<p>当 URL 带有 sessionId 时，工作区会重新加载会话详情、沙箱 ID、上传文件、交付物、历史消息、已选技能、已加载技能和持久化活动轨迹。仍标记为 active 的活动会在恢复视图里合理收束；如果报告交付物存在，工作区会把它重新打开成文件标签，并设为当前预览；如果最后一条智能体消息有可展示答案，也会恢复到可见消息里。</p>
+<p>这对卖家案件很实际。第一次运行可能只有平台冻结截图；第二次加 complaint PDF；第三次加 ASIN 销售导出和货源 invoice。工作区不应该要求用户每次从零开始复述。它应该把上一轮证据包、报告和缺口保存下来，让下一轮从同一案件状态继续。</p>
+<p>同时，产品也保留了“新建会话”的逃生门。如果用户明确开始新案件，旧 URL 会话状态不会被悄悄恢复回来，避免用户想离开旧案却被 URL 拉回去。</p>
+  </section>
+<section class="paper-section" id="s8">
+    <h2>TRO 路径：先形成案件状态，再谈邮件</h2>
+    <p>TRO 工作流里，混乱的第一分钟就是产品的核心场景。卖家可能只上传一封律所邮件，然后说平台账户被冻结了。工作区的任务不是马上写和解邮件，而是先建立案件状态：被告是谁，哪个平台受影响，文件里出现什么案号和法院，涉及哪个 plaintiff 或律所，哪些 listing 被指控，是否有美国或管辖州销售，冻结了多少钱，缺什么证据。</p>
+<p>TRO intake 配置对应这种领域形态：平台通知、律所邮件、summons、complaint、TRO order、涉案商品销售、货源证据、冻结账户、侵权立场、和解目标、已有律师和证据包。产品方向也很明确：一个工作区，一个输入面，一个持续演进的案件交付物；只有在事实足够清楚后，才出现路径选择。</p>
+<p>这个顺序很重要。输出不应该急着把“发送和解邮件”当成主动作。邮件只是案件理解之后的一个交付物。更有价值的交付物是活的案件摘要：已知事实、未知事实、资金暴露、看过的文件、可选路径和下一步行动。</p>
+<p>当前实现能证明共享工作台、TRO 路由绑定、问卷、技能绑定和交付物路径。它还不能证明 TRO 智能体已经能在真实卖家场景里稳定产出高质量路径卡、和解经济分析、证据请求和可供律师审查的邮件。下一步需要的是场景级评测。</p>
+  </section>
+<section class="paper-section" id="s9">
+    <h2>专利路径：证据链更成熟</h2>
+    <p>专利检索在这个代码库里的证据链更成熟。产品方向把专利工作区定义为输出优先：聚焦法律任务，接收产品和来源证据，运行真实提供方，生成结构化法律交付物，给出后续说明，并产出正式报告或 PDF 式结果。</p>
+<p>相关验证也不只测 API，而是测产品表面：从首页打开工作区，从同一入口打开 TRO 路由，暂存文件证据，启动问卷，在研究文件和报告标签之间切换，把报告交付物渲染成文档，在报告预览和来源视图之间移动，导出报告，添加复核备注。布局验证还覆盖多种视口，检查溢出、容器约束、输入区留白、弹窗尺寸和重叠问题。</p>
+<p>这些检查不能证明每个专利结论都法律正确，但它证明了一个更窄也更实用的点：用户可以从 intake 走到交付物复核，而不依赖隐藏的控制台路径。对卖家侧产品来说，UI 路径本身就是证据。如果系统只能通过内部脚本生成好报告，那它还不是面向卖家的产品。</p>
+  </section>
+<section class="paper-section" id="s10">
+    <h2>这套结构带来的价值</h2>
+    <p>Cloud Workspace 降低了卖家的配置成本。他们不需要本地环境、命令行或开发者陪同；他们需要的是登录、上传、等待、阅读、补证和回来继续。</p>
+<p>同一结构也帮助法律或运营复核人。复核人可以检查输入交付物，打开正式报告，沿着引用看来源，读进度轨迹，并基于同一会话发起追问运行。系统把“模型回答了”变成一个更可审查的主张：这些文件被上传过，这次运行发生过，这个交付物被生成过，这些来源被抽取过，这些问题仍然不确定。</p>
+<p>这个项目最稳定的技术思想不在模型本身，而在模型周围的环境：文件同步、按案件定制的提示词、受边界约束的技能、进度压缩、交付物分类、引用处理、来源预览、计费和会话门控、状态恢复。智能体负责灵活工作，工作区负责让灵活工作变成可以交接、可以复核、可以继续的案件状态。</p>
+  </section>
+<section class="paper-section" id="s11">
+    <h2>证据边界</h2>
+    <p>当前证据最强的是产品机制。实现支持 patent-search 和 tro 两个 caseType，通过共享路由和配置切换。上传文件会分片并进入案件输入文件夹。会话会保存引擎状态、上传文件、交付物、消息、已选技能和活动轨迹。UI 可以恢复这些细节。交付物客户端会分类报告、输入、输出、来源、二进制文件和预览类型。引用抽取覆盖 Markdown 链接、裸 URL、编号引用、Lawless 参考行、非 HTTP 链接拒绝和稳定引用数量限制。</p>
+<p>专利表面的浏览器验证比 TRO 更完整。TRO 路由已存在，有自己的技能绑定、问卷和共享工作区入口，但结果质量仍需要更深的场景测试：它是否能正确抽取缺失事实，路径卡是否一致，草稿邮件是否引用案件事实，用户能否从困惑 intake 走到可审查下一步。</p>
+<p>因此，这个项目不应被表述成“已经完成自动法律服务”。更准确的说法是：它构建并验证了一个云端案件工作区框架，能把杂乱卖家材料推进到可恢复、可预览、可复核的交付物；其中专利检索比 TRO response 更成熟，TRO 仍处在产品结构清晰、评测需要补强的阶段。</p>
   </section>
       <section class="paper-section" id="references">
         <h2>参考材料</h2>

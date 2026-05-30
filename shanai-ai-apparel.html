@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="这个项目从用户偏好出发，把 AI 服装设计推进到正反面平面图、筛选、打样、下单和交付。" />
-  <title>1shanai: 把 AI 服装生成推进到实物交付 / Ziang Gu</title>
+  <meta name="description" content="1shanai 测试的是生成式服装能不能穿过用户偏好、正反面一致性、打样、下单和实物反馈这一整条链路。" />
+  <title>当 AI T 恤离开屏幕 / Ziang Gu</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -23,109 +23,134 @@
   <main><article class="paper">
       <header class="paper-hero">
         <div>
-          <p class="eyebrow">07 / Apparel</p>
-          <h1>1shanai: 把 AI 服装生成推进到实物交付</h1>
-          <p class="dek">这个项目从用户偏好出发，把 AI 服装设计推进到正反面平面图、筛选、打样、下单和交付。</p>
-          <div class="tag-row hero-tags"><b>AI apparel</b><b>LoRA</b><b>preference</b><b>sampling</b><b>production</b></div>
+          <p class="eyebrow">07 / 服装</p>
+          <h1>当 AI T 恤离开屏幕</h1>
+          <p class="dek">1shanai 测试的是生成式服装能不能穿过用户偏好、正反面一致性、打样、下单和实物反馈这一整条链路。</p>
+          <div class="tag-row hero-tags"><b>AI 服装</b><b>LoRA</b><b>偏好</b><b>打样</b><b>生产</b></div>
           
         </div>
         <figure class="paper-figure">
-    <img src="./assets/shanai-workflow-diagram.png" alt="1shanai apparel workflow diagram" />
-    <figcaption>Figure 1. 1shanai 的闭环：偏好输入、FLUX LoRA、正反面图、用户选择、打样和交付。</figcaption>
+    <img src="./assets/shanai-workflow-diagram.png" alt="1shanai 服装工作流图" />
+    <figcaption>图 1. 1shanai 的闭环：偏好输入、FLUX LoRA、正反面图、用户选择、打样和交付。</figcaption>
   </figure>
       </header>
 
       <section class="case-brief" aria-label="Case study brief">
     <article>
           <span>为什么重要</span>
-          <p>它补充证明我做过从生成结果到实物打样、用户反馈和小团队交付的闭环。</p>
+          <p>AI 服装如果只停在图片 gallery，就无法回答用户是否愿意确认、等待打样并对实物负责。</p>
         </article><article>
-          <span>证明什么</span>
-          <p>用户反馈、FLUX LoRA、正反面图、打样和交付协调。</p>
+          <span>怎么做</span>
+          <p>项目从 T-shirt 切入，把用户选择、正反面图、prompt/LoRA 控制、订单交接和实物反馈连成闭环。</p>
         </article><article>
           <span>结果 / 边界</span>
-          <p>证明：实物交付；边界：小批量 beta。</p>
+          <p>100+ beta feedback 和约 40-50 件实物样衣支持小规模产品循环；不代表成熟供应链规模。</p>
         </article>
   </section>
 
       <aside class="toc">
-        <a href="#s1">项目概览</a><a href="#s2">1. 问题： 服装 AI 的难点在生成之后</a><a href="#s3">2. 方法： 偏好反馈驱动生成</a><a href="#s4">3. 实现细节</a><a href="#s5">4. 评测</a><a href="#s6">和普通 AI 服装生成 demo 的区别</a><a href="#s7">5. 技术补充： front/back consistency</a><a href="#s8">6. 交付补充： 小团队如何推进真实交付</a><a href="#s9">7. 产品补充： 为什么从 T-shirt 开始</a><a href="#s10">8. 评测补充： preference eval 不是论文 A/B test</a><a href="#s11">9. 补充说明： 从生成系统到商品系统</a><a href="#s12">10. 补充说明： 后续应该测什么</a><a href="#s13">11. 补充说明： 不确定性下的小团队推进</a><a href="#s14">12. 结论</a>
+        <a href="#s1">Core Claim</a><a href="#s2">把服装生成当成图库，是第一个错误</a><a href="#s3">为什么从 T-shirt 开始是正确约束</a><a href="#s4">偏好更容易被观察，而不是被问出来</a><a href="#s5">正反面一致性，是图像变成衣服的第一关</a><a href="#s6">打样让质量从视觉问题变成物理问题</a><a href="#s7">下单交接是 AI 产品最容易漏掉的翻译层</a><a href="#s8">现有 beta 证据支持什么</a><a href="#s9">如果继续做，应该评测什么</a><a href="#s10">更大的经验</a>
         
         <a href="#references">参考材料</a>
       </aside>
 
       
       <section class="paper-section" id="s1">
-    <h2>项目概览</h2>
-    <p>1shanai 是一次从生成模型走向小规模实物交付的产品实验。我们没有从复杂打版、尺码系统或全品类服装开始，而是从 T-shirt 切入，把 AI 生成设计、用户反馈、正反面平面图、下单、打样和交付连成一个能运转的闭环。</p>
-<p>作为 Co-founder，我带 7 人暑期团队推进早期产品、生成流程和用户反馈闭环。基于 100+ beta 用户反馈，团队生产了约 40-50 件实体衣服。这个项目验证的是生成式视觉如何进入真实供应链边界，而不是停留在 prompt demo。</p>
+    <h2>Core Claim</h2>
+    <p>一张生成出来的 T-shirt 图像，可能在屏幕上已经很完整，但产品本身还没有完成。</p>
+<p>真正的第一道检验通常很安静。用户从几组正反面效果里选一组，说“这个颜色可以，但背面太满”，或者要求把图案缩小一点。设计仍然停留在屏幕上，但问题已经变了：系统不再只是生成一张令人惊艳的图片，而是要记住用户偏好，保持同一件衣服的正反面一致，准备可以打样的版本，并让实物反馈影响下一轮生成。</p>
+<p>这是 1shanai 对我最有价值的经验。它是一个早期 AI apparel loop，从 T-shirt 开始，把用户偏好、正反面 flat generation、sampling、order handoff 和 delivery 连接起来。作为 co-founder，我带过一个 7 人暑期团队，把生成概念推进到小批量实体衣服。可验证证据必须写得克制：100+ beta 用户反馈信号，约 40-50 件实体衣服经过打样和交付。这个规模足够研究产品闭环，不足以声称成熟供应链、大规模销售或完整 fashion platform。</p>
+<p>1shanai 的核心产品判断是：AI 服装生成变得真实，不是因为图像好看，而是因为用户偏好能穿过生产流程。用户喜欢一张图是弱证据；用户在候选中选择、确认正反面、等待样衣、反馈印花和版面，再让这些反馈改变下一轮生成，才是更强的证据。</p>
   </section>
 <section class="paper-section" id="s2">
-    <h2>1. 问题： 服装 AI 的难点在生成之后</h2>
-    <p>一张单面的 AI 服装图很容易令人兴奋，但用户真正要买的是能生产的衣服。图案要落在可印刷区域，前后面要语义一致，用户修改意见要能回流，供应链需要明确文件和下单信息。生成图和实物之间有很多断点。</p>
-<p>我们选择 T-shirt 是为了把最大的不确定性先降下来。T-shirt 不需要复杂版型建模，用户理解成本低，打样周期短，更适合验证用户是否愿意为 AI 设计付费或至少认真反馈。</p>
+    <h2>把服装生成当成图库，是第一个错误</h2>
+    <p>很多 AI fashion demo 让第一张截图承担太多意义。它展示一件漂亮衣服，可能还有模特图和风格变体。图像很有情绪感染力，因为衣服本来就是视觉对象。但这也是不完整的，因为服装不是作为图片被消费的。</p>
+<p>一件 T-shirt 至少有两重生命。第一重是视觉设计：图案、颜色、风格、主题、版面。第二重是生产对象：印花位置、大小比例、正反面一致性、样衣质量、下单状态、包装和交付。这两重之间的间隙，正是很多 AI apparel idea 变弱的地方。模型可以生成很醒目的正面图案，但背面漂移成另一套设计；它可以在正方形截图里很好看，但放到可印刷区域后构图很尴尬；它可以满足 prompt，却没有抓住用户真正的品味，因为用户并不知道如何一次性把偏好写成文字。</p>
+<p>1shanai 从相反的压力出发。用户不是 prompt engineer。用户带来的是风格灵感、颜色、图案主题、版型预期、细节，有时甚至只是一个模糊情绪。产品必须把这些信号转成结构化生成控制，再返回可选择的候选。选择比原始 prompt 更重要，因为选择承载了被观察到的偏好。</p>
+<p>这件事看起来小，却会改变系统。如果用户拒绝某个候选是因为“正面很好，背面太复杂”，下一轮不应该把它当成普通 dislike。系统应该保留正面语义方向，降低背面复杂度，并保持色彩和图形语言一致。如果用户选择黑色 oversized T-shirt 加抽象波纹，系统不应该因为另一张图更戏剧化，就漂移到完全无关的背面主题。</p>
+<p>真正的产品对象是一个逐步收窄的 loop：偏好输入、候选生成、正反面一致性、用户选择、可选 refinement、打样、交付和反馈回流。</p>
   </section>
 <section class="paper-section" id="s3">
-    <h2>2. 方法： 偏好反馈驱动生成</h2>
-    <p>流程从用户偏好和需求开始，不直接把 prompt 丢给模型。用户的选择、拒绝、修改意见和风格偏好会回流到 prompt control、style consistency 和下一轮候选筛选。我们训练 FLUX LoRA，并建立 front/back consistency 数据流程，让同一设计语义可以生成正反面平面图。</p>
-<p>1shanai 的新点不只是“merge 功能”，而是把用户偏好、生成候选、正反面一致性和实物反馈接成一个循环。用户不是一次性挑图，而是在候选、修改、确认和打样之间不断收窄设计。</p>
+    <h2>为什么从 T-shirt 开始是正确约束</h2>
+    <p>T-shirt 让产品约束变得具体。</p>
+<p>服装品类很容易迅速变复杂。全品类服装会牵涉打版、尺码、面料行为、缝制结构、版型差异、生产 MOQ 和供应商协作。这些问题都重要，但它们会让第一轮产品测试变得很难解释。如果用户不喜欢最终成品，到底是模型误解了风格，正反面不一致，尺码不合适，面料手感不对，还是生产伙伴印花偏差？</p>
+<p>T-shirt 把歧义缩小了。基础形态熟悉，用户理解正反面，印花位置能直接检查，打样速度也比复杂服装更快。团队可以问一个更清楚的问题：生成式设计意图能不能通过用户确认，变成实体衣服，并产生有用反馈？</p>
+<p>这个问题比更大的承诺更有价值。早期 AI 产品要找的是最短的诚实闭环，让模型输出和现实发生接触。对 1shanai 来说，闭环不是“生成一件酷衣服”，而是：</p>
+<p>捕捉用户的 style intent。</p>
+<p>把 intent 转成 prompt control 和结构化设计约束。</p>
+<p>生成多组正反面候选 flats。</p>
+<p>让用户选择并 refine 一个方向。</p>
+<p>把确认后的设计交给打样流程。</p>
+<p>将实体衣服和确认图对照。</p>
+<p>把实物反馈带回下一轮生成和筛选。</p>
+<p>这个 loop 才是产品。模型只是其中一个环节。</p>
   </section>
 <section class="paper-section" id="s4">
-    <h2>3. 实现细节</h2>
-    <p>模型侧重点是 LoRA 数据、prompt 模板、风格一致性和候选筛选；产品侧重点是把设计确认、下单信息和打样流程组织清楚。每一轮用户选择不只是 UI 行为，而是下一轮生成策略的输入。</p>
-<p>团队管理上，我把 7 人暑期团队拆成用户反馈、生成流程、前后面图、下单打样和交付跟进几条线。这个项目很早期，但它训练了我后来做 agent workspace 时很重要的判断：模型能力只有进入真实交付链路，才会暴露真正的问题。</p>
+    <h2>偏好更容易被观察，而不是被问出来</h2>
+    <p>很多用户不能用一句 prompt 描述自己想要的衣服，但他们能做有意义的选择。</p>
+<p>这对消费级生成系统很重要。prompt-first 产品默认用户能把 taste 翻译成语言。有些人可以，但更多人只会说“更未来感”“简洁一点”“streetwear”“不要太吵”“看起来高级”。这些词有用，但不够具体。缺失信号会在候选比较时出现。</p>
+<p>在 1shanai 的 workflow 里，偏好输入包括风格灵感、颜色、图案、fit、silhouette、细节、文字或 branding。系统再把这些输入转成控制项：garment type、fit、colorway、graphics、placement、texture 和 mood。生成阶段输出多组候选 pair，正面和背面一起展示，而不是孤立图片。用户选择成为下一条信号。</p>
+<p>这就是偏好开始可操作的时刻。被选中的候选比 prompt 更有信息量，因为它是在备选项下做出的选择。被拒绝的候选也有价值，只要 rejection 绑定原因：颜色、位置、正反面不匹配、细节密度，或者某个 motif 不对。重点不是把反馈存成评论日志，而是把反馈转成下一组候选的约束。</p>
+<p>这个经验后来也影响我做其他 AI 系统的判断：反馈只有在改变系统未来行为时才有价值。一个 thumbs-up 存在 analytics 里很弱；一个选择如果能改变 prompt control、style consistency、LoRA data selection 和 candidate filtering，它才成为产品状态。</p>
   </section>
 <section class="paper-section" id="s5">
-    <h2>4. 评测</h2>
-    <p>结果边界很清楚：100+ beta 用户反馈，约 40-50 件实体衣服，小批量打样和交付验证。它证明了从生成到实物交付的闭环，但不等于成熟供应链、大规模销售或完整服装平台。</p>
-<p>1shanai 的价值在于产品闭环能力：从用户需求到生成系统，从生成系统到生产文件，从生产文件到实物交付，再把反馈回流到下一轮。它和 Lawless 的共同点是都没有停在 demo，而是把 AI 放进真实 workflow。</p>
+    <h2>正反面一致性，是图像变成衣服的第一关</h2>
+    <p>单张正面图可以隐藏不一致。正反面 pair 会把问题暴露出来。</p>
+<p>对服装来说，front/back consistency 不是装饰性功能，而是生产视角下的第一道测试：这个设计描述的是同一件衣服，还是两张无关图片？正反面不需要镜像，但必须属于同一套设计语言。颜色、motif、密度、位置和语义意图都应该连贯。一件黑色 T-shirt 正面是金色抽象波纹，背面可以更安静地延续它，但不能突然变成另一件完全不同主题的衣服。</p>
+<p>1shanai 使用 FLUX LoRA 作为生成栈的一部分，但项目价值不是“用了 FLUX LoRA”这句话。真正重要的是围绕生成模型建立偏好和一致性流程。系统要保持同一设计意图跨视图存在，生成 candidate pairs，并让用户选择影响下一轮。LoRA 帮助风格收敛，产品状态帮助偏好收敛。</p>
+<p>这个区分很重要。模型能力本身不能解决 garment coherence。生产交接需要稳定的正反面、被选择的版本、placement constraints，以及让打样伙伴或内部 operator 能理解“应该做什么”的连续信息。</p>
+<p>正反面 pair 是一个很小的交付物，但它承担很大责任。它把用户 taste 从模型带进生产流程。</p>
   </section>
 <section class="paper-section" id="s6">
-    <h2>和普通 AI 服装生成 demo 的区别</h2>
-    <p>普通 AI apparel demo 展示的是好看的单张图。1shanai 的不同点是把生成结果接到用户偏好和实物交付：用户选择、拒绝、修改意见会回流到 prompt control、LoRA 数据筛选和风格一致性规则，最后进入正反面图、打样、下单和交付。</p>
-<p>它没有把复杂版型和供应链问题一次性吃下，而是从 T-shirt 切入，用较短链路验证用户是否愿意确认设计、等待打样并对实物反馈。这个选择让项目更像产品实验，而不是视觉效果演示。</p>
-<p>更准确地说，区别不在于 front/back render 本身。到 2025-2026，AI fashion tools 已经在宣传 front/back visuals、3D preview、tech-pack output 和 concept-to-production workflow。1shanai 更值得写的是 physical closed loop：100+ 用户反馈和约 40-50 件实体样衣反馈被接回下一轮 prompt、LoRA 数据筛选和风格规则。</p>
+    <h2>打样让质量从视觉问题变成物理问题</h2>
+    <p>sampling 改变了质量的含义。</p>
+<p>打样前，质量可以主要是视觉吸引力：生成图好不好看？打样后，质量变得更物理：印花颜色是否接近预期，图案位置在布料上是否平衡，正反面关系在真实尺寸下是否成立，用户收到实物后是否仍然喜欢。</p>
+<p>很多 AI product demo 停在截图，因为物理世界反馈更慢。1shanai 在小规模上做了更慢的事。团队从 100+ beta 用户反馈中推进出约 40-50 件实体衣服，足够看到实物闭环提供的信息和图像选择不同。</p>
+<p>样衣既是交付物，也是 evaluator。它测试生成 flat 里的假设：</p>
+<div class="table-wrap"><table>
+      <thead><tr><th>假设</th><th>样衣实际测试什么</th></tr></thead>
+      <tbody><tr><td>图案适合衣服</td><td>布料上的尺寸、位置和平衡</td></tr><tr><td>配色可接受</td><td>印花和材质效果，而不是屏幕颜色</td></tr><tr><td>正反面是一件衣服</td><td>两个视图是否读作同一个产品</td></tr><tr><td>用户选择代表真实偏好</td><td>实物化之后是否仍然喜欢</td></tr><tr><td>交接信息足够清楚</td><td>生产能否理解被选中的设计</td></tr></tbody>
+    </table></div>
+<p>这张表不是说团队解决了所有服装质量问题，而是说明有效评测面在哪里。实体衣服把生成设计变成了可以检验的对象。</p>
   </section>
 <section class="paper-section" id="s7">
-    <h2>5. 技术补充： front/back consistency</h2>
-    <p>服装生成里的正反面一致性不是简单复制图案。用户看到的是同一件衣服的两个生产视角：前后图案应该保持同一设计语义，颜色和风格要一致，位置要符合 T-shirt 的可印刷区域，同时不能让背面图像像另一个 prompt 生成出的无关设计。</p>
-<p>我们用数据流程约束这一点：把同一设计意图拆成 front/back 两个视图，生成候选后让用户选择和反馈，再把被接受和被拒绝的样例回流到 prompt control、style consistency 和下一轮筛选。LoRA 提供风格和主题上的收敛，产品流程提供用户选择上的收敛。</p>
-<p>这个能力最后要服务下单和打样。只有当正反面图、设计确认和生产文件能对上，AI 服装才算走出了生成图阶段。否则再好看的单图也只是灵感板。</p>
+    <h2>下单交接是 AI 产品最容易漏掉的翻译层</h2>
+    <p>从生成到订单的 handoff 容易被低估，因为它看起来像运营细节。实际上，它决定 AI 产品是变得有用，还是把责任转移给人。</p>
+<p>生成系统输出候选图。订单 workflow 需要被选中的设计、正反面视图、garment type、colorway、尺码或 fit 假设、印花位置、revision notes、sampling status 和 delivery state。有人必须在这两个世界之间翻译。如果产品不定义这层翻译，operator 就只能从截图和聊天记录里重建意图。</p>
+<p>1shanai 的 workflow 把这层翻译显性化：偏好输入变成 prompt 和 control generation；FLUX LoRA 产出候选；产品以正反面 flats 的形式展示 candidate pairs；用户选择收窄方向；sampling 产生第一轮物理检查；delivery 用真实物品关闭闭环。</p>
+<p>因此，“AI apparel”不是一个单点能力，而是一串交付物：</p>
+<div class="table-wrap"><table>
+      <thead><tr><th>阶段</th><th>交付物</th></tr></thead>
+      <tbody><tr><td>偏好输入</td><td>风格意图、颜色、图形、fit、细节</td></tr><tr><td>生成控制</td><td>prompt controls、LoRA-guided style direction、placement constraints</td></tr><tr><td>候选评审</td><td>多组正反面 pair</td></tr><tr><td>用户选择</td><td>被选版本、拒绝原因、refinement notes</td></tr><tr><td>打样交接</td><td>面向生产的正反面设计和订单上下文</td></tr><tr><td>实物反馈</td><td>样衣质量、用户反应、下一轮约束</td></tr></tbody>
+    </table></div>
+<p>当这些交付物显性存在，团队才有办法改进闭环。当它们隐含在聊天和截图里，系统就会退化成带人工履约的图库。</p>
   </section>
 <section class="paper-section" id="s8">
-    <h2>6. 交付补充： 小团队如何推进真实交付</h2>
-    <p>7 人团队的难点不是每个人都写模型，而是把工作拆到能交付：有人负责用户反馈和需求整理，有人负责生成候选和风格控制，有人负责正反面图，有人负责下单打样，有人跟进实物交付。AI 项目一旦碰到实物，就会出现大量非模型问题：文件格式、印刷效果、颜色偏差、用户确认、交付周期。</p>
-<p>这段经历对后来的 Lawless 也有帮助。无论是衣服还是法律报告，模型输出都只是交付链路中的一段。真正的产品能力是把用户输入、生成结果、人类确认和最终交付连接起来。</p>
+    <h2>现有 beta 证据支持什么</h2>
+    <p>1shanai 的证据边界很克制，也因此更可信。现有材料支持以下说法：</p>
+<p>• 1shanai 是一个从广州出发的 AI-generated apparel 项目。</p>
+<p>• 我以 co-founder 身份带过 7 人暑期团队。</p>
+<p>• 项目从 T-shirt 开始，连接用户反馈、设计生成、正反面 flats、ordering、sampling 和 delivery。</p>
+<p>• workflow 使用 FLUX LoRA，并围绕 front/back consistency 建立数据和流程。</p>
+<p>• 用户的接受、拒绝和修改反馈会影响 prompt control、LoRA data selection、style consistency 和 candidate filtering。</p>
+<p>• 项目积累了 100+ beta 用户反馈信号，并产出约 40-50 件实体衣服。</p>
+<p>这些证据支持的是产品闭环主张：团队小规模测试了生成服装能否穿过偏好、正反面确认、打样和交付。它不支持大规模制造、稳定营收、成熟供应链、完整服装平台或严格学术化偏好评测结果。</p>
+<p>这个边界让项目更有说服力。40-50 件衣服的意义不是销售规模，而是 closed loop 穿过了 screen-to-object boundary，暴露出纯图像 demo 看不到的问题。</p>
   </section>
 <section class="paper-section" id="s9">
-    <h2>7. 产品补充： 为什么从 T-shirt 开始</h2>
-    <p>从 T-shirt 开始不是因为它最炫，而是因为它最适合验证闭环。T-shirt 的版型稳定，用户对正反面图的理解成本低，打样链路相对短，交付结果容易和生成图对比。复杂服装会把版型、尺码、面料、缝制工艺和供应链问题全部引入，太早进入会让团队无法判断问题到底来自模型、产品还是生产。</p>
-<p>这也是一个典型的 0 到 1 产品选择：先找最短路径证明用户愿意表达偏好、确认设计、等待打样，并对实物结果给反馈。只有这一点成立，后续才值得扩展品类或增加更复杂的设计工具。</p>
+    <h2>如果继续做，应该评测什么</h2>
+    <p>如果把 1shanai 继续推进成更严格的产品评测，我会先量化四件事。</p>
+<p>第一是 selection quality。候选集中，用户有多大概率找到值得 refine 或 sampling 的设计？这比统计生成图片数量更有意义，因为系统的任务是降低选择负担，不是增加输出体积。</p>
+<p>第二是 front/back coherence。用户和 operator 是否认为正反面属于同一件衣服？指标应该拆开看 semantic coherence、style coherence、color coherence 和 placement coherence。颜色一致不等于设计意图一致。</p>
+<p>第三是 sample fidelity。实体衣服和确认过的 front/back flat 有多接近？这里要看印花位置、颜色、细节保留，以及用户收到样衣后的接受度。</p>
+<p>第四是 feedback efficiency。一轮用户反馈之后，下一组候选是否更接近用户偏好？这是最难也最重要的指标，因为它测试反馈是否真的变成系统行为。</p>
+<p>这些指标会让产品 insight 可检验，也会让项目保持诚实。一个模型即使能生成很多好看的衣服，只要用户不能选择、交接、打样和 refine，它在产品层面仍然不够好。</p>
   </section>
 <section class="paper-section" id="s10">
-    <h2>8. 评测补充： preference eval 不是论文 A/B test</h2>
-    <p>这里的 preference evaluation 更接近产品反馈，不是严格论文实验。用户在候选图之间选择、拒绝、要求修改，团队把这些选择回流到 prompt、LoRA 数据筛选和风格规则。它的价值在于把“用户觉得好看”变成下一轮生成的约束，而不是只记录一个投票结果。</p>
-<p>这种经验后来影响了我做 Lawless reviewer controls。无论是衣服设计还是法律 artifact，用户反馈都不应该只停在评论区。它要进入系统状态，改变下一轮生成、检索或复核的行为。</p>
-  </section>
-<section class="paper-section" id="s11">
-    <h2>9. 补充说明： 从生成系统到商品系统</h2>
-    <p>1shanai 的技术难点不只在模型输出质量，还在于把模型输出转成商品系统可以消费的对象。商品系统需要 SKU、正反面图、尺寸/颜色选择、下单状态、打样反馈和交付记录；生成系统习惯输出一张或一组候选图。两者之间需要一个翻译层，把创意结果变成可确认、可生产、可追踪的订单材料。</p>
-<p>用户交互也不是简单 prompt 输入。很多用户不会准确描述自己想要的图案，但他们会在候选之间做选择，会指出“不喜欢这个颜色”“背面不要这么复杂”“这个元素可以保留”。这些反馈比原始 prompt 更有价值，因为它们来自真实选择。系统要记录这些选择，把它们变成下一轮生成约束。</p>
-<p>1shanai 的核心不是 AI apparel 概念，而是 workflow：我们验证的是生成模型如何通过用户偏好、候选筛选、正反面一致性和打样交付进入真实消费场景。40-50 件实体衣服的意义就在这里，它们不是销售规模，而是 workflow 是否能穿过物理世界的一次压力测试。</p>
-  </section>
-<section class="paper-section" id="s12">
-    <h2>10. 补充说明： 后续应该测什么</h2>
-    <p>如果把 1shanai 继续做成更严肃的产品评测，我会看四类指标。第一是生成质量：用户是否愿意从候选中选出可购买设计。第二是一致性：正反面是否保持同一语义和风格。第三是交付质量：打样成品和用户确认图之间的差距。第四是反馈效率：一次用户反馈能否明显缩小下一轮候选空间。</p>
-<p>这些指标比单纯“生成了多少张图”更接近产品真实价值。生成图数量通常很容易堆，但用户真正需要的是更少、更接近偏好的候选，以及能被生产和交付的设计文件。这个判断后来也迁移到了 Lawless：不是生成更多法律文本，而是生成更少但更可复核、更能推进任务的 artifact。</p>
-  </section>
-<section class="paper-section" id="s13">
-    <h2>11. 补充说明： 不确定性下的小团队推进</h2>
-    <p>早期团队最难的是不确定性分配。模型能不能生成、用户喜不喜欢、工厂能不能打样、交付周期是否稳定，这些问题同时存在。作为 Co-founder，我需要把它们拆成不同节奏的工作：当天能改的 prompt、每周能复盘的用户反馈、需要打样周期才能验证的生产问题。</p>
-<p>这段经历训练的是产品判断和执行节奏。技术项目常常不是等所有问题想清楚再开始，而是在保持边界诚实的前提下，把一个可测试闭环先跑起来。</p>
-  </section>
-<section class="paper-section" id="s14">
-    <h2>12. 结论</h2>
-    <p>1shanai 最值得保留的叙事不是“我们做 AI 服装”，而是“我们把生成模型接进用户偏好和实物交付”。它训练了我对 AI 产品闭环的判断：模型输出只是开始，真正难的是让用户能选择、能确认、能修改、能收到东西，并让反馈回到下一轮系统行为。</p>
+    <h2>更大的经验</h2>
+    <p>1shanai 训练出一个后来很有用的判断：AI 产品最难的部分，常常不是生成输出，而是把输出变成可评审、可交付、可反馈的行动。</p>
+<p>在服装里，这个行动是打样和交付。在法律或税务工作里，它可能是带引用的草稿、案件交付物，或需要 approval gate 的邮件。两种场景都不只要求模型产出 plausible content。用户需要系统保留意图，暴露正确的中间交付物，支持人工审查，并让反馈改变下一轮行为。</p>
+<p>对服装来说，生成图只是起点。真正的产品工作，从图像必须成为衣服的那一刻才开始。</p>
   </section>
       <section class="paper-section" id="references">
         <h2>参考材料</h2>

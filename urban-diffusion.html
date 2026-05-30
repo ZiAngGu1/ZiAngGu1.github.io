@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="公开证据支持的范围是 video diffusion / generative vision 代码 artifact；完整 urban planning 研究不在当前证据范围内。" />
-  <title>Video Diffusion Artifact: 早期生成式视觉代码备份 / Ziang Gu</title>
+  <meta name="description" content="Urban Diffusion 更适合作为早期 video diffusion 交付物和空间生成草图来读，而不是已验证的城市规划研究结果。" />
+  <title>如果城市布局需要被修改，它就像一个视频问题 / Ziang Gu</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -24,100 +24,103 @@
       <header class="paper-hero">
         <div>
           <p class="eyebrow">11 / Diffusion</p>
-          <h1>Video Diffusion Artifact: 早期生成式视觉代码备份</h1>
-          <p class="dek">公开证据支持的范围是 video diffusion / generative vision 代码 artifact；完整 urban planning 研究不在当前证据范围内。</p>
-          <div class="tag-row hero-tags"><b>video diffusion</b><b>3D U-Net</b><b>sampling</b><b>spatial generation</b></div>
+          <h1>如果城市布局需要被修改，它就像一个视频问题</h1>
+          <p class="dek">Urban Diffusion 更适合作为早期 video diffusion 交付物和空间生成草图来读，而不是已验证的城市规划研究结果。</p>
+          <div class="tag-row hero-tags"><b>video diffusion</b><b>3D U-Net</b><b>sampling</b><b>空间生成</b></div>
           <div class="action-row"><a href="https://github.com/ZiAngGu1/urban-planning-diffusion-pytorch" target="_blank" rel="noreferrer">Open GitHub</a></div>
         </div>
         <figure class="paper-figure">
-    <img src="./assets/urban-diffusion-pipeline.png" alt="Video diffusion pipeline diagram" />
-    <figcaption>Figure 1. Video diffusion pipeline illustration: layout/input, noise, U-Net denoising, sampling, inspection.</figcaption>
+    <img src="./assets/urban-diffusion-pipeline.png" alt="Video diffusion 流程图" />
+    <figcaption>图 1. Video diffusion 流程示意：布局输入、噪声、U-Net 去噪、采样和检查。</figcaption>
   </figure>
       </header>
 
       <section class="case-brief" aria-label="Case study brief">
     <article>
           <span>为什么重要</span>
-          <p>它作为早期生成式视觉背景，说明我接触过 diffusion code，但不把它夸成完整研究成果。</p>
+          <p>旧标题容易让读者期待完整 urban-planning research，但公开证据主要支持 video diffusion / generative vision artifact。</p>
         </article><article>
-          <span>证明什么</span>
-          <p>3D U-Net、GaussianDiffusion、sampling pipeline。</p>
+          <span>怎么做</span>
+          <p>文章只保留 3D U-Net、GaussianDiffusion、sampling / GIF pipeline 和空间连续性这类有证据的技术线索。</p>
         </article><article>
           <span>结果 / 边界</span>
-          <p>证明：早期探索；边界：证据较薄。</p>
+          <p>它可以作为早期 diffusion 背景和后续 PhysiBuilder/1shanai 的前史，不能写成已验证城市规划模型。</p>
         </article>
   </section>
 
       <aside class="toc">
-        <a href="#s1">项目概览</a><a href="#s2">1. 问题： 证据边界决定项目定位</a><a href="#s3">2. 方法与实现</a><a href="#s4">3. 边界</a><a href="#s5">和常见夸大式项目叙事的区别</a><a href="#s6">4. 技术补充： 公开 repo 能支持什么</a><a href="#s7">5. 项目定位</a><a href="#s8">6. 证据补充： 为什么改名更好</a><a href="#s9">7. 技术阅读笔记</a><a href="#s10">8. 补充说明： 与主线能力的关系</a><a href="#s11">9. 补充说明： 早期 artifact 的连接方式</a><a href="#s12">10. 补充说明： 后续如何升级</a><a href="#s13">11. 结论</a>
+        <a href="#s1">Core Claim</a><a href="#s2">城市图不是普通图片</a><a href="#s3">为什么 video diffusion 仍然是有价值的学习入口</a><a href="#s4">这个交付物真正生成的是什么对象</a><a href="#s5">pipeline 图提供的是方向，不是结果</a><a href="#s6">结果应该如何定位</a><a href="#s7">证据边界</a><a href="#s8">为什么它仍然属于作品集</a>
         
         <a href="#references">参考材料</a>
       </aside>
 
       
       <section class="paper-section" id="s1">
-    <h2>项目概览</h2>
-    <p>Urban Planning Diffusion 这个名字容易误导。公开 GitHub README 显示，repo README 实际上是 Video Diffusion - Pytorch，描述为 Jonathan Ho Video Diffusion Models 的 PyTorch implementation，包含 3D U-Net、GaussianDiffusion、text conditioning、GIF training pipeline、Moving-MNIST samples 等。</p>
-<p>这个 artifact 证明我较早接触过 diffusion / video generation 的代码结构和采样流程；当前材料不支持城市规划数据集、规划指标或原创 urban planning research 的结论。</p>
+    <h2>Core Claim</h2>
+    <p>一个城市布局看起来是静态的，直到有人要求改出另一个版本。</p>
+<p>某个街区要从商业改成居住，路网还要保持连通；公园应该扩大，但不能吞掉滨水步道；生成系统可以给出替代方案，但这些替代方案不能像彼此无关的画。道路、地块、边界和用地类别必须在局部变化中保留足够连续性，人才有办法检查它。</p>
+<p>这就是 Urban Diffusion 这个旧项目标题里真正有价值的问题。不过，今天能验证的证据支持的是一个更小、也更诚实的结论：它是一个早期 generative vision / video diffusion 交付物，围绕 3D U-Net 和 Gaussian diffusion 学习如何把一段 frame sequence 当作被去噪和采样的对象。城市规划方向可以作为系统假设来理解：如果城市布局被表示成结构化视觉状态，模型采样就应该保留足够空间连续性，让输出能被操作，而不是只能被观看。</p>
+<p>这个项目的作品集价值也在这个边界里。它处在静态 image generation 和 controllable spatial generation 的交界处。Image diffusion 追求一个可信 frame，video diffusion 追求一段连续 sequence；城市布局则需要相邻但更硬的东西：一个能变化、能保留道路和区域结构、能被检查的空间对象。现有 repo 证据到达 video diffusion 层。urban planning 层目前是概念和展示边界，不是已经验证的实验结果。</p>
   </section>
 <section class="paper-section" id="s2">
-    <h2>1. 问题： 证据边界决定项目定位</h2>
-    <p>这个项目最有价值的地方是边界清楚：公开 repo 能证明 video diffusion implementation，因此它承担生成式视觉背景线索，而不是完整 urban-planning research。</p>
-<p>它更适合放在生成式视觉能力线索里，补充说明我对 diffusion 代码组织、采样和视觉生成流程有早期实践；主线项目仍然是 Lawless、1shanai、PhysiBuilder 和 ICCV ReID。</p>
+    <h2>城市图不是普通图片</h2>
+    <p>城市布局可以被画成彩色地图。居住区、商业区、道路、绿地、水体都能变成像素或 mask。这让它看起来像一个普通 computer vision 对象：模型接收布局，加噪，去噪，再生成一个更干净或不同的布局。</p>
+<p>问题是，城市图从来不只是图。红色区域贴着道路，不只是一个红色块，它暗含可达性；绿色 corridor 不只是好看的颜色，它可能连接公园、水边和步行路径；道路线不只是边缘，它必须足够连通，才能支持移动。当生成布局改变一个街区时，它可能顺手破坏了原本让规划可用的结构。</p>
+<p>所以，这个项目标题指向的真实技术问题是：一个有用的 urban fabric generator 必须在改变局部形态时保留结构。它要采样替代方案，但不能忘记输入布局；它要暴露 inspection surfaces，例如 land-use balance、road connectivity、green coverage，甚至 block topology 或 accessibility。规划者不会因为输出第一眼看起来合理就相信模型。他们会问：哪里变了，什么保持连通，哪些约束被破坏？</p>
+<p>当前公开材料中的 pipeline 图表达了这个方向：layout input、noise、denoising steps、U-Net denoiser、generated samples，以及 land-use balance、connectivity、green coverage 这些检查面。作为概念图，它命名了正确的系统组件；作为证据，它必须谨慎使用。我没有找到与这张图配套的训练日志、城市数据集、评测脚本或生成 benchmark。因此它支持的是 idea，不是完整 urban-planning model。</p>
+<p>这个区别改变了叙事。Urban Diffusion 最稳妥的经验是：空间生成需要一个可检查的中间对象。城市布局可以是 visual tensor，但真正的工作开始于这个 tensor 被绑定回规划义务：连通性、平衡、覆盖、邻接和可编辑性。</p>
   </section>
 <section class="paper-section" id="s3">
-    <h2>2. 方法与实现</h2>
-    <p>repo 包含 video_diffusion_pytorch.py、setup.py、3d-unet.png、fireworks.webp 和 Moving-MNIST samples。技术上可写 space-time factored U-Net、GaussianDiffusion、text conditioning 和 GIF training pipeline。</p>
-<p>它和后来的 1shanai / PhysiBuilder 有连续性：1shanai 把图像生成接到用户偏好和实物交付；PhysiBuilder 把生成模型接到 3D scene prior 和 editable NeRF。这个早期 artifact 更像技术土壤，而不是最终成果。</p>
+    <h2>为什么 video diffusion 仍然是有价值的学习入口</h2>
+    <p>公开 repo 名为 urban-planning-diffusion-pytorch，但 GitHub 标记它 fork 自 lucidrains/video-diffusion-pytorch。README 呈现的是基于 Video Diffusion Models 的 PyTorch video diffusion 实现：Unet3D、GaussianDiffusion、text conditioning、GIF training、sampling，以及 Moving-MNIST 或 fireworks 风格示例。</p>
+<p>这件事很重要，因为 video diffusion 引入了单张 image generator 容易隐藏的维度。video tensor 有 batch、channel、frame、height 和 width。模型不能把每一帧都当成孤立图片，否则 sequence 会不连贯。repo 里的 architecture 使用 3D convolutional structure 和 spatial / temporal attention，再把 denoiser 包进 Gaussian diffusion process。</p>
+<p>对早期生成系统项目来说，这是一个合理的学习目标。2D image generator 教的是从噪声到图像的基本思想；video generator 教的是生成对象内部有连续结构时会发生什么。Urban fabric 有类似压力，虽然它的轴不一定是时间。一个 plan 可能有 current layout、noisy proposal、intermediate denoising states、sampled alternatives 和 edited variants。重点是变化中的连续性。</p>
+<p>3D U-Net 是这里的核心机制。普通 image U-Net 通过 downsampling 压缩空间信息，再通过 upsampling 和 skip connection 重构。video U-Net 扩展这个模式，让表示包含 frame 维度。模型可以用 spatial attention 处理单帧结构，用 temporal attention 处理跨帧一致性。这就是 video diffusion 区别于 image diffusion 的基本工程动作：它学习去噪的是一个带内部 sequence structure 的对象。</p>
+<p>GaussianDiffusion 则提供训练和 sampling 契约。训练时，系统按照 schedule 给输入加噪，denoising network 学习预测 clean signal 或 noise component。sampling 时，过程反向运行，从噪声开始，反复调用 denoiser，直到得到 video-shaped output。repo 也暴露 text-conditioning 路径，包括 learned conditioning dimensions 和 BERT-based text conditioning options。</p>
+<p>如果要把它真正改造成 urban-layout diffusion，这个契约需要更强 conditioning。layout-conditioned diffusion model 应该接收结构化输入，例如 parcel map、zoning mask、road graph raster 或 scene-like representation。denoising network 要在采样替代方案时保留输入约束，inspection layer 再用规划相关指标检查生成布局。现有证据没有显示这个完整 adaptation 已经完成，但它说明为什么 video diffusion code path 是理解问题的合适入口。</p>
   </section>
 <section class="paper-section" id="s4">
-    <h2>3. 边界</h2>
-    <p>当前证据不包含 urban planning 数据、城市布局、规划评估指标或训练结果；可支撑的结论是 video diffusion / generative vision 代码备份。</p>
+    <h2>这个交付物真正生成的是什么对象</h2>
+    <p>读这个项目最有用的方式，是问模型到底在生成哪类对象。</p>
+<p>image generation 的对象是一帧图。video generation 的对象是一小段序列。layout generation 的对象则应该更接近结构化视觉状态：带类别、边界和关系的 map-like arrangement。结构越强，越不能只用视觉真实感判断输出。</p>
+<p>repo 代码指向三个相关思想。</p>
+<p>第一，denoiser 同时处理空间和时间。Unet3D 的实现包含 temporal attention、spatial attention、residual blocks、downsampling、upsampling 和 relative position bias。这说明 architecture 围绕“frame 之间有关联”组织，而不是生成一堆无关图片。</p>
+<p>第二，diffusion wrapper 让 sampling 成为过程，而不是一次性预测。这对可操作性很重要。采样对象可以在最终结果处检查，也可以在中间状态检查：noisy input、denoising steps、predicted clean signal 和 final sample。如果存在完整 urban 版本，这些中间状态可以帮助 debugging。断开的路网可能在去噪过程中逐渐出现；land-use imbalance 可能说明 conditioning 不足、训练数据偏差或 inspection constraint 缺失。</p>
+<p>第三，训练 interface 假设数据可以组织为 GIF 或 video-like tensor。这是实践细节，也有概念后果。要训练模型，世界必须被打包成重复形状。对 video 来说，这个形状是 frames；对 urban layout 来说，对应包装可能是 land-use layers、road masks、height maps、城市演化时间步，或者同一 base condition 下的多个方案。</p>
+<p>这个包装决定模型能学什么。如果道路和 land use 被压成普通 RGB 图，模型可能学视觉纹理而忽略 topology。如果 layout 用显式 channel 表示，并用外部指标检查，模型才更可能保留 planning-relevant structure。旧项目没有足够证据说明这已经实现，但它确实提供了从 video diffusion 走向 controllable spatial generation 的自然桥梁。</p>
   </section>
 <section class="paper-section" id="s5">
-    <h2>和常见夸大式项目叙事的区别</h2>
-    <p>旧标题容易让人以为这是完整 urban planning research，但公开 repo 更准确地支持 video diffusion / generative vision artifact。因此项目被定位为补充证据，不包含城市规划数据、规划指标或原创研究结果。</p>
-<p>和夸大式项目叙事相比，它的价值在于证据边界清楚：这个项目作为 diffusion 代码背景是成立的，作为主线研究成果不成立。</p>
-<p>因此它是补充证据，不是核心项目：一个早期 video diffusion code artifact，说明我接触过 3D U-Net、GaussianDiffusion 和 video sampling，但不证明城市规划研究。</p>
+    <h2>pipeline 图提供的是方向，不是结果</h2>
+    <p>网站资产里的 urban-diffusion-pipeline.png 比公开 repo 更有野心。它展示的是 layout-conditioned diffusion model for urban planning：左侧是彩色城市地图，中间是 noise、diffusion steps 和 U-Net denoiser，右侧是 generated plan samples 和 inspection panel。</p>
+<p>我认为图里最重要的是 inspection panel。Land-use balance、connectivity 和 green coverage 是正确的检查对象，因为它们不是纯审美指标。它们问的是生成图是否还像一张规划图。它们也暴露了严肃版本需要补上的部分：数据集、land-use 和 road structure 的表示、conditioning scheme、objective functions 或 validators，以及可以和 baseline 对比的评测输出。</p>
+<p>图中的 training objective 写了 reconstruction loss、perceptual loss 和 structure consistency。这是合理的设计方向，但应该被描述为方向。我没有找到本地代码或日志实现这些 urban-planning losses。公开 repo 的主要训练路径是 video/GIF diffusion。因此，这张图更像 conceptual system sketch，而不是 completed experiment 的证据。</p>
+<p>把边界讲清楚反而让交付物更有用。弱证据被夸大时会变混乱；被放在正确位置时，它能说明一个思想来源。这里的思想是：spatial generators 只有在生成对象仍然可检查时，才更可能成为工具，而不只是图片生成器。</p>
   </section>
 <section class="paper-section" id="s6">
-    <h2>4. 技术补充： 公开 repo 能支持什么</h2>
-    <p>公开 repo 支持的范围是 video diffusion implementation：3D U-Net、space-time factorization、GaussianDiffusion、text conditioning 和 GIF training pipeline。城市规划指标、规划数据集或城市布局优化不在当前证据范围内。</p>
-<p>这并不代表项目没有价值。早期生成式视觉代码让人理解 diffusion 的基本工程形态：输入如何组织，噪声如何逐步去除，采样如何产生序列，模型代码如何暴露给训练脚本。这些经验后来可以迁移到 1shanai 的图像生成和 PhysiBuilder 的生成式视觉研究。</p>
-<p>作为补充证据，它说明我接触过 diffusion pipeline，但不会把一个公开代码备份包装成不存在的研究成果。</p>
+    <h2>结果应该如何定位</h2>
+    <p>可验证结果是代码和概念交付物，不是经过评测的 planning model。</p>
+<p>代码侧，公开 repo 展示了 video diffusion 的机制：3D U-Net、Gaussian diffusion sampling、text-conditioning examples，以及 GIF-like data 的 training interface。它也包含 3d-unet.png、fireworks.webp 等 sample assets 和 README usage examples。GitHub 将 repo 标记为 fork，公开采用信号也很弱，这更适合被视为个人学习和备份交付物，而不是已有外部 adoption 的研究包。</p>
+<p>概念侧，网站页面和 pipeline image 把 diffusion 连接到 urban layout manipulation。这个连接是有技术意义的，因为 layout generation 和 video generation 有相同张力：对象会变化，但 coherence 很重要。生成的 plan 需要被采样、检查，也可能被编辑。作为作品集里的补充项目，它能说明我早期接触 diffusion code organization、denoising schedules、sampling APIs 和 structured visual generation。</p>
+<p>它不应该承担和论文项目、产品截图、测试、部署 workflow 或用户交付同等的证据重量。这个克制定位仍然有价值。很多更强的 generative systems 项目都从这种小技术接触开始：读懂代码路径，看清 tensor shape，理解 conditioning 进入哪里，追踪 sample 如何生成，并注意到看似视觉化的输出必须经过外部检查才能被信任。</p>
   </section>
 <section class="paper-section" id="s7">
-    <h2>5. 项目定位</h2>
-    <p>它承担 generative vision 的背景线索：说明我不是只在 2025 年才接触生成模型，而是在更早的代码层面就接触过 diffusion pipeline。真正有产品或研究深度的视觉项目，是 1shanai 和 PhysiBuilder。</p>
+    <h2>证据边界</h2>
+    <p>当前 workspace 没有恢复出 urban-planning training dataset、city-layout preprocessing scripts、model checkpoints、urban 评测指标、loss curves、绑定到 run 的 generated plan samples，或者解释原创实验的 paper/report。我也没有找到 urban-specific diffusion implementation 的本地源文件。能确认的材料主要是生成页面和 pipeline image。</p>
+<p>公开 GitHub repo 加强了 video diffusion claim，同时缩小了 urban planning claim。它支持我写“早期 video diffusion / generative vision practice”，支持讨论 Unet3D、GaussianDiffusion、spatial/temporal attention、diffusion schedules 和 sampling/training support。它不支持写“完成了 layout-conditioned urban-planning model”。</p>
+<p>如果这个项目要复活，升级路径很清楚：</p>
+<p>• 定义 urban representation，例如 raster land-use channels 加 road mask。</p>
+<p>• 收集或合成足够多样的 paired layouts。</p>
+<p>• 实现 conditioning，让生成结果保留 base layout 或 user constraints。</p>
+<p>• 加入 structural validators，检查 road continuity、land-use balance、green coverage 和 invalid overlaps。</p>
+<p>• 把 generated samples、metrics、configuration 和 run logs 一起保存。</p>
+<p>• 和 rule-based perturbations、image-only diffusion 等 baseline 对比。</p>
+<p>这些步骤会把 concept 变成 evidence。在它们完成之前，公开说法应该保持较小：Urban Diffusion 是早期 video diffusion 实践，连接到后来对 controllable spatial generation 和可检查中间表示的兴趣。</p>
   </section>
 <section class="paper-section" id="s8">
-    <h2>6. 证据补充： 为什么改名更好</h2>
-    <p>保留 diffusion 线索、弱化 urban planning，是因为公开证据支持前者而不支持后者。这个项目最适合的定位是 generative vision artifact：展示 diffusion 代码阅读、组织和备份能力。</p>
-<p>如果未来找到原始 urban planning 材料，例如城市布局数据、训练脚本、评估图或报告，这个项目可以升级为完整项目。当前它是 video diffusion / generative vision 的早期公开入口，连接到后来的 1shanai 和 PhysiBuilder。</p>
-  </section>
-<section class="paper-section" id="s9">
-    <h2>7. 技术阅读笔记</h2>
-    <p>Video diffusion 的工程关键是把空间和时间同时建模。3D U-Net 不只是把图片 U-Net 换个名字，而是让卷积或注意力在 frame dimension 上处理动态信息。GaussianDiffusion 负责 forward noise 和 reverse denoising schedule，training pipeline 则把视频或 GIF 数据组织成模型可学习的张量。</p>
-<p>这些细节说明我理解 repo 的真实技术范围，也能自然连接到后续视觉项目：当输入从视频变成服装图或 3D scene，核心问题仍然是如何组织生成链路、如何检查结果、如何把用户意图传进去。</p>
-  </section>
-<section class="paper-section" id="s10">
-    <h2>8. 补充说明： 与主线能力的关系</h2>
-    <p>Urban Diffusion 支持的是生成式视觉背景：它说明我接触过 diffusion 代码，但不承担 Lawless、PhysiBuilder 或 ICCV ReID 那样的主线证据角色。</p>
-<p>它仍然有意义。Video diffusion 让人理解生成模型的 temporal dimension，3D U-Net 让人看到空间和时间如何一起建模，GaussianDiffusion 让人理解 noise schedule 和 reverse process。这些概念后来在更复杂项目中会以不同形式出现。</p>
-<p>当前没有证据支持城市规划数据、规划指标或原创结果，因此用“Video Diffusion Artifact”作为标题，把旧 slug 保留为 URL 兼容，并把内容限定在证据支持的范围。</p>
-  </section>
-<section class="paper-section" id="s11">
-    <h2>9. 补充说明： 早期 artifact 的连接方式</h2>
-    <p>这个小 artifact 能连接到后来的系统经验，但连接方式要准确。Video diffusion 连接的是生成式视觉的技术背景，不是用户交付；1shanai 连接的是生成图到实物；PhysiBuilder 连接的是生成模型到 3D scene prior；Lawless 连接的是 agent 到专业服务工作流。</p>
-<p>证据边界决定项目承担的角色：Lawless 有本地 repo、截图、测试和产品细节，所以承担主线；PhysiBuilder 和 ReID 有论文材料，所以承担研究线；Urban Diffusion 证据较薄，所以只作为公开代码 artifact 呈现。</p>
-  </section>
-<section class="paper-section" id="s12">
-    <h2>10. 补充说明： 后续如何升级</h2>
-    <p>后续升级方式不是继续加形容词，而是补证据：加入训练样例、生成结果、loss 曲线、采样脚本、模型配置、数据说明，或者找回原始 urban planning 实验。到那时它才可以从代码 artifact 升级为完整项目。</p>
-  </section>
-<section class="paper-section" id="s13">
-    <h2>11. 结论</h2>
-    <p>Urban Diffusion 的边界很明确：它不假装有完整城市规划研究，而是展示 video diffusion / generative vision 代码 artifact。这个定位让项目本身更可信，也避免弱证据被包装成强结论。</p>
+    <h2>为什么它仍然属于作品集</h2>
+    <p>Urban Diffusion 不应该被包装成强成果，但它可以解释一条能力线索：我不是只从最终 demo 看生成系统，而是会问生成对象是否保留结构、是否能被检查、是否能支持后续修改。</p>
+<p>这条线后来出现在 1shanai 的正反面服装生成里，也出现在 PhysiBuilder 的 3D scene prior 里。看起来这些项目领域不同，一个是服装，一个是 3D 场景，一个是城市布局概念，但底层问题相似：生成结果如果只是漂亮输出，它的使用价值很有限；它必须带着可检查的中间状态，才可能进入真实工作流。</p>
+<p>因此，Urban Diffusion 在作品集里最诚实的位置是“早期生成式视觉能力线索”。它说明我接触过 video diffusion 的核心机制，也说明我很早就开始关注空间生成中的结构约束。它的边界清楚，反而让整体叙事更可信。</p>
   </section>
       <section class="paper-section" id="references">
         <h2>参考材料</h2>

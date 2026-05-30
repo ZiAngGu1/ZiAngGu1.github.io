@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Patent Search 的 harness 让高风险专利能被 recall-first 地找回，同时防止弱相关结果污染法律复核。" />
-  <title>Patent Search Skill: 从商品风险恢复到 claim/status/evidence matrix / Ziang Gu</title>
+  <meta name="description" content="产品专利工作需要 query packs、来源解析、权利要求/状态比较、分组纪律和 answer-blind 评测，而不是一串链接。" />
+  <title>专利检索是一套召回与噪声控制工作框架 / Ziang Gu</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -23,60 +23,188 @@
   <main><article class="paper">
       <header class="paper-hero">
         <div>
-          <p class="eyebrow">04 / Patent</p>
-          <h1>Patent Search Skill: 从商品风险恢复到 claim/status/evidence matrix</h1>
-          <p class="dek">Patent Search 的 harness 让高风险专利能被 recall-first 地找回，同时防止弱相关结果污染法律复核。</p>
-          <div class="tag-row hero-tags"><b>patent search</b><b>claim matrix</b><b>recall</b><b>parser</b><b>grader</b></div>
+          <p class="eyebrow">04 / 专利</p>
+          <h1>专利检索是一套召回与噪声控制工作框架</h1>
+          <p class="dek">产品专利工作需要 query packs、来源解析、权利要求/状态比较、分组纪律和 answer-blind 评测，而不是一串链接。</p>
+          <div class="tag-row hero-tags"><b>专利检索</b><b>claim matrix</b><b>召回</b><b>解析器</b><b>评分器</b></div>
           
         </div>
         <figure class="paper-figure">
     <img src="./assets/patent-lawless-workbench.png" alt="Patent Lawless workbench" />
-    <figcaption>Figure 1. Patent workbench。agent 需要把商品特征、品牌、专利来源和 report artifact 连接起来。</figcaption>
+    <figcaption>图 1. 专利工作台。智能体需要把商品特征、品牌、专利来源和报告交付物连接起来。</figcaption>
   </figure>
       </header>
 
       <section class="case-brief" aria-label="Case study brief">
     <article>
-          <span>真实任务</span>
-          <p>跨境卖家需要判断商品是否触发 design/utility patent 风险，最怕漏掉真正高风险专利。</p>
+          <span>为什么重要</span>
+          <p>产品专利检索同时面对两种风险：漏掉真正高风险专利，或者把弱相关材料堆成看似完整的报告。</p>
         </article><article>
-          <span>核心做法</span>
-          <p>query packs、Google Patents parser、claim/status/evidence matrix、bucket contract 和 answer-blind eval。</p>
+          <span>怎么做</span>
+          <p>系统维护 query packs、Google Patents parser、HIGH_RISK / RELATED 分组、claim/status/evidence matrix 和 grader。</p>
         </article><article>
-          <span>结果边界</span>
-          <p>约 100 个内部风险样例 top-k recall 从约 10% 到约 90%；指标衡量召回和证据恢复，最终侵权意见仍需律师复核。</p>
+          <span>结果 / 边界</span>
+          <p>内部 benchmark 支持 candidate recovery 改善；最终侵权判断、地域覆盖和法律意见不在自动化结论内。</p>
         </article>
   </section>
 
       <aside class="toc">
-        <a href="#s1">1. 为什么做：专利检索同时怕漏召回和乱报高风险</a><a href="#s2">2. 怎么做：把搜索策略、parser 和输出 contract 拆开</a><a href="#s3">3. 结果是什么：检索策略可以被测试和回滚</a><a href="#s4">4. 边界：recall-first 仍要控制噪声</a>
+        <a href="#s1">Core Claim</a><a href="#s2">链接列表隐藏了什么失败</a><a href="#s3">契约：把风险和相关证据分开</a><a href="#s4">Query pack 是受控扩展，不是头脑风暴</a><a href="#s5">Parser 给智能体比 snippet 更硬的支撑</a><a href="#s6">Claim/status/evidence matrix 是法律风险检查点</a><a href="#s7">Answer-blind 评测保持检索诚实</a><a href="#s8">本地证据显示了什么</a><a href="#s9">Top-k recall 在这里意味着什么</a><a href="#s10">为什么旧方法难以处理这个问题</a><a href="#s11">产品教训</a><a href="#s12">仍未解决的部分</a><a href="#s13">结尾</a>
         
         <a href="#references">参考材料</a>
       </aside>
 
       <div class="figure-grid"><figure class="paper-figure">
     <img src="./assets/patent-lawless-report.png" alt="Patent Lawless report" />
-    <figcaption>Figure 2. Patent report。输出包含高风险/相关专利、claim/status/evidence matrix 和后续任务。</figcaption>
+    <figcaption>图 2. 专利报告。输出不是单个答案，而是高风险/相关专利、claim/status/evidence matrix 和后续任务。</figcaption>
   </figure></div>
       <section class="paper-section" id="s1">
-    <h2>1. 为什么做：专利检索同时怕漏召回和乱报高风险</h2>
-    <p>专利风险检索的第一风险是漏掉关键专利，第二风险是把弱相关结果包装成高风险。design patent 依赖外观、图片和整体视觉相似性；utility patent 依赖 claim element、功能结构和法律状态。一个品牌关键词或统一相似度分数无法覆盖这两种判断。</p>
-<p>对卖家来说，输出需要超过链接列表。律师或运营需要看到专利号、来源、法律状态、claim/description excerpt、商品特征对照、risk bucket 和为什么需要复核。Patent Search Skill 把检索结果组织成证据矩阵，让复核从结构化材料开始。</p>
+    <h2>Core Claim</h2>
+    <p>一次早期专利检索失败得很像成功。</p>
+<p>输入是一条 Amazon 商品页：LiveFull 恒温压缩毛巾分配器。本地 benchmark 里的预期专利标签是 US7784424B2。一次冷启动隔离运行检查了页面，没有找到可见专利标记，于是搜索 Google Patents，最后返回 NONE。这个答案干净、简短、看起来很克制，但它错了。</p>
+<p>后来，检索策略扩展以后，同一个案例又以相反方式失败。系统找回了 US7784424B2，却把它放进 RELATED，没有输出任何 HIGH_RISK 专利，同时带出了 25 个相关候选：CN、JP、KR、EP、WO 和 US 记录，围绕毛巾分配器、湿巾、加热布料和相近机构展开。benchmark 因为目标出现在输出里，给这一行的 required target recall 算作完整；但 high-risk recall 仍然是 0。系统学会了找到针，却拒绝把针放进正确的托盘。</p>
+<p>这就是产品专利检索的真实形状。难点不是生成一页专利链接，而是同时维持三件事：</p>
+<p>不能漏掉与产品强相关或 claim 风险高的专利；</p>
+<p>不能让这些专利被弱类比和同族噪声淹没；</p>
+<p>每一个 HIGH_RISK 标签都要有产品身份、claim 或外观重合、法律状态和来源证据支撑。</p>
+<p>一旦这些约束可见，专利检索就不再像浏览网页，而更像一个工作框架。这个框架由 query pack、deterministic parser、evidence matrix、bucket contract、answer-blind 评测和 rollback 组成。它的目标是提高召回，同时不奖励噪声。</p>
   </section>
 <section class="paper-section" id="s2">
-    <h2>2. 怎么做：把搜索策略、parser 和输出 contract 拆开</h2>
-    <p>agent 先从商品材料抽取 brand、visual features、functional elements、marketplace clues 和 patent hypotheses，再生成多组 query pack：品牌、外观、功能、竞品、权利人、平台线索和 Google Patents 语法。这样系统不会在第一批结果里过早收敛。</p>
-<p>检索结果先进入 parser 和 matrix。Google Patents parser 提取 claim windows、mechanism terms 和 status 信息；claim_risk_matrix 根据 overlap score、jurisdiction、legal status 和 feature match 给出 HIGH_RISK_REVIEW / RELATED_REVIEW。patent contract 防止分析段落里的背景专利号污染 high-risk bucket。</p>
-<p>失败样例会回到 harness。answer-blind runner 不能读答案，先独立完成报告；grader 再检查 high-risk recall、target recall、source support 和 evidence matrix。失败原因可能是 query pack 太窄、source policy 过早停止、parser 漏 claim、ranking helper 压低非品牌 assignee，或者 verifier rubric 没惩罚弱证据。</p>
+    <h2>链接列表隐藏了什么失败</h2>
+    <p>普通搜索界面很难诊断 LiveFull 这种失败。如果系统返回 NONE，用户不知道产品是否真的没有专利线索，Amazon 是否把标记藏在图片里，正确专利用了更早的技术词汇，还是查询太早收缩。如果系统返回 26 个专利号，用户面对的是相反问题：目标可能在里面，但有用信号被大量技术邻居稀释。</p>
+<p>本地 benchmark 把这种模糊变成可测对象。在 10-case patent-number benchmark 中，每一行都有产品输入和一个带答案的目标文件，runner 不允许读取答案文件。当前样例包括 marketplace 商品页、官方产品页和一个 image-only 产品身份案例。预期输出也不是扁平列表，而是有类型的结果。</p>
+<div class="table-wrap"><table>
+      <thead><tr><th>Case</th><th>产品类型</th><th>预期高风险信号</th><th>主要陷阱</th></tr></thead>
+      <tbody><tr><td>PN-001</td><td>LiveFull 压缩毛巾分配器</td><td>US7784424B2</td><td>当前页面证据很难复现历史来源标签</td></tr><tr><td>PN-002</td><td>Upright 姿态设备</td><td>USD958784S1</td><td>来源行有可疑额外标签，不应自动升为 HIGH_RISK</td></tr><tr><td>PN-003</td><td>带摄像头理发器产品图</td><td>US20230063551A1, USD1022322S1</td><td>solver 不能复用 Upright URL 假设</td></tr><tr><td>PN-004</td><td>Fat Brain Toys Air Toobz</td><td>US12551812B2, US20220126217A1 为 RELATED</td><td>grant/application counterpart 很关键</td></tr><tr><td>PN-005</td><td>Grillbot 烤架清洁机器人</td><td>US9161612B2 加 family signal</td><td>family expansion 容易变成失控噪声</td></tr><tr><td>PN-008</td><td>Momcozy 便携母乳冷藏器</td><td>USD1094021S1, utility application 为 RELATED</td><td>design 证据强于 utility 证据</td></tr></tbody>
+    </table></div>
+<p>这个 benchmark 围绕的是产品风险问题：“律师或产品运营应该先复核什么？”这不同于“我能从网页上刮到哪些字符串”。历史 source label 仍然重要，但命中 source label 不自动等于高风险法律结论。PN-002 是清楚例子：来源表保留了 US20230063551A1、USD958784S1 和 CN213381662U；typed schema 把 USD958784S1 视为直接 HIGH_RISK 目标，而另外两个只有在更强产品证据出现时才可能进入风险列表。扁平 exact-match 指标会惩罚系统拒绝夸大弱标签；纯风险指标又会忽视来源标签恢复。工作框架需要同时看这两面。</p>
   </section>
 <section class="paper-section" id="s3">
-    <h2>3. 结果是什么：检索策略可以被测试和回滚</h2>
-    <p>约 100 个内部标注风险样例上，top-k recall 从约 10% 提升到约 90%。这个提升来自 skill/search strategy、source policy、ranking helper、query rewrite 和 verifier rubric 的迭代。</p>
-<p>这个数字的边界同样重要。top-k recall 表示目标高风险专利是否进入候选集合和结构化证据矩阵；律师最终侵权判断、jurisdiction 覆盖和公开市场通用准确率不在这个指标里。它证明专利检索 harness 在内部样例上能持续改进。</p>
+    <h2>契约：把风险和相关证据分开</h2>
+    <p>输出契约故意很小：</p>
+<pre class="code-block"><code>HIGH_RISK:
+US1234567B2
+
+RELATED:
+US20230000000A1</code></pre>
+<p>HIGH_RISK 只保留直接产品专利、同商业产品的 publication/grant counterpart、与同一商品绑定的 design/utility sibling，或有强产品证据与 claim/status 证据的 active close FTO-risk candidate。</p>
+<p>RELATED 吸收有用但较弱的证据：family context、产品桥不完整的 source label、同 assignee 记录、竞品类比、历史专利、过期记录、abandoned application、foreign-only record 或相邻风险专利。</p>
+<p>这个契约做了两件有价值的事。</p>
+<p>第一，它允许召回保持宽。一个弱但有支撑的 family member 可以留在 RELATED，而不是为了显得精准被删掉。在产品风险工作里，遗漏很贵：律师检查 continuation、priority chain、产品变体或辖区时，弱项可能突然变重要。</p>
+<p>第二，它防止宽召回把自己洗成高风险。一个专利可以在技术上相关，却不该和产品页标记、精确外观匹配或映射到产品机构的 active claim 处在同一优先级。bucket contract 给评测器一个位置说：“保留它，但现在不要用它吓到运营人员。”</p>
+<p>LiveFull 后期失败因此很有信息量。找回 US7784424B2 是进步；只把它放在 RELATED，说明检索层比分桶策略进步得更快。框架能看见这种差异，因为它把 high-risk recall 和 target recall 分开计量。</p>
   </section>
 <section class="paper-section" id="s4">
-    <h2>4. 边界：recall-first 仍要控制噪声</h2>
-    <p>系统必须在 recall 和证据质量之间保持张力。扩大 query pack 可能提高 train recall，却让 heldout 出现大量弱相关专利；过宽的 source policy 可能污染 HIGH_RISK bucket。answer-blind eval、bucket contract 和 heldout review 的作用，就是让 skill 不会靠堆噪声显得更努力。</p>
+    <h2>Query pack 是受控扩展，不是头脑风暴</h2>
+    <p>系统使用 query pack，是因为产品专利检索很少只有一个稳定名称。marketplace 用零售语言，专利用更旧的技术词汇；产品页可能提到 ASIN、品牌名、法律所有人、型号、包装声明、说明书和没有号码的 patent pending；图片通过形状、按钮、腔体、镜头、屏幕、刀片、阀门或 cartridge 传递产品身份。</p>
+<p>query pack 把这些信号转成有边界的检索路径。对于 URL 输入，runner 先读取可见页面文本和结构化 metadata，再围绕 patent、Pat.、protected by、patent pending、continuation、family 等标记找线索。如果直接标记失败，runner 提取品牌、卖家、legal owner、ASIN、型号、精确标题和两三个机构特征，并形成几类查询。</p>
+<div class="table-wrap"><table>
+      <thead><tr><th>查询家族</th><th>示例锚点</th></tr></thead>
+      <tbody><tr><td>精确来源</td><td>产品标题、ASIN、型号、说明书标题、官方产品页</td></tr><tr><td>专利标记</td><td>patent no, U.S. Patent, protected by, patents pending, virtual patent marking</td></tr><tr><td>实体</td><td>品牌、legal owner、trademark owner、assignee、inventor</td></tr><tr><td>机构</td><td>compressed towel, heated towel dispenser, water reservoir, sensor, dispensing apparatus</td></tr><tr><td>counterpart</td><td>publication/grant pair、design/utility sibling、family member</td></tr><tr><td>图片身份</td><td>接受品牌相似物之前的中性视觉锚点</td></tr></tbody>
+    </table></div>
+<p>PN-001 的 builder notes 说明了为什么这有必要。失败反复锁定了产品身份，也找到了看似合理的机构候选，但查询主要停在现代零售措辞。后续实验加入了窄 fallback：wet towel dispensing apparatus、moistened towel dispenser、heated towel dispensing apparatus、dry compressed towels liquid dispenser。这不是允许接受所有毛巾专利，而是给薄 storefront 或 private-label 页面增加一条旧技术词汇路径。</p>
+<p>图片案例也需要同样纪律。PN-003 起点是一张本地图片，不是产品 URL。图片看起来像带摄像头的理发器，但 image-only 运行很容易过拟合到外观相似商品。skill seed 要求 identity-challenge gate：记录中性视觉锚点，至少跑两个身份假设，并且只有当图片或周边来源确认品牌/型号，或者 claim 更好地匹配独特可见机构时，才把某个品牌专利提升为 HIGH_RISK。</p>
+<p>这就是查询扩展和噪声的区别：可以扩展，但每一次扩展都要保留理由。</p>
+  </section>
+<section class="paper-section" id="s5">
+    <h2>Parser 给智能体比 snippet 更硬的支撑</h2>
+    <p>搜索 snippet 对专利风险分桶太薄，所以系统给 runner 一组 candidate-tools/ 下的 deterministic helpers。这些工具故意很小。</p>
+<div class="table-wrap"><table>
+      <thead><tr><th>Helper</th><th>工作</th></tr></thead>
+      <tbody><tr><td>query_pack.py</td><td>生成 exact-anchor、fallback、entity、family 和 image-query plan</td></tr><tr><td>google_patents_parser.py</td><td>在已知候选号或页面时解析 Google Patents 记录</td></tr><tr><td>claim_risk_matrix.py</td><td>比较产品特征与 claim/status 证据，输出复核提示</td></tr></tbody>
+    </table></div>
+<p>parser 不是法官。它提取能让下一步判断可检查的字段和窗口：标题、assignee、inventor、publication/grant counterpart、family evidence、claim excerpt、legal-status window、NPL 或 product-title hint，以及 relation window。runner 因此可以问更具体的问题：</p>
+<p>• 专利页是否命名同一产品、品牌、assignee、inventor 或商业标题？</p>
+<p>• 这是 grant、publication、design patent、foreign counterpart、expired patent、abandoned application 还是 active record？</p>
+<p>• abstract 或 claim window 是否包含产品机构，还是只有 broad category match？</p>
+<p>• design patent 是否是强产品级匹配，而 utility application 只是 RELATED？</p>
+<p>• 初始命中后是否出现 publication/grant counterpart 或 family member？</p>
+<p>这些区分很重要，因为专利噪声在标题层面常常很像真信号。一个 “towel dispenser” 专利可能值得复核，却仍然无法建立 LiveFull 产品桥；一个 posture-device design patent 可以是 HIGH_RISK，而同一来源行里的 hair-clipper 标签仍然可疑；一个 breast-milk cooler design patent 可以是最强直接匹配，而配对 utility application 仍然低置信。parser 让这些差异显出来，而不是留在聊天 trace 里。</p>
+  </section>
+<section class="paper-section" id="s6">
+    <h2>Claim/status/evidence matrix 是法律风险检查点</h2>
+    <p>专利号本身不是风险评估。每个被接受的候选都应该有一行紧凑证据。</p>
+<div class="table-wrap"><table>
+      <thead><tr><th>字段</th><th>为什么重要</th></tr></thead>
+      <tbody><tr><td>Product bridge</td><td>产品页、说明书、包装、virtual marking 页面、精确商品标题、图片/外观匹配或官方来源</td></tr><tr><td>Technical overlap</td><td>产品特征与 abstract 或 claim window 的比较</td></tr><tr><td>Legal status</td><td>active、pending、granted、expired、abandoned、withdrawn、rejected、ceased 或 foreign-only</td></tr><tr><td>Jurisdiction</td><td>记录是否影响被审查市场</td></tr><tr><td>Relation type</td><td>direct match、counterpart、family member、design/utility sibling、competitor analog、weak related</td></tr><tr><td>Bucket</td><td>HIGH_RISK 或 RELATED，以及弱记录没有提升的理由</td></tr></tbody>
+    </table></div>
+<p>一个有用迭代加入了窄 low-status exception。在 PN-003 中，runner 找回了同商业产品的 utility publication 和 active design patent，但因为 utility publication 状态较低而将其降级。实验把策略改成：US utility publication/application 只有在存在 exact same-commercial-product 证据、同时找回 active same-product design/grant/product-image sibling，并且 claim mechanism 匹配时，才可以留在 HIGH_RISK。竞品类比、foreign-only 记录、旧 generic parent 和没有 exact product bridge 的记录仍留在 RELATED。</p>
+<p>这条规则很小，但捕捉了框架需要的判断方式。目标不是让法律状态不重要，而是在低状态记录属于同产品证据链时，不因状态过低而损失召回。</p>
+  </section>
+<section class="paper-section" id="s7">
+    <h2>Answer-blind 评测保持检索诚实</h2>
+    <p>工作框架把 runner 和答案文件分开。</p>
+<p>评测时，search runner 只能读公开输入、当前 skill 和无答案 helper tools。它不能读 patent-number-answers.md、combined benchmark、grading schema 或 reasoning trace。runner 写出每个 case 的输出和 trace 后，scorer 再用私有 target 比较结果并写 score report。</p>
+<p>builder 的角色不同。它可以看 score report、answer files、raw outputs、traces、candidate tools、上一轮交付物和 failure summaries。它的工作是提出一个对 skill 或工具的小改动，验证这个改动，再运行下一轮 answer-blind 评测。如果候选改进了选定指标，就保留；如果回归，就丢弃并恢复 previous best workspace。</p>
+<p>这个循环更像工程工作框架，而不是一次 prompt tweak：</p>
+<pre class="code-block"><code>answer-blind 评测 runner
+-&gt; scorer
+-&gt; planner / builder
+-&gt; answer-blind 评测 runner
+-&gt; keep or rollback</code></pre>
+<p>已检入的评测 notes 命名了三项主要 round metric。</p>
+<div class="table-wrap"><table>
+      <thead><tr><th>Metric</th><th>含义</th></tr></thead>
+      <tbody><tr><td>overall_score</td><td>产品风险有用性和 required-target recovery 的灵活评分</td></tr><tr><td>high_risk_recall</td><td>预期高风险目标是否出现在 HIGH_RISK bucket</td></tr><tr><td>target_recall</td><td>预期高风险和相关目标是否出现在任意输出位置</td></tr></tbody>
+    </table></div>
+<p>默认目标接近 90% score/recall。这个目标是 gate，不是营销口径。一次运行可以改善一个指标，但如果伤害组合结果，仍然会被丢弃。</p>
+  </section>
+<section class="paper-section" id="s8">
+    <h2>本地证据显示了什么</h2>
+    <p>最强的已检查本地证据是 10-case answer-blind benchmark 和它的迭代 ledger。</p>
+<p>两个无 skill CLI baseline 都很弱：</p>
+<div class="table-wrap"><table>
+      <thead><tr><th>Run</th><th>Overall score</th><th>High-risk recall</th><th>Target recall</th></tr></thead>
+      <tbody><tr><td>Codex no-skill baseline</td><td>16.7%</td><td>45.5% (5/11)</td><td>42.9% (6/14)</td></tr><tr><td>Claude no-skill full baseline</td><td>15.4%</td><td>27.3% (3/11)</td><td>21.4% (3/14)</td></tr></tbody>
+    </table></div>
+<p>评测循环 ledger 随着保留迭代而提升：</p>
+<div class="table-wrap"><table>
+      <thead><tr><th>Iteration</th><th>Overall score</th><th>High-risk recall</th><th>Target recall</th><th>Decision</th></tr></thead>
+      <tbody><tr><td>1</td><td>71.4%</td><td>63.6%</td><td>50.0%</td><td>keep</td></tr><tr><td>2</td><td>79.8%</td><td>72.7%</td><td>64.3%</td><td>keep</td></tr><tr><td>3</td><td>83.3%</td><td>81.8%</td><td>85.7%</td><td>keep</td></tr><tr><td>4</td><td>86.3%</td><td>90.9% (10/11)</td><td>85.7% (12/14)</td><td>keep</td></tr><tr><td>5</td><td>81.1%</td><td>81.8%</td><td>71.4%</td><td>discard</td></tr></tbody>
+    </table></div>
+<p>Iteration 4 是关键证据点。它跨过了 high-risk recall 目标，但 overall 和 target-recall gate 仍未全部达到，也留下了未解决案例。Iteration 5 说明 rollback 为什么重要：后续候选虽然在某处恢复了 PN-001，但整体框架回归，因此被丢弃。</p>
+<p>同一批文件也暴露噪声问题。某个后续 strategy-loop 的 deterministic score report 在 10-case set 中出现 10 个 true positives、116 个 false positives 和 6 个 false negatives。专利级 micro precision 只有 7.9%，尽管 recall 达到 62.5%。在 target 层面，同一运行找到了 9/11 个 high-risk targets 和 10/14 个 required targets。这个组合说明单一 “accuracy” 数字会误导：系统可能很会浮出正确专利家族，但对用户可见 HIGH_RISK 列表仍然太吵。</p>
+  </section>
+<section class="paper-section" id="s9">
+    <h2>Top-k recall 在这里意味着什么</h2>
+    <p>“top-k recall” 在这个项目里必须小心使用。本地 benchmark 输出是 bucketed，不是有正式 k = 10 截断的 ranked search-results page。更稳妥的读法是 candidate-set recall：预期专利是否出现在输出的 HIGH_RISK 或 RELATED 候选集中，以及是否出现在正确优先级 bucket。</p>
+<p>在这个读法下，证据是有用的：</p>
+<p>• PN-004 在 counterpart search 改进后，从 iteration 1 的零 target recall 移到 iteration 2 的 full target recall。</p>
+<p>• PN-003 在 image-identity 和 low-status direct-product policy 改进后，从早期零 high-risk recall 移到 full high-risk recall。</p>
+<p>• PN-008 在 iteration 3 同时恢复 design patent 和 paired utility/application 后达到 full target recall，随后在 iteration 5 回归。</p>
+<p>• PN-001 仍然顽固：target recovery 和 bucket placement 可以独立变化，说明 top-k 式候选召回还不够。</p>
+<p>这不是公开网络专利检索准确性的证明。它不证明侵权、有效性、claim construction、可执行性、design-patent substantial similarity 或辖区 freedom to operate。它也不证明旧生成公开材料中“约 100 个内部样本”的更宽主张，除非对应样本 ledger 被检查。这里经过验证的本地交付物更窄：10 个产品案例、11 个 high-risk target、14 个 required target、answer-blind runs 和 per-case traces。</p>
+<p>这个较窄主张仍然有价值。它证明检索策略可以在不把答案泄露给 runner 的条件下被评测和改进，也证明当召回收益带来太多噪声时，系统可以回滚。</p>
+  </section>
+<section class="paper-section" id="s10">
+    <h2>为什么旧方法难以处理这个问题</h2>
+    <p>普通关键词检索容易运行，但难以信任。它能浮出专利页面，却不知道结果来自产品标记、同 assignee family、竞品类比还是 generic title match。它把链接交给审查者，把风险结构留在隐含状态。</p>
+<p>单次 prompt 很灵活，但不稳定。它可能像早期 LiveFull 运行那样，在一次看起来干净的检索后把 NONE 当成克制答案；也可能过度扩展 family，把每个 sibling 都呈现得像同等风险。没有 answer-blind regression，就没有持久记忆说明哪次改动帮了哪个失败。</p>
+<p>严格 exact-match scorer 也很脆。它会惩罚系统把可疑 source label 当成弱证据，即使这才是正确的产品风险姿态。它也分不清漏掉 high-risk grant 和省略低置信历史标签。</p>
+<p>纯法律风险 grader 也不完整。它可能奖励有用类比，却忽视已知产品专利被漏掉。对一个第一义务是 recall 的检索系统来说，这很危险。</p>
+<p>工作框架的做法是拒绝把问题压成一个数字。它同时衡量 high-risk recall、required target recall、exact source-label behavior、precision/F1、process discipline、claim/status comparison 和 risk usefulness。runner 不只被评估“找到了什么”，也被评估“把证据放在哪里”和“能不能为这个位置辩护”。</p>
+  </section>
+<section class="paper-section" id="s11">
+    <h2>产品教训</h2>
+    <p>对卖家或产品团队来说，输出不应该像搜索结果页，而应该像复核队列。</p>
+<div class="table-wrap"><table>
+      <thead><tr><th>复核项</th><th>用户需要知道什么</th></tr></thead>
+      <tbody><tr><td>HIGH_RISK patent</td><td>为什么这条记录应该先看</td></tr><tr><td>RELATED patent</td><td>为什么它有用但较弱</td></tr><tr><td>Claim/status evidence</td><td>哪些产品特征重合，观察到什么法律状态</td></tr><tr><td>Source bridge</td><td>产品到专利的连接来自哪里</td></tr><tr><td>Missing evidence</td><td>哪些证据会提升或降低候选</td></tr><tr><td>Next search terms</td><td>具体后续检索词，而不是泛泛 metadata</td></tr></tbody>
+    </table></div>
+<p>这也改变了智能体的角色。智能体不是替代专利律师给法律意见，而是把混乱产品页、图片或 brief 转成一组结构化候选权利和证据缺口。人类审查者应该把时间花在 claim scope、design similarity、jurisdiction、validity 和商业决策上，而不是重建某个随机专利链接为什么出现。</p>
+  </section>
+<section class="paper-section" id="s12">
+    <h2>仍未解决的部分</h2>
+    <p>最难的失败仍然发生在产品证据很薄、过时、藏在图片里，或由 private-label 卖家中介的时候。PN-001 是典型：benchmark 期待 US7784424B2，但当前检索证据很难复现直接产品页标记。太严格的 runner 返回 NONE；太宽松的 runner 用一组 towel-dispenser analog 填满 RELATED。有用方案不是放松一切，而是为 thin storefront 增加窄接受机制：旧机构词汇、claim/status 检查和更明确的分桶理由。</p>
+<p>第二个未解问题是排名。bucketed recall 比扁平链接列表更好，但不是完整 ranked retrieval 评测。生产级 top-k 指标需要稳定候选排序、定义好的 k、family member 去重规则，以及 direct product marking、family/counterpart recovery、design similarity、utility claim risk 和 weak related context 的分项评分。</p>
+<p>第三个问题是证据新鲜度。marketplace 页面会变化，专利标记会消失、移入产品图片或制造商页面；Google Patents 页面可能无法被本地 parser 访问；官方页面可能比 marketplace snippet 更可靠，但前提是 runner 找得到官方页。工作框架能暴露这些失败，但不能通过断言让陈旧证据变新。</p>
+<p>第四个问题是法律边界。HIGH_RISK 的意思是“应优先复核”，不是“构成侵权”。matrix 是 triage 交付物，可以显示 claim window、产品重合、状态和辖区线索，但最终法律结论仍需要律师审查和案件特定分析。</p>
+  </section>
+<section class="paper-section" id="s13">
+    <h2>结尾</h2>
+    <p>这个项目的核心不是把商品链接变成专利链接，而是把产品专利检索做成一个可测试、可回滚的 recall-and-noise-control 工作框架。</p>
+<p>真正的问题有两边。漏掉高风险专利会伤害卖家决策；把弱相关专利塞进 HIGH_RISK，也会制造误报和复核成本。Lawless 的做法是让系统在这两边之间留下可审查的中间对象：query pack、parser、evidence matrix、bucket contract、answer-blind 评测和 rollback。</p>
+<p>它证明的不是“AI 可以自动给出专利法律意见”，而是更窄也更有用的一点：一个内部检索策略可以在 blind 条件下被评测、修正和回滚，并把专利号、来源、claim/status、产品特征和风险 bucket 组织成专家可以复核的材料。</p>
   </section>
       <section class="paper-section" id="references">
         <h2>参考材料</h2>

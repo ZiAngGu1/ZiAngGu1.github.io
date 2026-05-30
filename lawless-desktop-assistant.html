@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Desktop 版本解决的是企业税务场景里的本地授权和动作边界：assistant 可以整理邮件、来源和草稿，但不能越过专家审批去改变外部世界。" />
-  <title>Lawless Desktop Assistant: 本地优先的企业法律/税务 agent / Ziang Gu</title>
+  <meta name="description" content="本地优先的企业助手可以准备 Outlook/M365 工作、带来源的草稿、后台任务轨迹和审批请求，但必须在对外动作之前停下来。" />
+  <title>桌面助手在关键时刻应该可靠而克制 / Ziang Gu</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -23,60 +23,128 @@
   <main><article class="paper">
       <header class="paper-hero">
         <div>
-          <p class="eyebrow">02 / Desktop</p>
-          <h1>Lawless Desktop Assistant: 本地优先的企业法律/税务 agent</h1>
-          <p class="dek">Desktop 版本解决的是企业税务场景里的本地授权和动作边界：assistant 可以整理邮件、来源和草稿，但不能越过专家审批去改变外部世界。</p>
-          <div class="tag-row hero-tags"><b>desktop</b><b>Outlook</b><b>ActionGate</b><b>scheduled task</b><b>review</b></div>
+          <p class="eyebrow">02 / 桌面端</p>
+          <h1>桌面助手在关键时刻应该可靠而克制</h1>
+          <p class="dek">本地优先的企业助手可以准备 Outlook/M365 工作、带来源的草稿、后台任务轨迹和审批请求，但必须在对外动作之前停下来。</p>
+          <div class="tag-row hero-tags"><b>桌面端</b><b>Outlook</b><b>ActionGate</b><b>后台任务</b><b>审阅</b></div>
           
         </div>
         <figure class="paper-figure">
-    <img src="./assets/lawless-desktop-chat-live.png" alt="Lawless desktop assistant chat" />
-    <figcaption>Figure 1. desktop assistant 的实时工作界面。assistant 可以整理邮件和材料，但外部动作被审批层拦住。</figcaption>
+    <img src="./assets/lawless-desktop-chat-live.png" alt="Lawless 桌面助手对话界面" />
+    <figcaption>图 1. 桌面助手的实时工作界面。助手可以整理邮件和材料，但外部动作被审批层拦住。</figcaption>
   </figure>
       </header>
 
       <section class="case-brief" aria-label="Case study brief">
     <article>
-          <span>真实任务</span>
-          <p>面向 Big Four / PwC 类税务邮件研究：读旧邮件和内部材料，准备带来源的中英文回复草稿。</p>
+          <span>为什么重要</span>
+          <p>企业税务和法律工作需要读授权资料、准备草稿和保留轨迹，但不能让智能体自由发送或修改外部材料。</p>
         </article><article>
-          <span>核心做法</span>
-          <p>EngineAdapter 控制工具可见性，artifact runtime 做 citation/source preflight，ActionGate 拦住 send/delete/archive 等外部动作。</p>
+          <span>怎么做</span>
+          <p>桌面端把连接器权限、来源预检、交付物运行时、后台任务和 ActionGate 变成默认工作流。</p>
         </article><article>
-          <span>结果边界</span>
-          <p>内部测试把研究/起草压成 reviewer workflow；它不替代专家判断，也不自动发送对外邮件。</p>
+          <span>结果 / 边界</span>
+          <p>助手可以把专家带到审阅界面；发送、删除、归档和外部承诺仍必须由人批准。</p>
         </article>
   </section>
 
       <aside class="toc">
-        <a href="#s1">1. 为什么做：企业税务 assistant 首先要可信</a><a href="#s2">2. 怎么做：用本地 harness 管住工具、证据和动作</a><a href="#s3">3. 结果是什么：专家从空白邮件前移到复核界面</a><a href="#s4">4. 边界：本地优先牺牲了一部分云端便利</a>
+        <a href="#s1">Core Claim</a><a href="#s2">任务看起来很小：写好草稿，然后停住</a><a href="#s3">为什么通用桌面智能体不够</a><a href="#s4">Outlook/M365 是授权边界</a><a href="#s5">来源预检把引用变成运行时状态</a><a href="#s6">ActionGate 是草稿和外部动作之间的停顿</a><a href="#s7">定时任务需要痕迹，不只是提醒</a><a href="#s8">专家怎么接手</a><a href="#s9">当前结果和边界</a><a href="#s10">限制</a><a href="#s11">我从这个项目里学到的东西</a>
         
         <a href="#references">参考材料</a>
       </aside>
 
       <div class="figure-grid"><figure class="paper-figure">
-    <img src="./assets/lawless-desktop-schedule.png" alt="Lawless desktop scheduled task" />
-    <figcaption>Figure 2. scheduled task 页面。后台任务运行时会保存 live transcript、tool trace 和 completion summary。</figcaption>
+    <img src="./assets/lawless-desktop-schedule.png" alt="Lawless 桌面端后台任务界面" />
+    <figcaption>图 2. 后台任务页面。后台任务运行时会保存实时记录、工具轨迹和完成摘要。</figcaption>
   </figure></div>
       <section class="paper-section" id="s1">
-    <h2>1. 为什么做：企业税务 assistant 首先要可信</h2>
-    <p>企业税务邮件会影响真实客户沟通。assistant 可能需要读取 Outlook/M365 邮件、客户历史、内部 tax API、法规来源和 reviewer feedback；这些材料敏感，系统必须让专家确信：agent 只读授权材料、引用有来源、草稿可复核、外部动作不会自动发生。</p>
-<p>桌面端必须把自由调用工具的风险先收住。读邮件和发邮件属于不同风险等级，生成草稿和对外承诺也属于不同风险等级。Desktop Assistant 因此把工具暴露、artifact 检查和动作审批作为一等工程对象。</p>
+    <h2>Core Claim</h2>
+    <p>企业税务和法律工作里，智能体最危险的时刻，不是它把一个概念讲错了，而是它在没有人看见的情况下改变了外部世界。邮件草稿可以修改，引用缺口可以补，错误的解释可以被复核人拦下来；但如果一封发给客户的邮件已经离开 Outlook/M365，收件人、法律依据、语气和信心等级都已经进入真实业务关系，系统就不能再把它当成一次普通的模型失误。</p>
+<p>Lawless Desktop Assistant 是围绕这个边界做的桌面智能体原型。它可以读取授权后的 Outlook/M365 邮箱，识别事项上下文，准备原生 Outlook 草稿，把来源和主张挂到结构化交付物上，并把定时运行保存成可恢复的会话。它不能静默发送、回复、转发、删除、归档或发布工作成果。高风险动作要么从 MCP 工具面上消失，要么被运行时拒绝，要么进入 ActionGate，由人类复核人明确批准。</p>
+<p>这个设计看起来没有“AI 自动操作你的电脑”那么戏剧化，但更适合法律和税务这样的专业工作。项目的核心判断是：桌面智能体应该先成为一个本地授权与审查工作流框架，把模型输出变成草稿、来源、主张、状态和待批准动作；只有在人类确认之后，外部世界才应该被改变。</p>
   </section>
 <section class="paper-section" id="s2">
-    <h2>2. 怎么做：用本地 harness 管住工具、证据和动作</h2>
-    <p>EngineAdapter 决定 assistant 能看见哪些 MCP tool，哪些工具必须常驻，哪些工具只能作为搜索提示出现。邮箱动作被拆成 read/search/list、draft creation、send/reply/forward/delete/archive 等风险层级；信息读取可以在授权内运行，改变外部世界的动作会被 deny 或转入 ActionGate。</p>
-<p>SubmitArtifact 把输出从聊天文本变成可检查对象。artifact-store 检查 citation、source id、claim source、draft recipient、mechanical issues 和 critic findings，再把 artifact 标成 ready、needs_attention 或 ready_with_warnings。专家看到的是带状态的草稿和证据包，复核从结构化状态开始。</p>
-<p>scheduled task 让 assistant 能在后台整理 inbox 或准备草稿，同时保留可观察运行过程。scheduler 保存 live transcript、tool call、text delta、execution event 和 completion summary。用户回来时可以打开同一条会话接着看见任务轨迹。</p>
+    <h2>任务看起来很小：写好草稿，然后停住</h2>
+    <p>一个普通的税务工作早晨，合伙人或资深顾问打开 Outlook，可能会看到几类消息：跨境预提税问题、条约解释请求、上一份备忘录的追问、会议安排、客户补充材料。智能体真正应该帮忙的地方，是那些机械但耗时的环节：读取邮件正文，识别事项，检查草稿箱里是否已有草稿，找到事务所模板，做适度研究，写出干净的 HTML 邮件，并把它保存到 Outlook 原生草稿箱。</p>
+<p>最后一步故意很平淡。真正的产出不是已经发出去的邮件，而是一封等待审查的草稿。</p>
+<p>这个选择改变了整个系统。草稿仍然在专业人士的审查界面里，所以可以被自动创建；结构化交付物仍然是内部工作成果，所以可以被系统提交和校验；但 send-mail、reply、forward 这类动作不应该在后台自动发生。当前 M365 策略暴露的是读取和准备工具，例如邮件列表、邮件读取、草稿创建、日历读取、事件创建、To-Do 读取；隐藏的是发送、回复、转发、删除、移动、创建规则、修改邮箱设置、上传文件、分享网盘项目、移除账号等会改变外部状态的工具。</p>
+<p>这不是表面上的权限列表，而是一条职业规则：准备可以自动化，承诺必须被审查。</p>
   </section>
 <section class="paper-section" id="s3">
-    <h2>3. 结果是什么：专家从空白邮件前移到复核界面</h2>
-    <p>这套 desktop harness 的结果是把税务邮件研究从空白起草变成复核工作。内部 workflow test 中，30-40 分钟的整理和起草被压缩到约 2-3 分钟 reviewer workflow：专家面对已有上下文、来源和草稿，主要判断结论、语气和是否需要补材料。</p>
-<p>验证覆盖真实 harness 行为。artifact runtime verification 覆盖 citation ready、unresolved citation、source mismatch warning、email draft missing recipient、forward/reply/modify-email 必须进入 ActionGate 等场景；MS365 tool policy 验证 Outlook 工具 allowlist；default-email-provider runtime 验证默认邮箱 provider fallback。</p>
+    <h2>为什么通用桌面智能体不够</h2>
+    <p>许多桌面智能体演示把屏幕当成一个通用操作面：只要模型能点击、输入、浏览、调用工具、记住上下文，它就看起来能做很多事。但税务和法律工作不是一个普通的控制问题，而是一个带有控制面的信任问题。</p>
+<p>税务复核人需要知道的，不只是“模型回答了什么”。更重要的是：</p>
+<p>• 它读取的是哪封邮件、哪个事项、哪个客户记录？</p>
+<p>• 草稿里的法律或税务判断由哪些来源支持？</p>
+<p>• 哪些主张是直接支持，哪些只是类比、背景或反向材料？</p>
+<p>• 它真的在 Outlook 里创建了草稿，还是只在聊天里写了一段文字？</p>
+<p>• 引用在 Outlook 渲染后还能不能点击、还能不能对应到真实来源？</p>
+<p>• 有没有动作已经改变了外部世界？</p>
+<p>• 如果这是定时任务，它读了什么、调用了什么工具、会话在哪里恢复？</p>
+<p>这些问题把桌面版本推向了“工作流框架”，而不是一个单纯聊天助手。这个框架做三件事：控制模型能看见哪些工具；把工作成果变成带来源、状态和主张的类型化交付物；在外部动作发生前，记录一个必须由人批准、拒绝或手动接手的节点。</p>
   </section>
 <section class="paper-section" id="s4">
-    <h2>4. 边界：本地优先牺牲了一部分云端便利</h2>
-    <p>Desktop Assistant 适合企业内部邮件、内部 API 和本地授权边界。跨境卖家需要低配置入口，所以 seller-facing patent/TRO 场景后来转向 cloud workspace。两者共享同一条 harness 判断：assistant 做准备、证据和草稿，高风险外部动作由人批准。</p>
+    <h2>Outlook/M365 是授权边界</h2>
+    <p>在这个项目里，Outlook 不只是输入来源。它是内部准备和客户可见沟通之间的边界。</p>
+<p>邮件分诊技能围绕按文件夹限定的读取设计：从当前收件箱读取，检查当前草稿箱，并参考最近生成的草稿交付物，再决定是否创建新草稿。这样做很重要，因为全邮箱读取可能把已经删除、过期或无关的邮件重新带回工作流。专业服务里，“已经有草稿但又生成一封”不是小问题，它可能制造冲突意见、打乱复核人的判断，也会让用户在最需要信任的地方失去信任。</p>
+<p>复杂邮件不能只做摘要。智能体需要判断紧急程度和主题，把消息关联到客户或事项，搜索事务所认可的模板，在邮件提出法律或税务问题时做必要研究，然后写出结构化 HTML 草稿。邮件正文也要适配原生邮箱：段落使用 &lt;p&gt;，小标题用轻量 &lt;strong&gt;，真实检索到 URL 的来源才做成可点击链接，没有验证的引用只能保留为文本，不能伪装成链接。</p>
+<p>草稿会配套生成一个 email_draft 交付物。这个交付物保存原始邮件引用、草稿链接、事项 id、复核摘要、来源引用，以及“打开草稿”这样的动作意图。复核人可以在 Outlook 里读草稿，同时在桌面应用里看到来源和审查元数据。</p>
+<p>技术重点不在 Outlook 本身。Gmail、SharePoint、文档管理系统、税务研究连接器都可以使用同样模式。关键是每个连接器都必须有明确策略：哪些内容可读，哪些成果可准备，哪些状态可以写入内部工作区，哪些动作必须人工确认。</p>
+  </section>
+<section class="paper-section" id="s5">
+    <h2>来源预检把引用变成运行时状态</h2>
+    <p>税务和法律智能体里，最重要的交付物常常不是最终备忘录，而是中间证据包。专家需要根据这个证据包决定：这段备忘录或这封邮件是否值得信任。</p>
+<p>Lawless Desktop 的交付物运行时把来源和主张当作一等字段。一个法律研究交付物可以包含来源 id、标题、引用、URL、摘录、jurisdiction 字段，以及指向来源 id 的主张对象。交付物提交时，运行时不会只是把 JSON 存起来，而是会检查交付物类型是否有效、必填字段是否存在、正文里的引用标记是否能解析、主张是否指向真实来源 id、来源链接是否可打开、摘录和引用是否在可行时匹配抓取文本、邮件草稿是否有必要的收件人类元数据。</p>
+<p>因此复核人看到的不是一团无法审查的文本，而是一组可操作状态：</p>
+<p>• ready 表示没有发现阻塞性的机械问题。</p>
+<p>• ready_with_warnings 表示可以进入审查，但存在来源、引用、摘录或门控动作风险。</p>
+<p>• needs_attention 表示复核人不应把它当作干净工作成果。</p>
+<p>• blocked 表示交付物连基本结构条件都没有通过。</p>
+<p>这里借用了评测系统里的一个关键经验：模型必须产出的对象本身，也是系统可改进的一部分。普通段落很容易藏住缺失支持；类型化交付物有可检查的把手。如果主张 C1 指向来源 S99，而 S99 不存在，运行时可以在复核人花时间读完整段文字之前先把问题标出来。</p>
+<p>当前交付物运行时的验证主要是合成评测，但它击中了产品真正关心的失败模式：有效和无效交付物、无法解析的引用、主张指向不存在的来源、来源文本匹配和不匹配、链接失败、伪造验证器标记、邮件草稿字段缺失、外部动作进入 ActionGate、批准、拒绝、完成、手动接手和执行失败。这个阶段最需要的不是泛泛的“模型效果很好”，而是底层工作流框架能不能稳定拦住错误形态。</p>
+  </section>
+<section class="paper-section" id="s6">
+    <h2>ActionGate 是草稿和外部动作之间的停顿</h2>
+    <p>ActionGate 让“关键时刻要克制”这件事变成系统行为。</p>
+<p>交付物运行时会识别动作意图。只要动作看起来会外部化结果，例如 send、submit、delete、remove、archive、move、reply、forward、post、publish、share、upload、deliver、transmit、modify email、batch modify email 等，就会被强制放入 ActionGate。ActionGate 有自己的状态：pending、approved、rejected、done、manual handoff、failed。它还记录交付物 id、运行 id、动作标签、payload、时间戳、决策备注和执行结果。</p>
+<p>复核人可以批准、拒绝，或者在连接器不能安全执行时改为 manual handoff。批准不等于执行。运行时仍然要求一个合法的执行完成状态，非法决策或非法完成状态会被拒绝。这个区分很重要，因为很多批准系统把“用户点了 approve”和“事情已经发生”混在一起。这里把批准和执行拆成两个状态转换。</p>
+<p>放到邮件审查里，智能体可以准备邮件，也可以创建一个打开 Outlook 草稿的动作；但人类复核人仍要阅读草稿、核对依据、改语气、确认收件人，并决定是否真的应该发出。如果智能体提出更危险的动作，ActionGate 会让危险可见，而不是把它藏在工具调用历史里。</p>
+  </section>
+<section class="paper-section" id="s7">
+    <h2>定时任务需要痕迹，不只是提醒</h2>
+    <p>专业助手很容易想做定时任务：每天早上分诊收件箱，准备简报，检查待处理草稿，更新事项记录，总结昨天发生了什么。问题是，定时任务经常发生在没人盯着的时候。</p>
+<p>桌面调度器的处理方式是让每一次运行都可观察、可恢复。定时任务保存提示词、cron 表达式、选择的技能、可读名称、运行状态和最终会话。执行过程中，应用会记录当前工具、当前文本、流式事件和实时会话 id；结束后，会写成一个可重新打开的会话记录。</p>
+<p>定时运行还有更严格的权限模式：允许创建草稿和提交交付物；拒绝外部化 MCP 动作，除非它们本质上仍是草稿式创建；文件写入限制在已知本地工作成果目录；命令执行被阻断。这个折中很实际：无人值守时，系统仍能做准备性工作，但它改变外部世界的能力要比有人在场时更弱。</p>
+<p>当前桌面版本默认的定时种子任务是工作日早晨分诊。每日简报技能也遵循同一原则：收集昨天的草稿、To-Do 项和日历事件，汇总今天的日程和到期任务，给用户创建一封简报草稿，但绝不自动发送。草稿出现本身就是健康信号；如果它没出现，用户也能回到运行轨迹里排查，而不是只能猜自动化是不是失效了。</p>
+  </section>
+<section class="paper-section" id="s8">
+    <h2>专家怎么接手</h2>
+    <p>这个项目不假设税务专家会被替代。它改变的是专家注意力的落点。</p>
+<p>没有工作流框架时，复核人可能要从空白回复开始：找旧邮件线程，找模板，回忆适用依据，写分析，粘引用，再检查语气。有了框架，复核人的起点变成一个准备好的包：Outlook 原生草稿、短摘要、原始邮件链接、带来源的法律主张，以及仍然被 ActionGate 拦住的动作。</p>
+<p>这不会消除专业判断，反而会集中专业判断。专家要检查的是：问题有没有识别对，引用的依据是控制性规则还是背景材料，假设有没有披露，语气是否适合客户关系，合伙人是否会要求更保守的表达，以及这封邮件到底该不该发。</p>
+<p>本地证据里的 Sarah Chen 税务 persona 是一个有用的复核目标：IRAC 结构、保守解释、IRC 和 Treasury Regulation 的完整引用、置信等级、多路径分析、风险量化和披露意识。persona 不是资深税务律师的替代品，它的作用是把专家期望显性化，让草稿可以被一套更清楚的标准检查。</p>
+  </section>
+<section class="paper-section" id="s9">
+    <h2>当前结果和边界</h2>
+    <p>当前证据支持四个具体结论。</p>
+<p>第一，桌面运行时已经有可工作的 M365 暴露策略。验证脚本确认准备类工具会暴露，高风险工具会隐藏，并且暴露和隐藏的工具数量会回写到连接状态里。</p>
+<p>第二，交付物运行时能捕捉项目真正关心的机械失败：schema 错误、无法解析的引用、主张来源缺失、来源匹配或不匹配、链接失败、邮件草稿字段缺失、外部动作进入 ActionGate、批准/拒绝、manual handoff 和执行器失败。</p>
+<p>第三，默认邮件提供方会根据运行时可用性调整。应用读取已保存的 Outlook/Gmail 偏好，和当前连接的 MCP 客户端对齐；首选提供方不可用时会回退；MCP 可用性变化后会重写引擎提示词；断开的 Gmail 不会继续出现在设置选择器里。</p>
+<p>第四，定时任务被当作可恢复工作会话，而不是不可见的 cron 任务。调度器会保存任务定义、可读元数据、运行状态、执行会话，并记录耗时，用于后续计费或工作流复核。</p>
+<p>有一个内部目标需要谨慎表述：早期项目笔记把目标写成把 30-40 分钟的研究和起草，压缩到 2-3 分钟复核工作流。当前本地证据支持的是这套工程工作流框架已经存在，并能围绕这个目标运行；它还不能证明在不同事务所、不同税种、不同复核人、真实客户环境里都有稳定的统计型效率提升。</p>
+  </section>
+<section class="paper-section" id="s10">
+    <h2>限制</h2>
+    <p>Lawless Desktop Assistant 是本地优先，这正是它适合 Outlook/M365 和事务所内部工作的原因，同时也带来限制。应用必须运行，定时任务才会触发；连接器必须保持授权；Outlook 和 SharePoint 的权限问题会阻断模板或消息读取；按文件夹限定的读取能减少旧邮件混入，但不能消除所有邮箱边缘情况。</p>
+<p>来源预检可以抓断链、缺失引用 id、引文不匹配和不支持的交付物结构；它不能独立判断一个税务立场是否审慎，客户是否遗漏关键事实，或者合伙人的风险偏好是否变化。ActionGate 也只解决一个窄问题：防止智能体静默执行高风险外部动作。它不会让一个被批准的动作自动变得正确。如果复核人批准了错误草稿，系统能保留决策轨迹，但专业判断仍然属于人。</p>
+<p>更大的产品边界是，不是每个法律工作流都适合桌面。卖家侧专利和 TRO 工作流更适合云端工作区，因为用户需要低配置入口：上传材料、看到进度、审查交付物、之后再回来继续。桌面版本适合另一类场景：专业环境已经有本地授权、Outlook 审查、内部定时任务和专家批准，产品价值就在这些边界上。</p>
+  </section>
+<section class="paper-section" id="s11">
+    <h2>我从这个项目里学到的东西</h2>
+    <p>最有用的抽象不是“智能体自治”，而是“经过授权的准备工作”。</p>
+<p>一旦这个词清楚，设计选择就不再神秘。读取工具更容易开放；草稿工具有价值，因为它保留了人工复核；SubmitArtifact 是模型输出和复核人注意力之间的桥；来源预检把引用变成状态；ActionGate 让危险动作可见；定时任务只有在留下记录，并且权限比实时工作更严格时，才适合自动运行。</p>
+<p>这就是我希望专业桌面智能体具备的形态。它应该帮助专家更快到达复核决定；它应该让来源、假设和动作意图可检查；当草稿即将变成客户沟通时，它应该停下来，展示工作成果，然后等待人。</p>
   </section>
       <section class="paper-section" id="references">
         <h2>参考材料</h2>

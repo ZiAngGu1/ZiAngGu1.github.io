@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="PhysiBuilder 把 LLM reasoning 变成可验证的 3D layout intermediate artifact，再接 2D diffusion / NeRF 生成和交互式编辑。" />
-  <title>PhysiBuilder: Physics-Informed Prompt Learning for Interactive 3D Scene Generation and Editing / Ziang Gu</title>
+  <meta name="description" content="PhysiBuilder 先用语言规划带物理意识的场景先验，再做对象级 3D 生成和编辑。" />
+  <title>多物体 Text-to-3D 需要可检查的场景先验 / Ziang Gu</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -23,107 +23,117 @@
   <main><article class="paper">
       <header class="paper-hero">
         <div>
-          <p class="eyebrow">08 / 3D Vision</p>
-          <h1>PhysiBuilder: Physics-Informed Prompt Learning for Interactive 3D Scene Generation and Editing</h1>
-          <p class="dek">PhysiBuilder 把 LLM reasoning 变成可验证的 3D layout intermediate artifact，再接 2D diffusion / NeRF 生成和交互式编辑。</p>
-          <div class="tag-row hero-tags"><b>text-to-3D</b><b>scene prior</b><b>NeRF</b><b>LLM planning</b><b>editing</b></div>
-          <div class="action-row"><a href="./assets/physibuilder-paper.pdf" target="_blank" rel="noreferrer">Open paper PDF</a></div>
+          <p class="eyebrow">08 / 3D 视觉</p>
+          <h1>多物体 Text-to-3D 需要可检查的场景先验</h1>
+          <p class="dek">PhysiBuilder 先用语言规划带物理意识的场景先验，再做对象级 3D 生成和编辑。</p>
+          <div class="tag-row hero-tags"><b>Text-to-3D</b><b>场景先验</b><b>NeRF</b><b>LLM planning</b><b>编辑</b></div>
+          <div class="action-row"><a href="./assets/physibuilder-paper.pdf" target="_blank" rel="noreferrer">打开论文 PDF</a></div>
         </div>
         <figure class="paper-figure">
-    <img src="./assets/physibuilder-figure2.png" alt="PhysiBuilder framework overview" />
-    <figcaption>Figure 1. PhysiBuilder framework overview：ScenePlannerLLM 生成 scene prior，SceneConstructor 构建多物体 3D scene。</figcaption>
+    <img src="./assets/physibuilder-figure2.png" alt="PhysiBuilder 框架总览" />
+    <figcaption>图 1. PhysiBuilder 框架总览：ScenePlannerLLM 生成 scene prior，SceneConstructor 构建多物体 3D 场景。</figcaption>
   </figure>
       </header>
 
       <section class="case-brief" aria-label="Case study brief">
     <article>
           <span>为什么重要</span>
-          <p>它补充证明我有研究型系统经验：先建立可检查的 scene prior，再做 3D 生成。</p>
+          <p>多物体 3D 场景不能只靠最终视图好看；布局、支撑、碰撞和后续编辑都需要被结构化。</p>
         </article><article>
-          <span>证明什么</span>
-          <p>ScenePlannerLLM、SceneConstructor、Text-to-3D、实验和消融。</p>
+          <span>怎么做</span>
+          <p>ScenePlannerLLM 先产生可检查的 scene prior，SceneConstructor 再构建对象级 3D 内容并支持编辑。</p>
         </article><article>
           <span>结果 / 边界</span>
-          <p>证明：研究系统；边界：论文场景。</p>
+          <p>论文有机制、图表、消融和用户研究支撑；它不是声称解决所有 Text-to-3D scene generation。</p>
         </article>
   </section>
 
       <aside class="toc">
-        <a href="#s1">项目概览</a><a href="#s2">1. 问题： 3D scene 不能只靠最终图像判断</a><a href="#s3">2. 方法： ScenePlannerLLM + SceneConstructor</a><a href="#s4">3. 实验</a><a href="#s5">4. 这段研究训练了什么</a><a href="#s6">5. 边界</a><a href="#s7">和普通 text-to-3D 方法的区别</a><a href="#s8">6. 技术补充： 为什么 LLM 适合做 scene prior</a><a href="#s9">7. 实验补充</a><a href="#s10">8. 贡献边界</a><a href="#s11">9. 补充说明： 和 agent 工作的共同结构</a><a href="#s12">10. 补充说明： 为什么编辑能力重要</a><a href="#s13">11. 结论</a>
+        <a href="#s1">Core Claim</a><a href="#s2">好看的视角可能掩盖坏的场景</a><a href="#s3">ScenePlannerLLM 和 SceneConstructor 的分工</a><a href="#s4">ScenePlannerLLM 真正在规划什么</a><a href="#s5">对象局部化之后，编辑才有抓手</a><a href="#s6">实验证据说明了什么</a><a href="#s7">为什么这对创作流程重要</a><a href="#s8">消融实验给出的边界</a><a href="#s9">限制和可信边界</a><a href="#s10">可迁移的设计原则</a>
         
         <a href="#references">参考材料</a>
       </aside>
 
       <div class="figure-grid"><figure class="paper-figure">
     <img src="./assets/physibuilder-figure1.png" alt="PhysiBuilder qualitative results" />
-    <figcaption>Figure 2. Qualitative generation/editing examples from the PhysiBuilder paper.</figcaption>
+    <figcaption>图 2. PhysiBuilder 论文中的生成和编辑效果示例。</figcaption>
   </figure><figure class="paper-figure">
     <img src="./assets/physibuilder-ablation.png" alt="PhysiBuilder ablation page" />
-    <figcaption>Figure 3. Ablation and metric page rendered from the local paper build.</figcaption>
+    <figcaption>图 3. 从本地论文构建结果渲染出的消融实验和指标页面。</figcaption>
   </figure></div>
       <section class="paper-section" id="s1">
-    <h2>项目概览</h2>
-    <p>PhysiBuilder 研究的是 text-to-3D scene generation 的一个关键问题：自然语言能否不只生成一个视觉上合理的物体，而是生成一个多物体、物理关系合理、后续可编辑的 3D 场景。现有 text-to-3D 方法在单物体上进展很快，但多物体场景容易出现 Janus problem、物体关系混乱、随机位置不稳定和生成后难以编辑。</p>
-<p>我作为一作推进 2024 暑期 Paid RA 工作，设计 ScenePlannerLLM + SceneConstructor。核心思想是先让 LLM 生成符合物理常识的 3D scene prior，再由 SceneConstructor 用 instance-specific NeRF 建模每个对象。编辑时改布局和对象状态，而不是重新训练整个场景。</p>
+    <h2>Core Claim</h2>
+    <p>一个文本提示对人来说可以很清楚，对 Text-to-3D 系统却仍然不够明确。“一把流线型休闲椅，旁边有一张矮桌，桌上放着一杯冰茶”这句话至少包含三类对象、两个空间关系、一个支撑关系，以及一组形状预期。椅子不能只在一个视角里像椅子，杯子不能穿过桌面，用户后续说“把椅子移近一点”时，系统也应该知道哪一团几何属于椅子，哪一团属于桌子。</p>
+<p>很多 diffusion-guided Text-to-3D 方法在单物体上可以生成很漂亮的结果，但多物体场景暴露的是另一类问题：系统被要求在同一个最终图像优化过程中同时解决外观、身份、布局、支撑、碰撞和可编辑性。一个视角里的渲染图可能看起来符合提示词，底层场景却不可检查。结果就会出现重复物体、视角不一致、对象边界混在一起，或者画面看起来完整但无法局部修改。</p>
+<p>PhysiBuilder 的核心判断很朴素：多物体 3D 场景不应该直接从 prompt 跳到最终生成结果。系统应该先构造一个显式的 scene prior，也就是可检查、可修正、可编辑的中间结构。这个先验不是最终资产，而是告诉后续生成模块：场景里有哪些对象，它们大致是什么形状，位于三维空间的哪里，哪些支撑、相邻、碰撞和重力关系必须成立。生成因此被拆成两步：先把语言变成可检查的场景结构，再把结构变成可渲染的 3D 结果。</p>
   </section>
 <section class="paper-section" id="s2">
-    <h2>1. 问题： 3D scene 不能只靠最终图像判断</h2>
-    <p>多物体 3D 生成有两个层面的困难。第一是物体关系：桌子、椅子、书、杯子之间需要有位置、支撑、碰撞和语义关系，不能随机漂浮或互相穿透。第二是可编辑性：用户生成场景后往往想移动、复制、删除某个对象，而不是重新输入 prompt 等系统再采样一次。</p>
-<p>这让 Physibuilder 走向一个中间表示：不要让 diffusion 或 NeRF 直接承担全部推理，而是先产生 3D layout / scene graph / physical prior。这个中间产物可以检查、修改、重用，也让生成链路不再是黑箱。</p>
+    <h2>好看的视角可能掩盖坏的场景</h2>
+    <p>论文里的公共花园例子把问题讲得很直观。给定一个“真实日间花园中有大型喷泉”的提示，DreamFusion、Magic3D、HiFA、ProlificDreamer 这类基线方法常常能生成像花园的画面，但喷泉这个对象在不同视角里会变得不稳定：有时像多个喷泉，有时相对道路的位置漂移，有时更像一个依赖视角的图像纹理，而不是稳定的 3D 对象。</p>
+<p>这不是单纯的视觉质量问题，而是编辑问题。如果系统没有稳定的对象级表示，“把喷泉移近一点”这样的命令就会变得含糊。模型可以重新优化整幅场景，但花园、路径、水面、花草也可能一起改变。用户看到的是一个很奇怪的交易：生成前很自由，生成后很脆弱。</p>
+<p>PhysiBuilder 把这种脆弱性视为表示问题。它在 NeRF 优化之前先创建一个规划交付物，再把每个生成对象绑定到局部表示。这里并不是要求 LLM 直接产出照片级几何，而是要求它先产出物理上说得通的布局，让 3D 生成模块有结构可依。</p>
+<p>“看起来像”和“可编辑”不是同一件事。一个 view 里的 fountain 看起来正确，不代表系统知道 fountain 在哪里、占多大空间、是否和别的对象冲突、能不能单独移动。PhysiBuilder 的价值就在这里：它把可编辑性前置到场景表示里，而不是事后在 UI 上补一个按钮。</p>
   </section>
 <section class="paper-section" id="s3">
-    <h2>2. 方法： ScenePlannerLLM + SceneConstructor</h2>
-    <p>ScenePlannerLLM 把文本 prompt 转成 3D layout 和 scene graph，使用 chain-of-thought / self-consistency，并用 gravity / collision 检查修正布局。它输出的不只是文字解释，而是生成模块可以消费的 scene prior。</p>
-<p>SceneConstructor 为每个对象建立 instance-specific NeRF，从 local coordinates 映射到 scene coordinates。这样每个对象可以独立生成和编辑，场景组合保持可控。移动、复制、删除等交互操作通过改变对象级布局完成，不需要重新 fine-tuning 整个场景。</p>
+    <h2>ScenePlannerLLM 和 SceneConstructor 的分工</h2>
+    <p>PhysiBuilder 把 Text-to-3D 场景生成拆成两个模块：ScenePlannerLLM 和 SceneConstructor。</p>
+<p>ScenePlannerLLM 负责把自然语言 prompt 转成 3D scene prior。它从文本里抽取对象和关系，采样多个粗略布局，选择更一致的候选方案，再用物理检查进行修正。输出结果是一个场景级表示：对象身份、相对位置、粗体积 primitive、支撑关系和空间占用。</p>
+<p>SceneConstructor 负责把这个先验变成可渲染的 3D 场景。它不是把整个前景当成一团不可分的 neural field，而是为每个前景对象建立一个 instance-specific local NeRF，再把这些对象 NeRF 和 background NeRF 组合起来。ScenePlannerLLM 给出的 layout 提供平移和旋转，让对象局部坐标能够映射到同一个场景坐标系。</p>
+<p>这个拆分很关键，因为两个模块处理的是不同不确定性。LLM 擅长处理语言和常识结构，例如杯子通常在桌子上，两把椅子围绕餐桌，休闲椅不能只用一个方盒表达。NeRF 优化擅长外观和视角合成。系统没有要求一个最终图像优化循环从渲染结果里同时推断所有对象关系。</p>
+<p>实际效果是一个接近 scene graph 的可编辑 scaffold。用户想平移、旋转、复制或删除某个对象时，操作可以落到对象级 layout 和渲染变换上。SceneConstructor 可以渲染修改后的组合，而不必从头重新训练整幅场景。</p>
   </section>
 <section class="paper-section" id="s4">
-    <h2>3. 实验</h2>
-    <p>论文对比 DreamFusion、HiFA、Magic3D、ProlificDreamer 等 text-to-3D 方法。Scene generation user study 中，Ours 在 scene quality 7.8、text alignment 7.3、identity consistency 8.5 上达到最优或接近最优。Layout physical metric 中，Ours gravity 0.88、collision 0.96，高于 Standard / CoT / Ours w/o physics。</p>
-<p>Layout user study 中，Ours physical 7.8、scene quality 7.8、scene composition 8.0。更重要的是编辑能力：由于对象以 instance-specific 方式组织，系统可以支持 move、duplicate、remove 等自然语言交互式 3D 编辑。</p>
+    <h2>ScenePlannerLLM 真正在规划什么</h2>
+    <p>PhysiBuilder 没有让 LLM 直接输出最终 mesh。ScenePlannerLLM 使用的是粗体积 primitive 表示：一个场景由多个对象组成，每个对象由若干类似 cuboid 的 primitive 组成。这个选择有意保持克制。primitive 足够简单，LLM 可以生成；又比单个 bounding box 丰富，能描述对象大致范围、部件和空间占用。</p>
+<p>规划过程可以分成三层。</p>
+<p>第一层是 scene graph。对象成为节点，空间关系成为边。一个“椅子在桌子旁，杯子在桌上”的 prompt 包含邻近、支撑和身份关系。scene graph 在任何渲染开始之前把这些关系显式化。</p>
+<p>第二层是 self-consistency 采样。ScenePlannerLLM 从图结构里生成多个体积布局候选，再选择更能保留对象关系的方案。这里是 LLM 比较合适的用途：不是相信一次输出，而是让模型提出多个结构化解释，再筛出更稳定的版本。</p>
+<p>第三层是物理检查。PhysiBuilder 用 collision 和 gravity 作为外部 evaluator。collision 检查对象是否发生不合理重叠，gravity 检查对象是否落在地面上，或者在被描述为“放在上面”时是否确实有支撑。如果候选布局违反这些检查，系统会把问题摘要回 LLM refinement loop。</p>
+<p>重点是这些检查发生在最终 3D 优化之前。物理合理性不再是渲染完成后主观点评的一句话，而是中间交付物的一部分。这里的 physics 不是完整物理仿真，更像低成本结构审查：是否穿模，是否悬空，是否有支撑关系。对 Text-to-3D 来说，这已经能提前消除很多本来会留到最后才暴露的问题。</p>
   </section>
 <section class="paper-section" id="s5">
-    <h2>4. 这段研究训练了什么</h2>
-    <p>PhysiBuilder 对我后续做 agent workspace 很有影响。它训练的是“先把模型能力变成可检查的中间产物”的习惯。在 3D 里，这个中间产物是 layout 和 scene prior；在 Lawless 里，它变成 case facts、source list、claim matrix、review queue 和 artifact trace。</p>
-<p>这类系统的共同点是：不要把所有智能都压进最终 response。让模型先计划、把计划落成结构，再用验证器检查结构，最后生成用户看到的结果。</p>
+    <h2>对象局部化之后，编辑才有抓手</h2>
+    <p>SceneConstructor 接收规划好的布局，并训练对象级表示。每个前景对象都有自己的 local NeRF，整幅场景通过背景 NeRF 加多个对象 NeRF 渲染出来。渲染时，射线会按照 layout 变换到每个对象的局部坐标系。</p>
+<p>这就是 PhysiBuilder 能支持对象级编辑的原因。如果椅子由自己的 local NeRF 表示，那么改变它在场景里的位置可以被表达为一次 transform update，而不是“请重新生成一张图”。旋转、删除、复制也是同样逻辑。系统可以在渲染时跳过一个对象，调整它的旋转，或者在新的平移和旋转下加入另一个实例。</p>
+<p>论文还提出了 “train with edits” 的思路。训练时，系统让 planner 生成一致的 layout edits，并把这些修改过的布局放进渲染和优化过程。这是在处理图像空间优化里常见的问题：前景和背景容易纠缠。如果桌子边缘、枕头纹理或某个装饰物被错误吸收到别的表示里，后续编辑对象时就会产生破损。用合理编辑参与训练，可以推动对象局部表示在初次生成后仍然可用。</p>
+<p>这并不会消除所有交付物瑕疵。它提供的是更强的可编辑偏置。真正重要的工程动作是：把编辑当成表示契约的一部分，而不是生成结束后的补丁。</p>
   </section>
 <section class="paper-section" id="s6">
-    <h2>5. 边界</h2>
-    <p>PhysiBuilder 仍受 SDS 优化成本、背景模糊、非盒状对象和圆角形状表达限制。LLM layout 也不能保证所有物理关系都正确，仍需要后续几何和视觉检查。这个项目的价值不是宣称 text-to-3D 已解决，而是展示一个可编辑、多对象、带中间表示的生成框架。</p>
+    <h2>实验证据说明了什么</h2>
+    <p>PhysiBuilder 和 DreamFusion、HiFA、Magic3D、ProlificDreamer 等 Text-to-3D 基线做了对比。定性实验覆盖浴室、卧室、餐厅、公共花园等多物体场景，重点观察对象身份是否能跨视角保持一致，而不是在每个视角里变成不同近似。</p>
+<p>3D 场景生成的用户研究让参与者从五个视角评价五个 prompt，评分范围是 1 到 10。PhysiBuilder 在 scene quality 上得到 7.8，在 text alignment 上得到 7.3，在 identity consistency 上得到 8.5。ProlificDreamer 在 physical plausibility 和 scene composition 上更强，分别是 7.4 和 8.1，而 PhysiBuilder 在这两项是 7.2 和 7.7。这个混合结果很重要：PhysiBuilder 的优势不是“所有审美维度都赢”，而是在对象身份、文本对齐和可编辑结构的组合上更突出。</p>
+<p>layout 评测把规划问题单独拿出来看。论文构造了 25 个场景 prompt，每个包含 4 到 5 个常见对象，并检查生成布局是否满足 gravity 和 collision 约束。普通 prompting 在 gravity 上是 0.64，在 collision 上是 0.88。Chain-of-thought prompting 是 0.60 和 0.80。去掉 physics checks 的版本是 0.64 和 0.68。完整 PhysiBuilder planning loop 达到 0.88 和 0.96。</p>
+<p>另一个 layout 用户研究评估 physical plausibility、scene quality 和 scene composition。普通 prompting 得分为 6.1、5.8、5.7；Chain-of-thought 提升到 6.5、6.2、6.4；PhysiBuilder 得到 7.8、7.8、8.0。</p>
+<p>这些数字支持的是一个具体结论：提升来自把 layout 变成一等交付物并检查它，而不是简单让 LLM “多思考几步”。CoT 本身没有解决物理布局问题。真正改变中间表示质量的是 layout 生成、self-consistency、gravity/collision 检查和 refinement 的闭环。</p>
   </section>
 <section class="paper-section" id="s7">
-    <h2>和普通 text-to-3D 方法的区别</h2>
-    <p>很多 text-to-3D 方法直接从 prompt 走向生成结果，问题是多物体场景的布局、支撑、碰撞和后续编辑都很难保证。PhysiBuilder 的不同点是把 LLM reasoning 放在生成前：ScenePlannerLLM 先产生可检查的 3D scene prior，再由 SceneConstructor 构建对象。</p>
-<p>它也不是把 LLM 当作万能生成器。LLM 负责结构、关系和物理常识的规划；instance-specific NeRF 负责对象级表示和编辑。这种分工让 move、duplicate、remove 等操作成为系统能力，而不是重新采样整场景。</p>
-<p>它也不是 2026 年唯一的 layout-guided 方向。现在 text-to-3D scene generation 已经明显走向 semantic layout、scene graph、3DGS 和 physics-guided 控制。PhysiBuilder 的价值是我在 2024 年一作推进了同一类核心判断：先产出可检查 scene prior，再让生成模块消费它。</p>
+    <h2>为什么这对创作流程重要</h2>
+    <p>编辑能力让 scene prior 的价值超过了一个生成技巧。一个 Text-to-3D 模型可以产出惊艳的单次结果，但如果真实用户要迭代，它仍然很难用。用户会移动桌子、删除喷泉、复制椅子、旋转对象，或者看到第一版后要求新的布局。</p>
+<p>PhysiBuilder 在论文里支持四类编辑：translation、rotation、object removal 和 duplication。ScenePlannerLLM 解释用户指令并更新 layout，SceneConstructor 在更新后的对象变换下渲染场景。因为前景对象有 local NeRF 表示，编辑不需要重新 fine-tune 整个场景。</p>
+<p>公共花园例子展示了这个循环：从有大型喷泉的花园开始，用户可以要求把喷泉移近、移远或移除。输出改变的是对象级安排，而不是把每次请求都当成全新的场景。这更接近用户对 3D 编辑器的期待，也正是纯 Text-to-Image 或单次 Text-to-3D 流程难以做到的行为。</p>
+<p>更大的原则是：生成系统如果保留了后续修改需要的决策，它就更有用。在 PhysiBuilder 里，这些决策包括对象身份、对象范围、layout transform 和物理关系。最终渲染当然重要，但可编辑的中间状态才让用户能继续工作。</p>
   </section>
 <section class="paper-section" id="s8">
-    <h2>6. 技术补充： 为什么 LLM 适合做 scene prior</h2>
-    <p>LLM 不擅长直接生成 3D geometry，但擅长把自然语言里的关系拆成结构。比如“a chair next to a table with a lamp on it”包含支撑、相邻、对象类别和空间关系。ScenePlannerLLM 的价值就在于把这些隐含关系显式化，生成 layout 和 scene graph，再交给视觉生成模块。</p>
-<p>这种中间表示让系统可以在生成前检查 gravity 和 collision。没有这一步，多物体 text-to-3D 容易把对象放在不合理位置，或者在不同视角里出现身份漂移。Scene prior 不保证最终渲染完美，但它给生成链路一个可控起点。</p>
-<p>SceneConstructor 用 instance-specific NeRF 建模对象，也是一种解耦：对象内部的外观学习和场景级位置关系分开。编辑时移动对象，不需要重新训练对象；复制对象，也不需要从 prompt 重新采样。</p>
+    <h2>消融实验给出的边界</h2>
+    <p>volumetric primitive 的消融实验很小，却很说明问题。当 layout 使用过于粗糙的 bounding boxes，无法表达休闲椅的形状时，生成结果会倾向盒子状。这既支持显式先验的价值，也提醒先验不能太粗。一个 bounding box 可以说明对象在哪里，却可能抹掉让椅子像椅子的部件结构。PhysiBuilder 的 primitive 表示是在可生成和可表达之间做折中。</p>
+<p>physics ablation 也很有信息量。去掉物理检查后，gravity 和 collision 得分下降，说明 LLM 流畅地产出布局并不等于布局可靠。在这个系统里，LLM 不是 oracle，而是一个 proposal engine。它提出候选，外部检查器发现问题，LLM 再根据问题修正。</p>
+<p>这是项目最可迁移的部分：planner 有用，是因为它生成了可检查对象；检查有用，是因为 planner 能回应检查；renderer 有用，是因为它接收的是结构化先验，而不是一句松散愿望。</p>
   </section>
 <section class="paper-section" id="s9">
-    <h2>7. 实验补充</h2>
-    <p>用户研究和 physical metric 的作用不同。User study 评估 scene quality、text alignment 和 identity consistency，反映人类是否觉得结果符合 prompt；gravity/collision metric 则直接检查布局物理性。两者结合，才能说明系统既看起来合理，也在结构上更稳定。</p>
-<p>ablation 里去掉 physics 或 self-consistency 会降低布局质量，这说明提升并不只来自更长 prompt，而是来自规划、检查和修正的组合。这个结论和后续 agent 工作非常相似：不是让模型一次写完，而是让它在结构化中间产物上迭代。</p>
+    <h2>限制和可信边界</h2>
+    <p>PhysiBuilder 没有彻底解决 Text-to-3D 场景生成。论文里有几个限制必须讲清楚。</p>
+<p>第一是优化成本。除了 ScenePlannerLLM，实验在单张 NVIDIA A6000 GPU 上运行，每个场景大约需要 60 分钟训练。系统使用 Stable Diffusion v2.1 做 Text-to-Image guidance，使用 GPT-4 Turbo 做 LLM 组件。这不是即时资产生成，而是一个成本较高的研究 pipeline。</p>
+<p>第二是视觉质量。和其他 SDS-based 方法一样，PhysiBuilder 仍可能生成模糊或不清晰的背景形状。物理检查过的 scene prior 改善结构，但不保证每个局部渲染都清晰。</p>
+<p>第三是形状表达能力。ScenePlannerLLM 使用 volumetric primitives，论文也指出圆角对象或明显偏离方形、矩形的物体仍然困难。盒子状 lounge chair 的消融结果就是提醒：如果先验无法充分表达对象，下游生成会继承这个弱点。</p>
+<p>第四是物理检查范围。gravity 和 collision 很有意义，但不是完整物理世界。它们不能完整刻画材质、稳定性、功能可达性、尺度真实性或细接触几何。PhysiBuilder 的 physical prior 更适合被理解为可检查的场景布局约束系统，而不是仿真器。</p>
+<p>这些限制反而让结论更可信。PhysiBuilder 的价值不是证明 Text-to-3D 已经被解决，而是证明多物体生成需要一个可检查、可修正、可编辑的结构层。这个结构层能减少一类错误，但不能替代高质量 geometry、rendering、physics simulation 或用户审美判断。</p>
   </section>
 <section class="paper-section" id="s10">
-    <h2>8. 贡献边界</h2>
-    <p>PhysiBuilder 的贡献可以浓缩成三点。第一，它把 text-to-3D 从单物体扩展到多物体 scene，并把 layout 作为显式中间产物。第二，它让 LLM 的世界知识参与 3D 场景规划，但没有让 LLM 直接承担几何生成。第三，它用 instance-specific NeRF 支持对象级编辑，让用户能够移动、复制、删除对象，而不是重新生成整个场景。</p>
-<p>这三点比单纯列 2D diffusion、NeRF、LLM 更有意义。技术名词不是主角，主角是一个自然语言请求如何被拆成可检查、可生成、可编辑的场景构建过程。</p>
-  </section>
-<section class="paper-section" id="s11">
-    <h2>9. 补充说明： 和 agent 工作的共同结构</h2>
-    <p>PhysiBuilder 和 Lawless 看似相距很远，一个是 3D vision，一个是法律/税务 agent，但它们共享同一个系统结构：先把自然语言转成可检查的中间表示，再让生成或执行模块消费这个表示，最后用验证或人类反馈检查结果。在 PhysiBuilder 里，中间表示是 layout、scene graph 和 physical prior；在 Lawless 里，中间表示是 case facts、source list、claim matrix、path cards 和 artifact trace。</p>
-<p>这个结构比“LLM + domain tool”更稳定。LLM 的优势是把模糊意图拆成结构，domain tool 的优势是执行和验证。系统设计的任务就是让两者之间的接口清楚。PhysiBuilder 的研究经历让我更早意识到，好的 AI 系统不是让模型一次性完成所有事，而是把任务分成计划、构建、检查和编辑。</p>
-  </section>
-<section class="paper-section" id="s12">
-    <h2>10. 补充说明： 为什么编辑能力重要</h2>
-    <p>交互式编辑是 Physibuilder 区别于很多 text-to-3D demo 的地方。用户生成一个场景后，常常只想改一部分：把椅子挪到桌子旁边，复制一个杯子，删除一个不合适的对象。如果系统只能重新生成整场景，用户很难稳定迭代。对象级表示让编辑成为模型能力的一部分，而不是后处理技巧。</p>
-  </section>
-<section class="paper-section" id="s13">
-    <h2>11. 结论</h2>
-    <p>PhysiBuilder 的核心不是“LLM + NeRF”，而是把自然语言先转成可检查的 3D scene prior，再让生成模型构建对象并支持对象级编辑。这个方法贡献也能自然连接到我后来做 agent workspace 时对 intermediate artifact、verification 和 editing loop 的重视。</p>
+    <h2>可迁移的设计原则</h2>
+    <p>PhysiBuilder 背后的原则可以不用任何模型名来表达：把计划和渲染分开，并让计划可检查。</p>
+<p>单物体 prompt 里，没有显式计划有时还能容忍。一个龙、一只球鞋、一个陶瓷杯可以被当作一个对象优化，用户可能只关心最终 mesh 或图片。多物体场景里，隐藏结构本身就变成产品的一部分：哪个对象是谁？什么支撑什么？什么能移动？一个对象变化时哪些部分应该保持不变？哪些是前景对象，哪些是背景？</p>
+<p>PhysiBuilder 在 SceneConstructor 开始最终生成之前，用 ScenePlannerLLM 回答这些问题。系统仍然会失败，但失败面变了。坏 layout 可以被检查，碰撞可以被检测，缺失支撑关系可以被修复，对象可以在编辑时被点名。用户不再只能接受或拒绝一张最终渲染图。</p>
+<p>这也是我认为这篇工作的作品集价值所在。它不是单纯展示一个更漂亮的 3D 结果，而是在说明一种更可靠的生成系统结构：当中间交付物携带了人类审查所需的决策，生成结果才更容易被信任、被修改、被继续使用。</p>
   </section>
       <section class="paper-section" id="references">
         <h2>参考材料</h2>

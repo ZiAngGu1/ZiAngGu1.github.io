@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="这个公开项目展示的是工程组织能力：world、sensor、path following、obstacle avoidance、headless run 和部署文档如何组成一套可验证仿真。" />
-  <title>CSE434 Robotics: Webots + ROS 2 自动车仿真工程化整理 / Ziang Gu</title>
+  <meta name="description" content="Webots + ROS 2 自动车仿真交付物的价值，在于 world、传感器、控制器、启动路径和 blocker 都可检查。" />
+  <title>机器人 demo 只有在整次运行可检查时才可信 / Ziang Gu</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d3f32'/%3E%3Ctext x='32' y='42' font-size='34' text-anchor='middle' fill='%23fffaf0' font-family='serif'%3EZ%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -23,101 +23,121 @@
   <main><article class="paper">
       <header class="paper-hero">
         <div>
-          <p class="eyebrow">10 / Robotics</p>
-          <h1>CSE434 Robotics: Webots + ROS 2 自动车仿真工程化整理</h1>
-          <p class="dek">这个公开项目展示的是工程组织能力：world、sensor、path following、obstacle avoidance、headless run 和部署文档如何组成一套可验证仿真。</p>
+          <p class="eyebrow">10 / 机器人</p>
+          <h1>机器人 demo 只有在整次运行可检查时才可信</h1>
+          <p class="dek">Webots + ROS 2 自动车仿真交付物的价值，在于 world、传感器、控制器、启动路径和 blocker 都可检查。</p>
           <div class="tag-row hero-tags"><b>Webots</b><b>ROS 2</b><b>pure pursuit</b><b>LiDAR</b><b>deployment</b></div>
-          <div class="action-row"><a href="https://github.com/ZiAngGu1/CSE434-honors-option" target="_blank" rel="noreferrer">Open GitHub</a></div>
+          <div class="action-row"><a href="https://github.com/ZiAngGu1/CSE434-honors-option" target="_blank" rel="noreferrer">打开 GitHub</a></div>
         </div>
         <figure class="paper-figure">
     <img src="./assets/cse434-robotics-diagram.png" alt="CSE434 robotics system diagram" />
-    <figcaption>Figure 1. Webots + ROS 2 autonomous vehicle simulation pipeline.</figcaption>
+    <figcaption>图 1. Webots + ROS 2 自动车仿真流程。</figcaption>
   </figure>
       </header>
 
       <section class="case-brief" aria-label="Case study brief">
     <article>
           <span>为什么重要</span>
-          <p>它作为早期工程证据，说明我重视可运行状态、部署边界和 blocker 透明度。</p>
+          <p>课程 demo 只有视频不够；可信度来自 world、sensor、controller、launch 和 deployment blocker 都能被检查。</p>
         </article><article>
-          <span>证明什么</span>
-          <p>Webots、ROS 2、pure pursuit、LiDAR obstacle logic。</p>
+          <span>怎么做</span>
+          <p>项目组织 Webots world、Ackermann vehicle、pure pursuit、LiDAR reactive logic、ROS 2 nodes 和 headless notes。</p>
         </article><article>
           <span>结果 / 边界</span>
-          <p>证明：系统复现；边界：partial deployment。</p>
+          <p>公开材料支持工程结构和运行边界；不能把 HPCC Webots container blocker 写成已验证成功。</p>
         </article>
   </section>
 
       <aside class="toc">
-        <a href="#s1">项目概览</a><a href="#s2">1. 问题： robotics demo 最容易卡在“我本机能跑”</a><a href="#s3">2. Method</a><a href="#s4">3. 实现与验证</a><a href="#s5">4. 和 agent 工作的连接</a><a href="#s6">和普通课程 robotics demo 的区别</a><a href="#s7">5. 技术补充： state, control, deployment</a><a href="#s8">6. 它证明了什么</a><a href="#s9">7. 验证补充： 如何诚实呈现 demo 状态</a><a href="#s10">8. 工程收获</a><a href="#s11">9. 补充说明： simulation 的失败也要被记录</a><a href="#s12">10. 补充说明： public artifact and reproducibility</a><a href="#s13">11. 结论</a>
+        <a href="#s1">Core Claim</a><a href="#s2">演示真正容易失败的地方</a><a href="#s3">world、sensor 和 controller 必须合在一起看</a><a href="#s4">path following 的价值在于简单可调</a><a href="#s5">LiDAR 避障是优先级层，不是完整规划器</a><a href="#s6">Webots bridge 是关键运行时界面</a><a href="#s7">headless 部署让 demo 接触真实环境</a><a href="#s8">当前证据支持的四个结果</a><a href="#s9">这个项目没有证明什么</a><a href="#s10">工程教训</a><a href="#s11">下一步应该补证据，而不是先加新功能</a><a href="#s12">为什么这篇要诚实写边界</a>
         
         <a href="#references">参考材料</a>
       </aside>
 
       
       <section class="paper-section" id="s1">
-    <h2>项目概览</h2>
-    <p>CSE434 Autonomous Vehicle 是一个公开 GitHub 工程项目，主题是 Webots + ROS 2 Jazzy 的自动车仿真。它包含 50m x 50m road circuit、obstacles、camera / LiDAR / GPS / IMU、Ackermann steering vehicle、path_follower.py、obstacle_avoider.py、Webots controller 和 Docker/Singularity 部署文档。</p>
-<p>这不是 Lawless 那种 agent 产品，但它展示了我对工程可运行性的要求：不是只写一个控制函数，而是把仿真环境、传感器输入、控制节点、避障逻辑和 headless 运行组织成能被别人复现的项目。</p>
+    <h2>Core Claim</h2>
+    <p>小型自动驾驶汽车演示很容易看起来比实际更完整。车在轨道上绕行，路上有几个障碍物，终端打印 ROS 2 节点日志，截图显示 Webots 世界正在运行。问题在演示结束后才真正开始：另一个人能不能重建这个 world，启动 simulation，看到相同 sensor topics，理解 controller，知道部署卡在了哪一层？</p>
+<p>这才是机器人项目里真正的工程问题。可见的车只是最后一层。下面还有 world model、sensor definition、controller timing、topic connection、launch path、graphics dependency、container boundary 和 documentation。如果这些层不可检查，演示就更像一段视频，而不是一个系统。</p>
+<p>CSE434 机器人项目的价值正在这里。它是一个 Webots + ROS 2 Jazzy 的自动驾驶小车仿真交付物，包含道路回路、静态障碍物、Ackermann-like vehicle、camera、LiDAR、GPS、IMU、path following、obstacle avoidance，以及面向 HPCC 环境的 headless deployment 说明。它最强的公开主张不是“已经完成了完整验证的集群部署”，而是更窄、更诚实的一句话：这个课程级机器人演示被拆成了可检查的工程层，world、sensor、controller、launch file、deployment plan 和 blocker 都可以被读出来。</p>
+<p>这个区别很重要。一个可靠的机器人交付物应该让成功和不完整都可见。</p>
   </section>
 <section class="paper-section" id="s2">
-    <h2>1. 问题： robotics demo 最容易卡在“我本机能跑”</h2>
-    <p>机器人/自动驾驶课程项目常见问题是代码和环境混在一起：world 文件、controller、ROS 节点、依赖、启动顺序和可视化环境相互耦合。只要换一台机器，demo 就可能无法复现。</p>
-<p>因此这个项目把系统拆成可解释组件：Webots world 提供环境和传感器，ROS 2 节点负责路径跟随和避障，文档说明如何在本地或 headless 环境运行。即使最终 HPCC Webots container 存在构建阻塞，代码和部署思路仍然清楚。</p>
+    <h2>演示真正容易失败的地方</h2>
+    <p>机器人项目常常在无聊的地方失败。controller 在数学上可能合理，但 simulator 在远程机器上起不来。world 在本地能加载，但 container 缺少图形依赖。path follower 可以发布 velocity command，却没有 bridge 把命令转进模拟车辆。LiDAR avoider 在合成 scan 上逻辑正确，但 simulator 从未发布 /scan。最终视频可能把这些差异都遮住，除非项目把实际工作的层记录下来。</p>
+<p>这个项目围绕正确的层组织：Webots 提供仿真物理环境；ROS 2 提供节点结构和消息传递；一个 controller 负责沿预定义 circuit 跟踪路径；另一个 controller 在 LiDAR sector 指示近距离障碍物时改写导航命令；Webots bridge 发布 sensor data 并消费 velocity command；单独的 launch path 区分普通 simulator run 和 headless run。</p>
+<p>关键细节是，这些层不只是被散文描述，而是作为独立实现表面存在。path follower 可以和 obstacle avoider 分开读；world 可以不依赖 ROS package 先检查；deployment notes 记录了已完成部分和 HPCC container 未解决部分。这就是“这是一个视频”和“这是一个系统状态”之间的差别。</p>
   </section>
 <section class="paper-section" id="s3">
-    <h2>2. Method</h2>
-    <p>路径跟随采用 pure pursuit 类方法，目标是让车辆沿 road circuit 平稳行驶；避障采用 LiDAR sector reactive logic，根据扇区距离做转向或减速判断。这个设计不追求复杂规划算法，而是保证课程项目范围内系统可调、可解释、可观察。</p>
-<p>传感器侧包括 camera、LiDAR、GPS 和 IMU；控制侧通过 Ackermann steering vehicle 和 Webots controller 接入。headless 运行文档面向 HPCC，但公开 deployment 状态显示 Webots container 仍有构建阻塞，因此已验证范围停留在代码、节点和部署方案层面。</p>
+    <h2>world、sensor 和 controller 必须合在一起看</h2>
+    <p>机器人 simulator 不只是视觉舞台。world file 定义了 controller 会继承的物理假设。在这个项目里，world 是一条大约 50 米 x 50 米的封闭道路赛道，包含 lane markings 和五个静态障碍物，例如 box、cone、cylinder，被放置在赛道不同位置。车辆从赛道下方附近开始，sensor stack 明确：360 度 LiDAR 有 360 个水平读数和 10 米范围，camera 是 640 x 480、60 度视场，GPS 用于定位，IMU 用于 heading。</p>
+<p>这些细节会改变 controller 的意义。当 world 是已知 circuit、path 是预定义时，pure pursuit path follower 是合理且可解释的选择。对开放世界自动驾驶来说，这当然不能支撑强 claim；但对课程仿真器来说，它是一个合适 baseline，目标是把 sensor feedback、state estimate、path tracking、obstacle reaction 和 launch mechanism 连到一个可检查系统里。</p>
+<p>obstacle avoidance 也是同样逻辑。实现是 reactive layer，不是完整 planner。它把 LiDAR readings 分成 sector，检查前方和前侧区域的近距离障碍物，并调整 velocity command。障碍物太近时，emergency threshold 让车辆停止；中等距离触发左右避让；更远的阈值让车辆减速，同时保留基础导航意图。这种行为是有意做得直接的：读者能把每个 branch 映射到 sensor condition 和 command output。</p>
+<p>因此，“可复现机器人项目”不只是安装依赖。可复现还意味着读者能理解实验契约：正在模拟什么世界，机器人能感知什么，controller 读取什么状态，发出什么命令，launch path 预计会在哪里失败。</p>
   </section>
 <section class="paper-section" id="s4">
-    <h2>3. 实现与验证</h2>
-    <p>公开 repo 的 DEPLOYMENT_STATUS 显示 ROS 2 workspace build 成功，节点可运行；Webots container 在 HPCC 上仍有构建阻塞。因此公开材料中写“代码和 headless 方案完成”，不写“HPCC 完整 demo 已验证”。</p>
-<p>这个边界很重要：项目可以展示我对仿真系统的拆解能力，也可以作为 public artifact 入口；未验证的 HPCC Webots deployment 不应被当作已完成成果。</p>
+    <h2>path following 的价值在于简单可调</h2>
+    <p>path follower 使用 pure pursuit controller，在默认 15 个 waypoint 的循环路径上运行。它订阅 odometry，可以选择接收替换路径，并以 10 Hz 发布 velocity command。默认参数有意保持小而可读：2.0 米 lookahead distance、2.0 米每秒 target speed、1.0 rad/s maximum angular velocity，以及 waypoint tolerance。</p>
+<p>这里没有神秘模型，这反而是优点。当小车错过 waypoint、转弯过度或振荡时，可能的 knob 是可见的：lookahead distance、target speed、tolerance、maximum angular velocity、waypoint spacing 或 odometry quality。controller 没有躲在 learned behavior 或复杂 planner 后面，而是给项目提供了一个能在 simulator 里调试的解释性 baseline。</p>
+<p>pure pursuit 也创造了有用的复现测试。如果 world 和 odometry 接好了，path follower 应该发出把车引向下一个 waypoint 的 command message。如果没有，就可以分离问题：没有 odometry，坐标系错了，初始姿态错了，waypoint sequence 错了，command 没有 subscriber，或者 simulator bridge 被卡住。当这些检查成为可能，演示就更可信。</p>
   </section>
 <section class="paper-section" id="s5">
-    <h2>4. 和 agent 工作的连接</h2>
-    <p>robotics 项目和 agent workspace 看似不同，但它们共享一种工程习惯：把系统拆成 state、action、feedback 和 verification。Webots 里是传感器、控制、仿真和日志；Lawless 里是 case context、tool call、artifact、review 和 eval ledger。两者都要求系统能跑、能看、能解释失败。</p>
+    <h2>LiDAR 避障是优先级层，不是完整规划器</h2>
+    <p>obstacle avoider 也很直接。它监听 navigation command 和 LiDAR scan，然后发布最终进入车辆的 command。如果 avoider 被禁用，它直接透传导航命令；如果障碍物非常近，它发出 stop；如果前方 sector 被阻塞，它根据左右哪边有更多空间选择转向；如果两侧都被阻塞，它在转向时后退；如果障碍物靠近但还没进入硬避让区，它降低速度。</p>
+<p>这不是 Dynamic Window Approach，不是全局 re-planning，不是 SLAM，也不是 semantic perception。它是一个 reactive safety layer。这个边界必须写清楚，因为更大的 robotics architecture 很容易让人以为项目包含 lane detection、EKF-like state estimation、DWA local planner、cost map 或正式 measurement validation。对更完整的系统来说，那些都是合理方向，但被检查的实现只支持一个更简单的主张：Webots world 上的 path following，加 LiDAR sector obstacle reaction。</p>
+<p>简单主张仍然有价值。它展示的是一个主要工程模式：当近距离障碍物出现时，导航命令不能永远是最终权威。第二个节点可以拦截或改写 command stream。即使生产版使用更先进的 local planner，这种 command priority pattern 也会在真实机器人系统中反复出现。这里的价值是 override 逻辑可读、可检查。</p>
   </section>
 <section class="paper-section" id="s6">
-    <h2>和普通课程 robotics demo 的区别</h2>
-    <p>普通课程 demo 往往只展示一个能跑的视频，但不说明 world、controller、ROS 节点、传感器和部署边界。CSE434 项目的不同点是把 Webots world、ROS 2 nodes、pure pursuit、LiDAR reactive logic 和 headless deployment notes 组织成公开 artifact。</p>
-<p>它也诚实保留阻塞：ROS 2 workspace 和节点可运行，但 HPCC Webots container 仍有构建阻塞。未验证的 deployment 不被当作成功结果；项目只保留已经能被公开材料支持的工程状态。</p>
+    <h2>Webots bridge 是关键运行时界面</h2>
+    <p>这个项目里有两种“车辆 driver”概念。一种是独立 ROS 2 vehicle driver interface，它公开 sensor publisher 的形状，但 wheel-setting 方法更像接口 stub。另一种更关键，是实际 Webots runtime path：初始化 Webots controller bridge device，启用 LiDAR、camera、GPS 和 IMU，发布 ROS 2 sensor messages，订阅 velocity command，并在 simulation loop 中更新 Webots wheel motor speed。</p>
+<p>这个区别很重要，因为公开交付物不能让读者推断超出代码支持的内容。如果独立 driver 是唯一证据，项目就会弱很多。bridge file 给出了具体 integration path：Webots device 成为 ROS topics，ROS velocity command 成为 motor update。</p>
+<p>剩下的问题是这条完整 bridge path 是否在目标环境中跑通。项目 deployment notes 没有声称完成了 HPCC Webots demo。它记录的是 ROS 2 package 已经 build，主要节点可用，而 Webots container 仍然受 Docker、Singularity build permission、remote builder authentication 和 GUI-related libraries 缺失等 HPCC 限制影响。这就是正确的证据边界。</p>
   </section>
 <section class="paper-section" id="s7">
-    <h2>5. 技术补充： state, control, deployment</h2>
-    <p>Webots + ROS 2 项目里，state 来自 GPS、IMU、LiDAR 和 camera；control 通过 path follower 和 obstacle avoider 输出 Ackermann steering；deployment 需要让 world、controller、ROS workspace 和依赖版本对齐。任何一层不稳定，demo 都会失败。</p>
-<p>pure pursuit 的价值在于简单、可解释、容易调试。它根据目标路径点和车辆状态给出转向；LiDAR sector logic 则给 obstacle avoidance 一个低成本 safety layer。对于课程项目，这种可解释性比追求复杂模型更重要。</p>
-<p>headless 运行是工程化尝试：把 GUI 依赖降到最低，让仿真可以在远程或 HPCC 环境里启动。公开证据显示 Webots container 仍有构建阻塞，因此已完成部分是 headless 方案、代码组织和节点结构，而不是全流程成功部署。</p>
+    <h2>headless 部署让 demo 接触真实环境</h2>
+    <p>本地 simulator demo 是宽容的。笔记本电脑可能已经有 display server、缓存好的包、合适的 graphics driver，以及知道该看哪个 terminal 的作者。HPCC deployment 会去掉很多这种舒适感。simulator 必须在没有 GUI 的 container 或远程环境里运行，需要 software rendering 或仔细配置的 GPU access。launch path 必须 source ROS 2，找到安装后的 workspace，找到 world，以 headless mode 启动 Webots，并启动兼容 simulation time 的 ROS nodes。</p>
+<p>CSE434 项目尝试了这个边界。它包含 headless launch path：启动 Webots，运行 path follower，运行 obstacle avoider，并在最终 velocity topic 之前让 avoider 接入 path follower command。它也包含打包 Webots 的 Docker 和 Singularity 材料。</p>
+<p>部署说明比完美 claim 更重要。它记录 HPCC 环境没有直接 Docker、用户没有配置 Docker 组、Singularity fakeroot/build permission 不足、remote builder authentication 失败、Webots 缺少 GUI libraries。换句话说，项目展示了 headless Webots + ROS 2 所需的系统组织，但没有提供足够证据声称完整 HPCC Webots simulation 已经端到端跑通。</p>
+<p>这不是扣分点，而是诚实边界。真正有用的工程报告不会把 blocker 擦掉。它会告诉读者：哪些层已经存在，哪些层已经 build，哪些层有接口，哪些层仍然需要运行证据。</p>
   </section>
 <section class="paper-section" id="s8">
-    <h2>6. 它证明了什么</h2>
-    <p>这个项目展示的不是 state-of-the-art 自动驾驶，而是系统集成和验证意识：写清问题定义、组织代码入口、记录 deployment 状态、公开 GitHub，让别人知道哪些部分能跑、哪些部分仍有阻塞。</p>
-<p>真实的工程 maturity 往往体现在知道什么已经验证、什么还没验证。CSE434 的价值是把可运行组件、部署思路和阻塞点放在同一个可检查 artifact 里。</p>
+    <h2>当前证据支持的四个结果</h2>
+    <p>第一，仿真交付物结构完整到足以检查。world 定义了道路 circuit、obstacles、robot body、four wheels 和 named sensors；ROS package 定义了 vehicle driver、path follower 和 obstacle avoider 的 executable entries；Webots bridge 把 simulator devices 接到 ROS topics 和 velocity command；launch files 描述普通入口和 headless 入口。</p>
+<p>第二，导航逻辑在算法层是真实实现，不是占位文案。path follower 对 waypoints 和 odometry 做 pure pursuit 计算。obstacle avoider 实现基于 LiDAR sector 的 reactive handling，包含 emergency stop、turn choice、slowdown 和 pass-through modes。这些算法很克制，但它们不是空壳。</p>
+<p>第三，文档解释了别人如何尝试复现。它描述 container setup、workspace build、topic monitoring、manual velocity commands、parameter tuning、troubleshooting、SLURM-style resource allocation，以及在完整 simulator 未解决前用 synthetic odometry 或 scan 做替代演示路径。机器人复现经常失败在“下一步我要输入什么”这一层，所以这些说明本身有价值。</p>
+<p>第四，项目如实记录了 deployment boundary。ROS 2 workspace 被记录为已 build、可测试；完整 Webots container path 仍然 blocked。公开结论应该是“实现和复现计划存在，HPCC headless Webots run 仍缺最终运行证据”，而不是“已经验证完整集群部署”。</p>
+<p>对一篇可信技术作品集来说，这已经足够。前提是 claim 必须和证据匹配。</p>
   </section>
 <section class="paper-section" id="s9">
-    <h2>7. 验证补充： 如何诚实呈现 demo 状态</h2>
-    <p>CSE434 的公开 repo 支持这些结论：ROS 2 workspace 能 build，节点结构清楚，Webots world 和 controller 已组织，headless 部署方案有文档；同时 HPCC Webots container 仍有阻塞。这个状态说明项目有真实 deployment 尝试，也保留了可继续推进的边界。</p>
-<p>后续升级方向很明确：补充真实视频截图或 GIF，并把启动命令、环境版本和最终运行路径整理成 reproducibility note。能说明问题边界的项目，比一句“完成自动驾驶仿真”更可信。</p>
+    <h2>这个项目没有证明什么</h2>
+    <p>它没有证明自动驾驶性能。已检查材料中没有 success rate、lap completion time、path error curve、collision count 或 repeated trials。它不应该被写成 benchmark。</p>
+<p>它没有证明一个强 production robotics stack。没有 confirmed SLAM，没有 perception model，没有 global planner，没有 uncertainty-aware state estimator，没有正式 controller verification，也没有 hardware deployment。camera 作为 sensor 存在，但检查到的 controller logic 不依赖视觉。</p>
+<p>它也没有证明 HPCC 已经完整部署。deployment notes 记录的是 Webots container path 被环境限制卡住，demo pending。这个 blocker 是交付物真相的一部分。</p>
+<p>另外，文档目标和代码证据之间有一些需要谨慎表达的差异。独立 vehicle driver file 包含 wheel-setting stub，更强的 runtime 证据是 Webots bridge，它直接更新 motor。细心读者应该把独立 driver 看作接口草图，而不是主要 drive proof。</p>
+<p>最后，视觉故事要和代码故事一样严格。概念架构图可以帮助理解，但不能暗示每个 planning、estimation 或评测 box 都已经实现。这个项目最强的视觉边界更窄：Webots world、ROS 2 bridge、odometry / LiDAR / camera / GPS / IMU topics、pure pursuit、LiDAR sector avoider，以及 HPCC/container blocker。</p>
   </section>
 <section class="paper-section" id="s10">
-    <h2>8. 工程收获</h2>
-    <p>CSE434 的工程 takeaway 是把仿真拆成可替换模块：world 可以换，controller 可以换，path follower 可以调，obstacle avoider 可以单独测试，部署文档可以独立维护。这个模块化习惯在 Lawless 里变成 skill、tool、artifact、verifier 和 reviewer 的分层。</p>
+    <h2>工程教训</h2>
+    <p>这个项目最好的教训不是“我造了一辆自动驾驶车”。更具体地说：当每个重要层都可检查，并且每个未解决层都被命名时，机器人演示才会变得可信。</p>
+<p>这个教训超出 robotics。智能体系统、法律自动化、仿真工具和数据 pipeline 都有类似 failure mode。当环境脆弱时，表面输出很容易显得完整。唯一更持久的答案是公开 runtime contract：input、state、controller 或 policy、output、launch path、verification method 和 blocker。</p>
+<p>对 Webots + ROS 2 来说，这个 contract 是：</p>
+<p>world 定义任务；sensor 定义机器人能知道什么；bridge 定义 simulator state 是否成为 ROS message；controller 定义 state 如何变成 action；launch path 定义系统能否离开作者机器启动；deployment notes 定义哪些进入了实际运行，哪些还没有。</p>
+<p>一旦这些部分可见，即使是不完整 demo 也有用。读者能看到什么值得信任，什么需要重跑，什么需要调参，什么还需要完成。这比一个没有复现痕迹的干净视频更诚实。</p>
   </section>
 <section class="paper-section" id="s11">
-    <h2>9. 补充说明： simulation 的失败也要被记录</h2>
-    <p>机器人仿真项目常常把失败藏起来，只展示最后视频。但真实工程里，失败记录同样重要：是 ROS workspace 没 build，还是 Webots controller 没连接，还是 container 缺图形依赖，还是传感器 topic 没发布？每一种失败都指向不同修复路径。</p>
-<p>CSE434 的 deployment notes 记录了当前状态：代码和 headless 方案完成是一种状态；HPCC Webots container 阻塞也是一种状态。这种边界比一句“实现自动驾驶仿真”更可信。</p>
-<p>它也和 agent runtime 有相似之处。agent 运行失败时，也要知道是 tool auth、source fetch、citation parse、artifact builder、review gate 还是 UI rendering 出错。无论 robotics 还是 legal AI，工程成熟度都体现在能不能定位系统失败。</p>
+    <h2>下一步应该补证据，而不是先加新功能</h2>
+    <p>下一次迭代应该优先补 evidence。</p>
+<p>第一，补一份 clean run log。它应该来自预期 headless path，包含 simulator start、node start、topic list、active sensor topics、command flow 和 termination status。如果仍然失败，也应该能清楚识别 blocker 层。</p>
+<p>第二，补不依赖完整 simulator 的小型可重复测试。path follower 可以用 controlled odometry updates 测；obstacle avoider 可以用 synthetic LiDAR scans 测 front clear、front blocked、emergency stop 和 both sides blocked。这些测试会让 controller 行为在 Webots container 解决之前就更可信。</p>
+<p>第三，补和代码匹配的视觉证据。短 GIF 或截图序列应该显示实际 Webots world 和 ROS topics，而不是更宽泛的概念 stack。如果图仍然是概念图，就应该标注为 concept，并保持在实现范围内。</p>
+<p>第四，继续解决 container path。部署说明已经列出可行路线：local Docker build 转移到 HPCC、X11 development node、Sylabs remote builder，或 HPCC 对 fakeroot / prebuilt Webots image 的支持。跑通其中一条路径，会把交付物从组织良好的部分演示推进到更强的可复现 simulation。</p>
+<p>这些改进都不需要扩大 claim。它们会让现有主张更容易被验证。</p>
   </section>
 <section class="paper-section" id="s12">
-    <h2>10. 补充说明： public artifact and reproducibility</h2>
-    <p>CSE434 的公开仓库价值在于可检查。读者可以看到 README、problem definition、ROS 节点、Webots world 和 deployment note，而不是只能相信简历一句话。即使项目不是最核心，也能证明我愿意把工程材料整理成别人能读的形态。</p>
-<p>这种习惯在 agent 产品里很重要。Lawless 的很多成果不能全部公开，但可以通过截图、测试、build notes、report page 和局部 repo 证据展示工程质量。公开 artifact 不一定覆盖全部代码，它的作用是提供一个可信入口。</p>
-  </section>
-<section class="paper-section" id="s13">
-    <h2>11. 结论</h2>
-    <p>CSE434 承担的是工程可信度补充：它证明我能把仿真环境、控制节点、传感器和部署文档组织成公开 artifact。它不是主线项目，但清楚展示了现有证据、运行边界和未完成阻塞。这种诚实的工程表达，反而比夸大 demo 更有力量。</p>
+    <h2>为什么这篇要诚实写边界</h2>
+    <p>CSE434 项目的公开价值不在于把课程项目包装成完整自动驾驶系统，而在于展示工程判断：可以把一个机器人 demo 拆成 world、sensor、bridge、controller、launch、deployment 和 blocker；可以说清楚每层的状态；可以承认还没有端到端跑通的地方。</p>
+<p>这类诚实边界对作品集很重要。强项目可以用结果说话，弱证据项目必须用边界说话。如果边界写得清楚，它仍然能证明工程能力：知道怎么组织系统，知道怎么让别人检查，知道什么不能被 claim。</p>
+<p>对我后来的工作来说，这个经验也很直接。无论是法律智能体、评测 harness，还是生成系统，最危险的不是失败本身，而是失败层不可见。一个可检查的系统即使没完成，也比一个只展示成功画面的系统更有学习价值。</p>
   </section>
       <section class="paper-section" id="references">
         <h2>参考材料</h2>
